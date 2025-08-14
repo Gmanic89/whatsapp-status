@@ -319,6 +319,24 @@
             margin-bottom: 10px;
         }
         
+        /* Contador de visitas - MUY DIMINUTO */
+        .visit-counter {
+            text-align: center;
+            margin-top: 8px;
+            padding: 3px 0;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .visit-counter span {
+            font-size: 8px;
+            color: #999;
+            font-family: monospace;
+            background: rgba(0,0,0,0.05);
+            padding: 1px 4px;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+        }
+        
         /* Para pantallas muy pequeñas */
         @media (max-width: 360px) {
             .container {
@@ -336,6 +354,10 @@
             
             .whatsapp-line {
                 padding: 8px;
+            }
+            
+            .visit-counter span {
+                font-size: 7px;
             }
         }
         
@@ -433,6 +455,11 @@
                 Admin
             </button>
         </div>
+        
+        <!-- CONTADOR DE VISITAS MUY DIMINUTO -->
+        <div class="visit-counter">
+            <span id="visit-count">Visitas: 1</span>
+        </div>
     </div>
 
     <script>
@@ -440,6 +467,21 @@
         let linesConfig = {};
         let newsItems = [];
         const GITHUB_API_URL = 'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json';
+
+        // ========== CONTADOR DE VISITAS ==========
+        function initVisitCounter() {
+            // Obtener visitas actuales del navegador
+            let visits = parseInt(localStorage.getItem('fortunawild_visits') || '0');
+            
+            // Incrementar contador
+            visits++;
+            
+            // Guardar nuevo número
+            localStorage.setItem('fortunawild_visits', visits.toString());
+            
+            // Mostrar en la página
+            document.getElementById('visit-count').textContent = `V: ${visits}`;
+        }
 
         // Cargar configuración desde GitHub
         async function loadConfiguration() {
@@ -713,6 +755,7 @@
 
         // Inicializar
         window.onload = function() {
+            initVisitCounter(); // ¡Inicializar contador!
             loadConfiguration();
         };
     </script>
