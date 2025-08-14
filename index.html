@@ -1,795 +1,720 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FortunaWild WhatsApp - Estado de Líneas</title>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #25d366, #128c7e);
-        min-height: 100vh;
-        padding: 10px;
-      }
-
-      .container {
-        max-width: 380px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-        padding: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 15px;
-      }
-
-      .header h1 {
-        color: #128c7e;
-        font-size: 18px;
-        margin-bottom: 5px;
-        line-height: 1.2;
-      }
-
-      .header p {
-        color: #666;
-        font-size: 12px;
-      }
-
-      .loading {
-        text-align: center;
-        color: #666;
-        font-size: 14px;
-        padding: 20px;
-      }
-
-      /* Grid de 2 columnas para las líneas */
-      .lines-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin-bottom: 15px;
-      }
-
-      .whatsapp-line {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 10px;
-        position: relative;
-        transition: all 0.3s ease;
-        text-align: center;
-      }
-
-      .whatsapp-line.active {
-        background: #dcf8c6;
-        border: 1.5px solid #25d366;
-      }
-
-      .whatsapp-line.inactive {
-        background: #ffebee;
-        border: 1.5px solid #f44336;
-        opacity: 0.8;
-      }
-
-      .line-title {
-        font-weight: bold;
-        color: #333;
-        font-size: 12px;
-        margin-bottom: 4px;
-      }
-
-      .status-badge {
-        display: block;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 9px;
-        font-weight: bold;
-        margin-bottom: 6px;
-      }
-
-      .online {
-        background: #25d366;
-        color: white;
-      }
-
-      .offline {
-        background: #f44336;
-        color: white;
-      }
-
-      .phone-number {
-        font-size: 13px;
-        font-weight: bold;
-        color: #128c7e;
-        margin-bottom: 6px;
-      }
-
-      .whatsapp-btn {
-        width: 100%;
-        background: #25d366;
-        color: white;
-        border: none;
-        padding: 6px 8px;
-        border-radius: 6px;
-        font-size: 11px;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-        transition: background 0.3s ease;
-      }
-
-      .whatsapp-btn:hover {
-        background: #128c7e;
-      }
-
-      .whatsapp-btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        font-size: 10px;
-      }
-
-      .last-update {
-        text-align: center;
-        color: #666;
-        font-size: 10px;
-        margin-bottom: 15px;
-        padding: 8px 0;
-        border-top: 1px solid #eee;
-      }
-
-      /* Sección de Noticias compacta */
-      .news-section {
-        border-top: 2px solid #eee;
-        padding-top: 15px;
-      }
-
-      .news-title {
-        color: #128c7e;
-        font-size: 16px;
-        margin-bottom: 10px;
-        text-align: center;
-        font-weight: bold;
-      }
-
-      .news-item {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 10px;
-        margin-bottom: 8px;
-        border-left: 3px solid #25d366;
-      }
-
-      .news-date {
-        font-size: 9px;
-        color: #666;
-        margin-bottom: 3px;
-      }
-
-      .news-content {
-        color: #333;
-        font-size: 12px;
-        line-height: 1.3;
-      }
-
-      .news-highlight {
-        background: #fff3cd;
-        border-left-color: #ffc107;
-      }
-
-      /* Panel de administración más compacto */
-      .admin-panel {
-        margin-top: 20px;
-        padding-top: 15px;
-        border-top: 2px solid #eee;
-      }
-
-      .admin-title {
-        color: #333;
-        margin-bottom: 12px;
-        text-align: center;
-        font-size: 16px;
-      }
-
-      .admin-controls {
-        display: grid;
-        gap: 8px;
-      }
-
-      .control-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr auto;
-        gap: 5px;
-        align-items: center;
-      }
-
-      .control-group input {
-        padding: 6px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 11px;
-      }
-
-      .toggle-btn {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 10px;
-        min-width: 60px;
-      }
-
-      .toggle-btn.active {
-        background: #25d366;
-        color: white;
-      }
-
-      .toggle-btn.inactive {
-        background: #f44336;
-        color: white;
-      }
-
-      .save-btn {
-        background: #128c7e;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 6px;
-        font-size: 13px;
-        cursor: pointer;
-        width: 100%;
-        margin-top: 12px;
-      }
-
-      .save-btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-      }
-
-      /* Admin de noticias */
-      .news-admin {
-        margin-top: 15px;
-        padding-top: 12px;
-        border-top: 1px solid #ddd;
-      }
-
-      .news-admin h4 {
-        color: #333;
-        margin-bottom: 8px;
-        font-size: 13px;
-      }
-
-      .news-admin textarea {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 11px;
-        resize: vertical;
-        min-height: 60px;
-      }
-
-      .news-admin-controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin-top: 8px;
-      }
-
-      .add-news-btn,
-      .clear-news-btn {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 5px;
-        font-size: 11px;
-        cursor: pointer;
-      }
-
-      .add-news-btn {
-        background: #25d366;
-        color: white;
-      }
-
-      .clear-news-btn {
-        background: #f44336;
-        color: white;
-      }
-
-      .token-input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 11px;
-        margin-bottom: 10px;
-      }
-
-      /* Para pantallas muy pequeñas */
-      @media (max-width: 360px) {
-        .container {
-          margin: 5px;
-          padding: 12px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 380px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
         .header h1 {
-          font-size: 16px;
+            color: #128c7e;
+            font-size: 18px;
+            margin-bottom: 5px;
+            line-height: 1.2;
         }
-
-        .lines-grid {
-          gap: 6px;
-        }
-
-        .whatsapp-line {
-          padding: 8px;
-        }
-      }
-
-      /* Para pantallas más grandes mantener el diseño compacto */
-      @media (min-width: 500px) {
-        .container {
-          max-width: 400px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>📱 FortunaWild WhatsApp</h1>
-        <p>Líneas disponibles para contacto</p>
-      </div>
-
-      <div class="loading" id="loading">⏳ Cargando configuración...</div>
-
-      <div id="main-content" style="display: none">
-        <div class="lines-grid" id="whatsapp-lines">
-          <!-- Las líneas se cargan dinámicamente en grid 2x3 -->
-        </div>
-
-        <div class="last-update">
-          <p>Actualizado: <span id="last-update-time">-</span></p>
-        </div>
-
-        <!-- Sección de Noticias -->
-        <div class="news-section">
-          <h2 class="news-title">📢 Noticias</h2>
-          <div id="news-container">
-            <!-- Las noticias se cargan dinámicamente -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel de administración (oculto por defecto) -->
-      <div class="admin-panel" id="admin-panel" style="display: none">
-        <h3 class="admin-title">🔧 Panel Admin</h3>
-        <div class="admin-controls">
-          <div style="margin-bottom: 15px">
-            <label
-              style="
-                font-size: 11px;
-                color: #666;
-                display: block;
-                margin-bottom: 5px;
-              "
-              >Token de GitHub:</label
-            >
-            <input
-              type="password"
-              id="github-token"
-              class="token-input"
-              placeholder="Pegá tu token de GitHub aquí"
-            />
-            <p style="font-size: 9px; color: #666; margin-top: 3px">
-              Solo se guarda en tu navegador, nunca se envía a terceros
-            </p>
-          </div>
-
-          <div class="control-group">
-            <input type="text" id="line1-name" placeholder="Línea 1" />
-            <input type="text" id="line1-number" placeholder="Número" />
-            <button
-              class="toggle-btn active"
-              id="line1-toggle"
-              onclick="toggleLine(1)"
-            >
-              ON
-            </button>
-          </div>
-          <div class="control-group">
-            <input type="text" id="line2-name" placeholder="Línea 2" />
-            <input type="text" id="line2-number" placeholder="Número" />
-            <button
-              class="toggle-btn active"
-              id="line2-toggle"
-              onclick="toggleLine(2)"
-            >
-              ON
-            </button>
-          </div>
-          <div class="control-group">
-            <input type="text" id="line3-name" placeholder="Línea 3" />
-            <input type="text" id="line3-number" placeholder="Número" />
-            <button
-              class="toggle-btn active"
-              id="line3-toggle"
-              onclick="toggleLine(3)"
-            >
-              ON
-            </button>
-          </div>
-          <div class="control-group">
-            <input type="text" id="line4-name" placeholder="Línea 4" />
-            <input type="text" id="line4-number" placeholder="Número" />
-            <button
-              class="toggle-btn active"
-              id="line4-toggle"
-              onclick="toggleLine(4)"
-            >
-              ON
-            </button>
-          </div>
-          <div class="control-group">
-            <input type="text" id="line5-name" placeholder="Línea 5" />
-            <input type="text" id="line5-number" placeholder="Número" />
-            <button
-              class="toggle-btn active"
-              id="line5-toggle"
-              onclick="toggleLine(5)"
-            >
-              ON
-            </button>
-          </div>
-          <div class="control-group">
-            <input type="text" id="line6-name" placeholder="Línea 6" />
-            <input type="text" id="line6-number" placeholder="Número" />
-            <button
-              class="toggle-btn active"
-              id="line6-toggle"
-              onclick="toggleLine(6)"
-            >
-              ON
-            </button>
-          </div>
-          <button class="save-btn" id="save-btn" onclick="saveConfiguration()">
-            💾 Guardar en GitHub
-          </button>
-
-          <!-- Admin de Noticias -->
-          <div class="news-admin">
-            <h4>📢 Noticias</h4>
-            <textarea id="news-input" placeholder="Nueva noticia..."></textarea>
-            <div class="news-admin-controls">
-              <button class="add-news-btn" onclick="addNews()">Agregar</button>
-              <button class="clear-news-btn" onclick="clearAllNews()">
-                Limpiar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 15px">
-        <button
-          onclick="toggleAdminPanel()"
-          style="
-            background: none;
-            border: none;
+        
+        .header p {
             color: #666;
+            font-size: 12px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            padding: 20px;
+        }
+        
+        /* Grid de 2 columnas para las líneas */
+        .lines-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .whatsapp-line {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .whatsapp-line.active {
+            background: #dcf8c6;
+            border: 1.5px solid #25d366;
+            transform: scale(1.02);
+        }
+        
+        .whatsapp-line.active:hover {
+            background: #c8e6c9;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-line.inactive {
+            background: #ffebee;
+            border: 1.5px solid #f44336;
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+        
+        .line-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        
+        .online {
+            background: #25d366;
+            color: white;
+        }
+        
+        .offline {
+            background: #f44336;
+            color: white;
+        }
+        
+        .phone-number {
+            font-size: 13px;
+            font-weight: bold;
+            color: #128c7e;
+            margin-bottom: 6px;
+        }
+        
+        .whatsapp-btn {
+            width: 100%;
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
             font-size: 11px;
             cursor: pointer;
-          "
-        >
-          Admin
-        </button>
-      </div>
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        
+        .whatsapp-btn:hover {
+            background: #128c7e;
+        }
+        
+        .whatsapp-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            font-size: 10px;
+        }
+        
+        .last-update {
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Sección de Noticias compacta */
+        .news-section {
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .news-title {
+            color: #128c7e;
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .news-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #25d366;
+        }
+        
+        .news-date {
+            font-size: 9px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .news-content {
+            color: #333;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        
+        .news-highlight {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        
+        /* Panel de administración más compacto */
+        .admin-panel {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+        }
+        
+        .admin-title {
+            color: #333;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .admin-controls {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .control-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 5px;
+            align-items: center;
+        }
+        
+        .control-group input {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+        
+        .toggle-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 10px;
+            min-width: 60px;
+        }
+        
+        .toggle-btn.active {
+            background: #25d366;
+            color: white;
+        }
+        
+        .toggle-btn.inactive {
+            background: #f44336;
+            color: white;
+        }
+        
+        .save-btn {
+            background: #128c7e;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+        }
+        
+        .save-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        /* Admin de noticias */
+        .news-admin {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .news-admin h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .news-admin textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 11px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .news-admin-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .add-news-btn, .clear-news-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .add-news-btn {
+            background: #25d366;
+            color: white;
+        }
+        
+        .clear-news-btn {
+            background: #f44336;
+            color: white;
+        }
+        
+        .token-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+        
+        /* Para pantallas muy pequeñas */
+        @media (max-width: 360px) {
+            .container {
+                margin: 5px;
+                padding: 12px;
+            }
+            
+            .header h1 {
+                font-size: 16px;
+            }
+            
+            .lines-grid {
+                gap: 6px;
+            }
+            
+            .whatsapp-line {
+                padding: 8px;
+            }
+        }
+        
+        /* Para pantallas más grandes mantener el diseño compacto */
+        @media (min-width: 500px) {
+            .container {
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 FortunaWild WhatsApp</h1>
+            <p>Líneas disponibles para contacto</p>
+        </div>
+        
+        <div class="loading" id="loading">⏳ Cargando configuración...</div>
+        
+        <div id="main-content" style="display: none;">
+            <div class="lines-grid" id="whatsapp-lines">
+                <!-- Las líneas se cargan dinámicamente en grid 2x3 -->
+            </div>
+            
+            <div class="last-update">
+                <p>Actualizado: <span id="last-update-time">-</span></p>
+            </div>
+            
+            <!-- Sección de Noticias -->
+            <div class="news-section">
+                <h2 class="news-title">📢 Noticias</h2>
+                <div id="news-container">
+                    <!-- Las noticias se cargan dinámicamente -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel de administración (oculto por defecto) -->
+        <div class="admin-panel" id="admin-panel" style="display: none;">
+            <h3 class="admin-title">🔧 Panel Admin</h3>
+            <div class="admin-controls">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 11px; color: #666; display: block; margin-bottom: 5px;">Token de GitHub:</label>
+                    <input type="password" id="github-token" class="token-input" placeholder="Pegá tu token de GitHub aquí">
+                    <p style="font-size: 9px; color: #666; margin-top: 3px;">Solo se guarda en tu navegador, nunca se envía a terceros</p>
+                </div>
+                
+                <div class="control-group">
+                    <input type="text" id="line1-name" placeholder="Línea 1">
+                    <input type="text" id="line1-number" placeholder="Número">
+                    <button class="toggle-btn active" id="line1-toggle" onclick="toggleLine(1)">ON</button>
+                </div>
+                <div class="control-group">
+                    <input type="text" id="line2-name" placeholder="Línea 2">
+                    <input type="text" id="line2-number" placeholder="Número">
+                    <button class="toggle-btn active" id="line2-toggle" onclick="toggleLine(2)">ON</button>
+                </div>
+                <div class="control-group">
+                    <input type="text" id="line3-name" placeholder="Línea 3">
+                    <input type="text" id="line3-number" placeholder="Número">
+                    <button class="toggle-btn active" id="line3-toggle" onclick="toggleLine(3)">ON</button>
+                </div>
+                <div class="control-group">
+                    <input type="text" id="line4-name" placeholder="Línea 4">
+                    <input type="text" id="line4-number" placeholder="Número">
+                    <button class="toggle-btn active" id="line4-toggle" onclick="toggleLine(4)">ON</button>
+                </div>
+                <div class="control-group">
+                    <input type="text" id="line5-name" placeholder="Línea 5">
+                    <input type="text" id="line5-number" placeholder="Número">
+                    <button class="toggle-btn active" id="line5-toggle" onclick="toggleLine(5)">ON</button>
+                </div>
+                <div class="control-group">
+                    <input type="text" id="line6-name" placeholder="Línea 6">
+                    <input type="text" id="line6-number" placeholder="Número">
+                    <button class="toggle-btn active" id="line6-toggle" onclick="toggleLine(6)">ON</button>
+                </div>
+                <button class="save-btn" id="save-btn" onclick="saveConfiguration()">💾 Guardar en GitHub</button>
+                
+                <!-- Admin de Noticias -->
+                <div class="news-admin">
+                    <h4>📢 Noticias</h4>
+                    <textarea id="news-input" placeholder="Nueva noticia..."></textarea>
+                    <div class="news-admin-controls">
+                        <button class="add-news-btn" onclick="addNews()">Agregar</button>
+                        <button class="clear-news-btn" onclick="clearAllNews()">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 15px;">
+            <button onclick="toggleAdminPanel()" style="background: none; border: none; color: #666; font-size: 11px; cursor: pointer;">
+                Admin
+            </button>
+        </div>
     </div>
 
     <script>
-      // Configuración inicial
-      let linesConfig = {}
-      let newsItems = []
-      const GITHUB_API_URL =
-        'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json'
+        // Configuración inicial
+        let linesConfig = {};
+        let newsItems = [];
+        const GITHUB_API_URL = 'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json';
 
-      // Cargar configuración desde GitHub
-      async function loadConfiguration() {
-        try {
-          // PRIMERO: Intentar cargar desde config.json
-          const response = await fetch('config.json?t=' + Date.now())
-          if (response.ok) {
-            const config = await response.json()
-            linesConfig = config.lines || {}
-            newsItems = config.news || []
-            console.log('✅ Config cargado desde JSON:', config)
-          } else {
-            throw new Error('No se pudo cargar config.json')
-          }
-        } catch (error) {
-          console.error('❌ Error cargando config.json:', error)
-          // FALLBACK: Usar configuración por defecto
-          linesConfig = {
-            1: { name: 'FortunaWild 1', number: '5491172218281', active: true },
-            2: { name: 'FortunaWild 2', number: '5491171802225', active: true },
-            3: { name: 'FortunaWild 3', number: '5491135111380', active: true },
-            4: {
-              name: 'FortunaWild 4 (azul)',
-              number: '5491162475418',
-              active: true
-            },
-            5: { name: 'FortunaWild 5', number: '5491162475512', active: true },
-            6: { name: 'FortunaWild 6', number: '5491134224942', active: true }
-          }
-          newsItems = [
-            {
-              date: '2025-01-15',
-              content:
-                'Sistema FortunaWild operativo! Contactanos por líneas disponibles.',
-              highlight: true
+        // Cargar configuración desde GitHub
+        async function loadConfiguration() {
+            try {
+                // PRIMERO: Intentar cargar desde config.json
+                const response = await fetch('config.json?t=' + Date.now());
+                if (response.ok) {
+                    const config = await response.json();
+                    linesConfig = config.lines || {};
+                    newsItems = config.news || [];
+                    console.log('✅ Config cargado desde JSON:', config);
+                } else {
+                    throw new Error('No se pudo cargar config.json');
+                }
+            } catch (error) {
+                console.error('❌ Error cargando config.json:', error);
+                // FALLBACK: Usar configuración por defecto
+                linesConfig = {
+                    1: { name: "FortunaWild 1", number: "5491172218281", active: true },
+                    2: { name: "FortunaWild 2", number: "5491171802225", active: true },
+                    3: { name: "FortunaWild 3", number: "5491135111380", active: true },
+                    4: { name: "FortunaWild 4 (azul)", number: "5491162475418", active: true },
+                    5: { name: "FortunaWild 5", number: "5491162475512", active: true },
+                    6: { name: "FortunaWild 6", number: "5491134224942", active: true }
+                };
+                newsItems = [{
+                    date: "2025-01-15",
+                    content: "Sistema FortunaWild operativo! Contactanos por líneas disponibles.",
+                    highlight: true
+                }];
             }
-          ]
-        }
-
-        // SIEMPRE: Cargar cambios locales del admin si existen
-        const saved = localStorage.getItem('whatsapp_lines_config')
-        if (saved) {
-          const localConfig = JSON.parse(saved)
-          Object.keys(localConfig).forEach((key) => {
-            if (localConfig[key]) {
-              linesConfig[key] = localConfig[key]
+            
+            // SIEMPRE: Cargar cambios locales del admin si existen
+            const saved = localStorage.getItem('whatsapp_lines_config');
+            if (saved) {
+                const localConfig = JSON.parse(saved);
+                Object.keys(localConfig).forEach(key => {
+                    if (localConfig[key]) {
+                        linesConfig[key] = localConfig[key];
+                    }
+                });
             }
-          })
-        }
-
-        const savedNews = localStorage.getItem('fortunawild_news')
-        if (savedNews) {
-          newsItems = JSON.parse(savedNews)
-        }
-
-        updateDisplay()
-        updateNewsDisplay()
-        updateAdminPanel()
-
-        // MOSTRAR CONTENIDO
-        document.getElementById('loading').style.display = 'none'
-        document.getElementById('main-content').style.display = 'block'
-      }
-
-      // Guardar configuración en GitHub
-      async function saveConfiguration() {
-        const token = document.getElementById('github-token').value.trim()
-
-        if (!token) {
-          alert('❌ Necesitas ingresar tu token de GitHub primero')
-          return
-        }
-
-        // Actualizar configuración con los valores del admin panel
-        for (let i = 1; i <= 6; i++) {
-          const name = document.getElementById(`line${i}-name`).value.trim()
-          const number = document.getElementById(`line${i}-number`).value.trim()
-
-          if (name && number) {
-            linesConfig[i].name = name
-            linesConfig[i].number = number
-          }
-        }
-
-        const config = {
-          lines: linesConfig,
-          news: newsItems
-        }
-
-        const saveBtn = document.getElementById('save-btn')
-        saveBtn.disabled = true
-        saveBtn.textContent = '⏳ Guardando...'
-
-        try {
-          // Primero obtener el SHA actual del archivo
-          const getResponse = await fetch(GITHUB_API_URL, {
-            headers: {
-              Authorization: `token ${token}`,
-              Accept: 'application/vnd.github.v3+json'
+            
+            const savedNews = localStorage.getItem('fortunawild_news');
+            if (savedNews) {
+                newsItems = JSON.parse(savedNews);
             }
-          })
-
-          let sha = null
-          if (getResponse.ok) {
-            const currentFile = await getResponse.json()
-            sha = currentFile.sha
-          }
-
-          // Actualizar o crear el archivo
-          const updateResponse = await fetch(GITHUB_API_URL, {
-            method: 'PUT',
-            headers: {
-              Authorization: `token ${token}`,
-              Accept: 'application/vnd.github.v3+json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: `Actualizar configuración FortunaWild - ${new Date().toLocaleString()}`,
-              content: btoa(JSON.stringify(config, null, 2)),
-              ...(sha && { sha })
-            })
-          })
-
-          if (updateResponse.ok) {
-            localStorage.setItem('github_token', token)
-            localStorage.setItem('last_update', new Date().toLocaleString())
-            updateDisplay()
-            alert(
-              '✅ Configuración guardada en GitHub!\n\nTu sitio se actualizará en ~30 segundos para todos los usuarios.'
-            )
-          } else {
-            const error = await updateResponse.json()
-            throw new Error(error.message || 'Error al guardar')
-          }
-        } catch (error) {
-          console.error('Error saving to GitHub:', error)
-          alert(
-            '❌ Error guardando: ' +
-              error.message +
-              '\n\nVerifica tu token de GitHub.'
-          )
-        } finally {
-          saveBtn.disabled = false
-          saveBtn.textContent = '💾 Guardar en GitHub'
+            
+            updateDisplay();
+            updateNewsDisplay();
+            updateAdminPanel();
+            
+            // MOSTRAR CONTENIDO
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
         }
-      }
 
-      // Alternar estado de línea
-      function toggleLine(lineNum) {
-        linesConfig[lineNum].active = !linesConfig[lineNum].active
-        updateAdminPanel()
-      }
-
-      // Actualizar display principal (GRID 2x3)
-      function updateDisplay() {
-        const container = document.getElementById('whatsapp-lines')
-        container.innerHTML = ''
-
-        Object.keys(linesConfig).forEach((key) => {
-          const line = linesConfig[key]
-          const isActive = line.active
-
-          const lineElement = document.createElement('div')
-          lineElement.className = `whatsapp-line ${
-            isActive ? 'active' : 'inactive'
-          }`
-
-          lineElement.innerHTML = `
-            <div class="line-title">${line.name}</div>
-            <span class="status-badge ${isActive ? 'online' : 'offline'}">
-                ${isActive ? '🟢 DISPONIBLE' : '🔴 OCUPADA'}
-            </span>
-            <div class="phone-number">+${line.number}</div>
-            ${
-              isActive
-                ? `<a href="https://wa.me/${line.number}" class="whatsapp-btn" target="_blank">
-                    💬 Ir al WhatsApp
-                </a>`
-                : `<button class="whatsapp-btn" disabled>
-                    ⏸️ No disponible
-                </button>`
+        // Guardar configuración en GitHub
+        async function saveConfiguration() {
+            const token = document.getElementById('github-token').value.trim();
+            
+            if (!token) {
+                alert('❌ Necesitas ingresar tu token de GitHub primero');
+                return;
             }
-        `
-
-          container.appendChild(lineElement)
-        })
-
-        const lastUpdate =
-          localStorage.getItem('last_update') || 'Carga inicial'
-        document.getElementById('last-update-time').textContent = lastUpdate
-      }
-
-      // Actualizar panel de administración
-      function updateAdminPanel() {
-        const savedToken = localStorage.getItem('github_token')
-        if (savedToken) {
-          document.getElementById('github-token').value = savedToken
+            
+            // Actualizar configuración con los valores del admin panel
+            for (let i = 1; i <= 6; i++) {
+                const name = document.getElementById(`line${i}-name`).value.trim();
+                const number = document.getElementById(`line${i}-number`).value.trim();
+                
+                if (name && number) {
+                    linesConfig[i].name = name;
+                    linesConfig[i].number = number;
+                }
+            }
+            
+            const config = {
+                lines: linesConfig,
+                news: newsItems
+            };
+            
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Guardando...';
+            
+            try {
+                // Primero obtener el SHA actual del archivo
+                const getResponse = await fetch(GITHUB_API_URL, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                let sha = null;
+                if (getResponse.ok) {
+                    const currentFile = await getResponse.json();
+                    sha = currentFile.sha;
+                }
+                
+                // Actualizar o crear el archivo
+                const updateResponse = await fetch(GITHUB_API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Actualizar configuración FortunaWild - ${new Date().toLocaleString()}`,
+                        content: btoa(JSON.stringify(config, null, 2)),
+                        ...(sha && { sha })
+                    })
+                });
+                
+                if (updateResponse.ok) {
+                    localStorage.setItem('github_token', token);
+                    localStorage.setItem('last_update', new Date().toLocaleString());
+                    updateDisplay();
+                    alert('✅ Configuración guardada en GitHub!\n\nTu sitio se actualizará en ~30 segundos para todos los usuarios.');
+                } else {
+                    const error = await updateResponse.json();
+                    throw new Error(error.message || 'Error al guardar');
+                }
+            } catch (error) {
+                console.error('Error saving to GitHub:', error);
+                alert('❌ Error guardando: ' + error.message + '\n\nVerifica tu token de GitHub.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Guardar en GitHub';
+            }
         }
 
-        for (let i = 1; i <= 6; i++) {
-          const line = linesConfig[i]
-
-          document.getElementById(`line${i}-name`).value = line.name
-          document.getElementById(`line${i}-number`).value = line.number
-
-          const toggleBtn = document.getElementById(`line${i}-toggle`)
-          if (line.active) {
-            toggleBtn.textContent = 'ON'
-            toggleBtn.className = 'toggle-btn active'
-          } else {
-            toggleBtn.textContent = 'OFF'
-            toggleBtn.className = 'toggle-btn inactive'
-          }
-        }
-      }
-
-      // Funciones de noticias
-      function updateNewsDisplay() {
-        const container = document.getElementById('news-container')
-        container.innerHTML = ''
-
-        if (newsItems.length === 0) {
-          container.innerHTML =
-            '<p style="color: #666; text-align: center; font-style: italic; font-size: 11px;">Sin noticias</p>'
-          return
+        // Alternar estado de línea
+        function toggleLine(lineNum) {
+            linesConfig[lineNum].active = !linesConfig[lineNum].active;
+            updateAdminPanel();
         }
 
-        newsItems.slice(0, 3).forEach((news) => {
-          const newsElement = document.createElement('div')
-          newsElement.className = `news-item ${
-            news.highlight ? 'news-highlight' : ''
-          }`
+        // Actualizar display principal (GRID 2x3)
+        function updateDisplay() {
+            const container = document.getElementById('whatsapp-lines');
+            container.innerHTML = '';
 
-          newsElement.innerHTML = `
-            <div class="news-date">${news.date}</div>
-            <div class="news-content">${news.content}</div>
-        `
+            Object.keys(linesConfig).forEach(key => {
+                const line = linesConfig[key];
+                const isActive = line.active;
+                
+                const lineElement = document.createElement('div');
+                lineElement.className = `whatsapp-line ${isActive ? 'active' : 'inactive'}`;
+                
+                lineElement.innerHTML = `
+                    <div class="line-title">${line.name}</div>
+                    <span class="status-badge ${isActive ? 'online' : 'offline'}">
+                        ${isActive ? 'DISPONIBLE' : 'OCUPADA'}
+                    </span>
+                    <div class="phone-number">+${line.number}</div>
+                    ${isActive ? 
+                        `<a href="https://wa.me/${line.number}" class="whatsapp-btn" target="_blank" onclick="event.stopPropagation();">
+                            💬 Ir al WhatsApp
+                        </a>` :
+                        `<button class="whatsapp-btn" disabled>
+                            ⏸️ No disponible
+                        </button>`
+                    }
+                `;
+                
+                // Hacer clickeable todo el div si está activo
+                if (isActive) {
+                    lineElement.onclick = function() {
+                        window.open(`https://wa.me/${line.number}`, '_blank');
+                    };
+                }
+                
+                container.appendChild(lineElement);
+            });
 
-          container.appendChild(newsElement)
-        })
-      }
-
-      function addNews() {
-        const input = document.getElementById('news-input')
-        const content = input.value.trim()
-
-        if (content) {
-          const newNews = {
-            date: new Date().toLocaleString(),
-            content: content,
-            highlight: false
-          }
-
-          newsItems.unshift(newNews)
-          updateNewsDisplay()
-          alert(
-            '✅ Noticia agregada! Recuerda guardar para que se aplique globalmente.'
-          )
-        } else {
-          alert('Escribe una noticia primero')
+            const lastUpdate = localStorage.getItem('last_update') || 'Carga inicial';
+            document.getElementById('last-update-time').textContent = lastUpdate;
         }
-      }
 
-      function clearAllNews() {
-        if (confirm('¿Eliminar todas las noticias?')) {
-          newsItems = []
-          updateNewsDisplay()
-          alert(
-            '✅ Noticias eliminadas localmente. Recuerda guardar para aplicar globalmente.'
-          )
+        // Actualizar panel de administración
+        function updateAdminPanel() {
+            const savedToken = localStorage.getItem('github_token');
+            if (savedToken) {
+                document.getElementById('github-token').value = savedToken;
+            }
+            
+            for (let i = 1; i <= 6; i++) {
+                const line = linesConfig[i];
+                
+                document.getElementById(`line${i}-name`).value = line.name;
+                document.getElementById(`line${i}-number`).value = line.number;
+                
+                const toggleBtn = document.getElementById(`line${i}-toggle`);
+                if (line.active) {
+                    toggleBtn.textContent = 'ON';
+                    toggleBtn.className = 'toggle-btn active';
+                } else {
+                    toggleBtn.textContent = 'OFF';
+                    toggleBtn.className = 'toggle-btn inactive';
+                }
+            }
         }
-      }
 
-      // Mostrar/ocultar panel de admin
-      function toggleAdminPanel() {
-        const panel = document.getElementById('admin-panel')
-        if (panel.style.display === 'none') {
-          const password = prompt('Contraseña:')
-          if (password === '4616203Id') {
-            panel.style.display = 'block'
-          } else if (password !== null) {
-            alert('Contraseña incorrecta')
-          }
-        } else {
-          panel.style.display = 'none'
+        // Funciones de noticias
+        function updateNewsDisplay() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+
+            if (newsItems.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center; font-style: italic; font-size: 11px;">Sin noticias</p>';
+                return;
+            }
+
+            newsItems.slice(0, 3).forEach(news => {
+                const newsElement = document.createElement('div');
+                newsElement.className = `news-item ${news.highlight ? 'news-highlight' : ''}`;
+                
+                newsElement.innerHTML = `
+                    <div class="news-date">${news.date}</div>
+                    <div class="news-content">${news.content}</div>
+                `;
+                
+                container.appendChild(newsElement);
+            });
         }
-      }
 
-      // Inicializar
-      window.onload = function () {
-        loadConfiguration()
-      }
+        function addNews() {
+            const input = document.getElementById('news-input');
+            const content = input.value.trim();
+            
+            if (content) {
+                const newNews = {
+                    date: new Date().toLocaleString(),
+                    content: content,
+                    highlight: false
+                };
+                
+                newsItems.unshift(newNews);
+                updateNewsDisplay();
+                alert('✅ Noticia agregada! Recuerda guardar para que se aplique globalmente.');
+            } else {
+                alert('Escribe una noticia primero');
+            }
+        }
+
+        function clearAllNews() {
+            if (confirm('¿Eliminar todas las noticias?')) {
+                newsItems = [];
+                updateNewsDisplay();
+                alert('✅ Noticias eliminadas localmente. Recuerda guardar para aplicar globalmente.');
+            }
+        }
+
+        // Mostrar/ocultar panel de admin
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-panel');
+            if (panel.style.display === 'none') {
+                const password = prompt('Contraseña:');
+                if (password === '4616203Id') {
+                    panel.style.display = 'block';
+                } else if (password !== null) {
+                    alert('Contraseña incorrecta');
+                }
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        // Inicializar
+        window.onload = function() {
+            loadConfiguration();
+        };
     </script>
-  </body>
+</body>
 </html>
