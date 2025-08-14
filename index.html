@@ -468,19 +468,26 @@
         let newsItems = [];
         const GITHUB_API_URL = 'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json';
 
-        // ========== CONTADOR DE VISITAS ==========
-        function initVisitCounter() {
-            // Obtener visitas actuales del navegador
-            let visits = parseInt(localStorage.getItem('fortunawild_visits') || '0');
-            
-            // Incrementar contador
-            visits++;
-            
-            // Guardar nuevo número
-            localStorage.setItem('fortunawild_visits', visits.toString());
-            
-            // Mostrar en la página
-            document.getElementById('visit-count').textContent = `V: ${visits}`;
+        // ========== CONTADOR DE VISITAS GLOBAL ==========
+        async function initVisitCounter() {
+            try {
+                // Primero mostrar "cargando..."
+                document.getElementById('visit-count').textContent = 'Visitas: ...';
+                
+                // Incrementar contador global usando CountAPI (GRATIS)
+                const response = await fetch('https://api.countapi.xyz/hit/fortunawild-whatsapp/visits');
+                const data = await response.json();
+                
+                // Mostrar el contador global
+                document.getElementById('visit-count').textContent = `Visitas: ${data.value}`;
+            } catch (error) {
+                console.error('Error cargando contador:', error);
+                // Fallback: usar contador local si falla la API
+                let visits = parseInt(localStorage.getItem('fortunawild_visits') || '0');
+                visits++;
+                localStorage.setItem('fortunawild_visits', visits.toString());
+                document.getElementById('visit-count').textContent = `Visitas: ${visits}`;
+            }
         }
 
         // Cargar configuración desde GitHub
