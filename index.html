@@ -494,35 +494,58 @@
 
     <script>
       // Configuración inicial
-      let linesConfig = {
-        1: { name: 'FortunaWild 1', number: '5491172218281', active: true },
-        2: { name: 'FortunaWild 2', number: '5491171802225', active: true },
-        3: { name: 'FortunaWild 3', number: '5491135111380', active: true },
-        4: {
-          name: 'FortunaWild 4 (azul)',
-          number: '5491162475418',
-          active: true
-        },
-        5: { name: 'FortunaWild 5', number: '5491162475512', active: true },
-        6: { name: 'FortunaWild 6', number: '5491134224942', active: true }
-      }
-
-      // Noticias iniciales
-      let newsItems = [
-        {
-          date: new Date().toLocaleDateString(),
-          content:
-            '¡Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
-          highlight: true
-        }
-      ]
+      let linesConfig = {}
+      let newsItems = []
       const GITHUB_API_URL =
-        'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json';
-      // Cargar configuración
-      function loadConfiguration() {
+        'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json'
+
+      // Cargar configuración desde GitHub
+      async function loadConfiguration() {
+        try {
+          // PRIMERO: Intentar cargar desde config.json
+          const response = await fetch('config.json?t=' + Date.now())
+          if (response.ok) {
+            const config = await response.json()
+            linesConfig = config.lines || {}
+            newsItems = config.news || []
+            console.log('✅ Config cargado desde JSON:', config)
+          } else {
+            throw new Error('No se pudo cargar config.json')
+          }
+        } catch (error) {
+          console.error('❌ Error cargando config.json:', error)
+          // FALLBACK: Usar configuración por defecto
+          linesConfig = {
+            1: { name: 'FortunaWild 1', number: '5491172218281', active: true },
+            2: { name: 'FortunaWild 2', number: '5491171802225', active: true },
+            3: { name: 'FortunaWild 3', number: '5491135111380', active: true },
+            4: {
+              name: 'FortunaWild 4 (azul)',
+              number: '5491162475418',
+              active: true
+            },
+            5: { name: 'FortunaWild 5', number: '5491162475512', active: true },
+            6: { name: 'FortunaWild 6', number: '5491134224942', active: true }
+          }
+          newsItems = [
+            {
+              date: '2025-01-15',
+              content:
+                'Sistema FortunaWild operativo! Contactanos por líneas disponibles.',
+              highlight: true
+            }
+          ]
+        }
+
+        // SIEMPRE: Cargar cambios locales del admin si existen
         const saved = localStorage.getItem('whatsapp_lines_config')
         if (saved) {
-          linesConfig = JSON.parse(saved)
+          const localConfig = JSON.parse(saved)
+          Object.keys(localConfig).forEach((key) => {
+            if (localConfig[key]) {
+              linesConfig[key] = localConfig[key]
+            }
+          })
         }
 
         const savedNews = localStorage.getItem('fortunawild_news')
@@ -533,6 +556,10 @@
         updateDisplay()
         updateNewsDisplay()
         updateAdminPanel()
+
+        // MOSTRAR CONTENIDO
+        document.getElementById('loading').style.display = 'none'
+        document.getElementById('main-content').style.display = 'block'
       }
 
       // Guardar configuración en GitHub
@@ -595,7 +622,7 @@
           })
 
           if (updateResponse.ok) {
-            localStorage.setItem('github_token', token) // Guardar token localmente
+            localStorage.setItem('github_token', token)
             localStorage.setItem('last_update', new Date().toLocaleString())
             updateDisplay()
             alert(
@@ -639,23 +666,21 @@
           }`
 
           lineElement.innerHTML = `
-                    <div class="line-title">${line.name}</div>
-                    <span class="status-badge ${
-                      isActive ? 'online' : 'offline'
-                    }">
-                        ${isActive ? '🟢 DISPONIBLE' : '🔴 OCUPADA'}
-                    </span>
-                    <div class="phone-number">+${line.number}</div>
-                    ${
-                      isActive
-                        ? `<a href="https://wa.me/${line.number}" class="whatsapp-btn" target="_blank">
-                            💬 Ir al WhatsApp
-                        </a>`
-                        : `<button class="whatsapp-btn" disabled>
-                            ⏸️ No disponible
-                        </button>`
-                    }
-                `
+            <div class="line-title">${line.name}</div>
+            <span class="status-badge ${isActive ? 'online' : 'offline'}">
+                ${isActive ? '🟢 DISPONIBLE' : '🔴 OCUPADA'}
+            </span>
+            <div class="phone-number">+${line.number}</div>
+            ${
+              isActive
+                ? `<a href="https://wa.me/${line.number}" class="whatsapp-btn" target="_blank">
+                    💬 Ir al WhatsApp
+                </a>`
+                : `<button class="whatsapp-btn" disabled>
+                    ⏸️ No disponible
+                </button>`
+            }
+        `
 
           container.appendChild(lineElement)
         })
@@ -667,7 +692,6 @@
 
       // Actualizar panel de administración
       function updateAdminPanel() {
-        // Cargar token guardado
         const savedToken = localStorage.getItem('github_token')
         if (savedToken) {
           document.getElementById('github-token').value = savedToken
@@ -708,9 +732,9 @@
           }`
 
           newsElement.innerHTML = `
-                    <div class="news-date">${news.date}</div>
-                    <div class="news-content">${news.content}</div>
-                `
+            <div class="news-date">${news.date}</div>
+            <div class="news-content">${news.content}</div>
+        `
 
           container.appendChild(newsElement)
         })
@@ -728,7 +752,6 @@
           }
 
           newsItems.unshift(newNews)
-          input.value = ''
           updateNewsDisplay()
           alert(
             '✅ Noticia agregada! Recuerda guardar para que se aplique globalmente.'
