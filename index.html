@@ -458,7 +458,7 @@
         
         <!-- CONTADOR DE VISITAS MUY DIMINUTO -->
         <div class="visit-counter">
-            <span id="visit-count">Visitas: 1</span>
+            <span id="visit-count">V: 1</span>
         </div>
     </div>
 
@@ -479,14 +479,14 @@
                 const data = await response.json();
                 
                 // Mostrar el contador global
-                document.getElementById('visit-count').textContent = `Visitas: ${data.value}`;
+                document.getElementById('visit-count').textContent = `V: ${data.value}`;
             } catch (error) {
                 console.error('Error cargando contador:', error);
                 // Fallback: usar contador local si falla la API
                 let visits = parseInt(localStorage.getItem('fortunawild_visits') || '0');
                 visits++;
                 localStorage.setItem('fortunawild_visits', visits.toString());
-                document.getElementById('visit-count').textContent = `Visitas: ${visits}`;
+                document.getElementById('visit-count').textContent = `V: ${visits}`;
             }
         }
 
