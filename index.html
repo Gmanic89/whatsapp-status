@@ -528,6 +528,24 @@
                     </div>
                 </div>
                 
+                <div class="control-group">
+                    <h4>Línea 7</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line7-name" placeholder="Nombre de línea">
+                        <input type="text" id="line7-number" placeholder="Número">
+                        <button class="toggle-btn inactive" id="line7-toggle" onclick="toggleLine(7)">OFF</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h4>Línea 8</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line8-name" placeholder="Nombre de línea">
+                        <input type="text" id="line8-number" placeholder="Número">
+                        <button class="toggle-btn inactive" id="line8-toggle" onclick="toggleLine(8)">OFF</button>
+                    </div>
+                </div>
+                
                 <button class="save-btn" id="save-btn" onclick="saveConfiguration()">💾 Guardar en GitHub</button>
                 
                 <!-- Admin de Noticias -->
@@ -577,7 +595,7 @@
                     console.log('📋 Orden cargado desde localStorage:', linesOrder);
                 } catch (e) {
                     console.log('❌ Error cargando orden, creando nuevo');
-                    linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6']);
+                    linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6', '7', '8']);
                 }
             } else {
                 // Primera vez: orden aleatorio
@@ -647,7 +665,9 @@
                 3: { name: "Fortuna Wild 3", number: "5491135111380", active: true },
                 4: { name: "Fortuna Wild 4 (AZUL)", number: "5491171802220", active: true },
                 5: { name: "Fortuna Wild 5", number: "5491162475512", active: true },
-                6: { name: "Fortuna Wild 6", number: "5491134224942", active: true }
+                6: { name: "Fortuna Wild 6", number: "5491134224942", active: true },
+                7: { name: "Fortuna Wild 7", number: "", active: false, outOfService: true },
+                8: { name: "Fortuna Wild 8", number: "", active: false, outOfService: true }
             };
             
             newsItems = [{
@@ -720,13 +740,17 @@
             }
             
             // Actualizar configuración con los valores del admin panel
-            for (let i = 1; i <= 6; i++) {
+            for (let i = 1; i <= 8; i++) {
                 const name = document.getElementById(`line${i}-name`).value.trim();
                 const number = document.getElementById(`line${i}-number`).value.trim();
                 
                 if (name && number) {
                     linesConfig[i].name = name;
                     linesConfig[i].number = number;
+                    // Si se agrega número a líneas 7-8, quitarles el outOfService
+                    if (i >= 7 && number) {
+                        linesConfig[i].outOfService = false;
+                    }
                 }
             }
             
@@ -858,9 +882,7 @@
                                 }
                             </div>
                             <div class="chat-status">
-                                <span class="status-badge ${isActive ? 'online' : 'offline'}">
-                                    ${isActive ? 'DISPONIBLE' : 'OCUPADA'}
-                                </span>
+                                
                             </div>
                         </div>
                     </div>
@@ -894,14 +916,14 @@
                 document.getElementById('github-token').value = savedToken;
             }
             
-            for (let i = 1; i <= 6; i++) {
+            for (let i = 1; i <= 8; i++) {
                 const line = linesConfig[i];
                 
                 document.getElementById(`line${i}-name`).value = line.name;
                 document.getElementById(`line${i}-number`).value = line.number;
                 
                 const toggleBtn = document.getElementById(`line${i}-toggle`);
-                if (line.active) {
+                if (line.active && !line.outOfService) {
                     toggleBtn.textContent = 'ON';
                     toggleBtn.className = 'toggle-btn active';
                 } else {
