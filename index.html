@@ -23,179 +23,216 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #25d366, #128c7e);
+            background: #e5ddd5;
             min-height: 100vh;
-            padding: 10px;
+            color: #333;
         }
         
         .container {
-            max-width: 380px;
+            max-width: 420px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            min-height: 100vh;
+            position: relative;
         }
         
+        /* Header estilo WhatsApp */
         .header {
-            text-align: center;
-            margin-bottom: 15px;
+            background: #128c7e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
         }
         
         .header h1 {
-            color: #128c7e;
-            font-size: 18px;
-            margin-bottom: 5px;
-            line-height: 1.2;
+            font-size: 19px;
+            font-weight: 500;
         }
         
         .header p {
-            color: #666;
-            font-size: 12px;
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 2px;
         }
         
         .loading {
             text-align: center;
             color: #666;
-            font-size: 14px;
-            padding: 20px;
+            font-size: 16px;
+            padding: 40px 20px;
         }
         
-        /* Grid de 2 columnas para las líneas */
-        .lines-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 15px;
+        /* Lista de chats estilo WhatsApp */
+        .chat-list {
+            background: white;
         }
         
-        .whatsapp-line {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 10px;
-            position: relative;
-            transition: all 0.3s ease;
-            text-align: center;
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
             cursor: pointer;
+            transition: background 0.2s ease;
+            position: relative;
         }
         
-        .whatsapp-line.active {
-            background: #dcf8c6;
-            border: 1.5px solid #25d366;
-            transform: scale(1.02);
+        .chat-item:hover {
+            background: #f5f5f5;
         }
         
-        .whatsapp-line.active:hover {
-            background: #c8e6c9;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-        }
-        
-        .whatsapp-line.inactive {
-            background: #ffebee;
-            border: 1.5px solid #f44336;
-            opacity: 0.8;
+        .chat-item.inactive {
+            opacity: 0.6;
             cursor: not-allowed;
         }
         
-        .line-title {
-            font-weight: bold;
+        .chat-item.inactive:hover {
+            background: white;
+        }
+        
+        /* Avatar circular */
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background: #ddd;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            background: linear-gradient(45deg, #25d366, #128c7e);
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Estado online/offline */
+        .avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .avatar.online::after {
+            background: #25d366;
+        }
+        
+        .avatar.offline::after {
+            background: #f44336;
+        }
+        
+        /* Contenido del chat */
+        .chat-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2px;
+        }
+        
+        .chat-name {
+            font-size: 16px;
+            font-weight: 500;
             color: #333;
+        }
+        
+        .chat-time {
             font-size: 12px;
-            margin-bottom: 4px;
+            color: #999;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        
+        .chat-preview {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-message {
+            font-size: 14px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+        
+        .chat-status {
+            display: flex;
+            align-items: center;
+            margin-left: 8px;
         }
         
         .status-badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 9px;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-        
-        .online {
-            background: #25d366;
-            color: white;
-        }
-        
-        .offline {
-            background: #f44336;
-            color: white;
-        }
-        
-        .phone-number {
-            font-size: 13px;
-            font-weight: bold;
-            color: #128c7e;
-            margin-bottom: 6px;
-        }
-        
-        .whatsapp-btn {
-            width: 100%;
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 6px 8px;
-            border-radius: 6px;
             font-size: 11px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            transition: background 0.3s ease;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            white-space: nowrap;
         }
         
-        .whatsapp-btn:hover {
-            background: #128c7e;
+        .status-badge.online {
+            background: #dcf8c6;
+            color: #128c7e;
         }
         
-        .whatsapp-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            font-size: 10px;
+        .status-badge.offline {
+            background: #ffebee;
+            color: #f44336;
         }
         
-        .last-update {
-            text-align: center;
-            color: #666;
-            font-size: 10px;
-            margin-bottom: 15px;
-            padding: 8px 0;
-            border-top: 1px solid #eee;
-        }
-        
-        /* Sección de Noticias compacta */
+        /* Sección de noticias */
         .news-section {
-            border-top: 2px solid #eee;
-            padding-top: 15px;
+            background: white;
+            border-top: 8px solid #f0f0f0;
+            padding: 16px;
         }
         
         .news-title {
             color: #128c7e;
-            font-size: 16px;
-            margin-bottom: 10px;
-            text-align: center;
-            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 500;
         }
         
         .news-item {
             background: #f8f9fa;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 8px;
             border-left: 3px solid #25d366;
         }
         
         .news-date {
-            font-size: 9px;
-            color: #666;
-            margin-bottom: 3px;
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 4px;
         }
         
         .news-content {
             color: #333;
-            font-size: 12px;
-            line-height: 1.3;
+            font-size: 14px;
+            line-height: 1.4;
         }
         
         .news-highlight {
@@ -203,46 +240,60 @@
             border-left-color: #ffc107;
         }
         
-        /* Panel de administración más compacto */
+        /* Panel de administración */
         .admin-panel {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px solid #eee;
+            background: white;
+            border-top: 8px solid #f0f0f0;
+            padding: 16px;
         }
         
         .admin-title {
             color: #333;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             text-align: center;
-            font-size: 16px;
+            font-size: 18px;
         }
         
         .admin-controls {
             display: grid;
-            gap: 8px;
+            gap: 12px;
         }
         
         .control-group {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid #128c7e;
+        }
+        
+        .control-group h4 {
+            color: #128c7e;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .control-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr auto;
-            gap: 5px;
+            gap: 8px;
             align-items: center;
         }
         
-        .control-group input {
-            padding: 6px;
+        .control-inputs input {
+            padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 11px;
+            border-radius: 6px;
+            font-size: 12px;
         }
         
         .toggle-btn {
-            padding: 6px 10px;
+            padding: 8px 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 12px;
             min-width: 60px;
+            font-weight: 500;
         }
         
         .toggle-btn.active {
@@ -259,12 +310,13 @@
             background: #128c7e;
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
             cursor: pointer;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 15px;
+            font-weight: 500;
         }
         
         .save-btn:disabled {
@@ -275,39 +327,41 @@
         /* Admin de noticias */
         .news-admin {
             margin-top: 15px;
-            padding-top: 12px;
-            border-top: 1px solid #ddd;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
         
         .news-admin h4 {
             color: #333;
-            margin-bottom: 8px;
-            font-size: 13px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
         
         .news-admin textarea {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 11px;
+            border-radius: 6px;
+            font-size: 12px;
             resize: vertical;
-            min-height: 60px;
+            min-height: 70px;
+            font-family: inherit;
         }
         
         .news-admin-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 10px;
+            margin-top: 10px;
         }
         
         .add-news-btn, .clear-news-btn {
-            padding: 6px 12px;
+            padding: 8px 12px;
             border: none;
-            border-radius: 5px;
-            font-size: 11px;
+            border-radius: 6px;
+            font-size: 12px;
             cursor: pointer;
+            font-weight: 500;
         }
         
         .add-news-btn {
@@ -322,84 +376,81 @@
         
         .token-input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 11px;
-            margin-bottom: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 12px;
         }
         
-        /* Contador de visitas - MUY DIMINUTO */
+        /* Botón admin */
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #128c7e;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        
+        /* Contador de visitas */
         .visit-counter {
             text-align: center;
-            margin-top: 8px;
-            padding: 3px 0;
-            border-top: 1px solid #f0f0f0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
         }
         
         .visit-counter span {
-            font-size: 8px;
+            font-size: 11px;
             color: #999;
             font-family: monospace;
             background: rgba(0,0,0,0.05);
-            padding: 1px 4px;
-            border-radius: 2px;
-            letter-spacing: 0.5px;
+            padding: 4px 8px;
+            border-radius: 4px;
         }
         
-        /* Para pantallas muy pequeñas */
-        @media (max-width: 360px) {
+        /* Responsive */
+        @media (max-width: 480px) {
             .container {
-                margin: 5px;
-                padding: 12px;
+                max-width: 100%;
             }
             
-            .header h1 {
-                font-size: 16px;
+            .chat-item {
+                padding: 10px 12px;
             }
             
-            .lines-grid {
-                gap: 6px;
-            }
-            
-            .whatsapp-line {
-                padding: 8px;
-            }
-            
-            .visit-counter span {
-                font-size: 7px;
-            }
-        }
-        
-        /* Para pantallas más grandes mantener el diseño compacto */
-        @media (min-width: 500px) {
-            .container {
-                max-width: 400px;
+            .avatar {
+                width: 45px;
+                height: 45px;
+                margin-right: 12px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=G-RJWDV50N7N"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     <div class="container">
+        <!-- Header estilo WhatsApp -->
         <div class="header">
-            <h1>📱 FortunaWild WhatsApp</h1>
-            <p>Líneas disponibles para contacto</p>
+            <div>
+                <h1>📱 FortunaWild WhatsApp</h1>
+                <p>Líneas disponibles para contacto</p>
+            </div>
         </div>
         
         <div class="loading" id="loading">⏳ Cargando configuración...</div>
         
         <div id="main-content" style="display: none;">
-            <div class="lines-grid" id="whatsapp-lines">
-                <!-- Las líneas se cargan dinámicamente en grid 2x3 -->
-            </div>
-            
-            <div class="last-update">
-                <p>Actualizado: <span id="last-update-time">-</span></p>
+            <!-- Lista de chats estilo WhatsApp -->
+            <div class="chat-list" id="whatsapp-lines">
+                <!-- Las líneas se cargan dinámicamente -->
             </div>
             
             <!-- Sección de Noticias -->
@@ -416,47 +467,71 @@
             <h3 class="admin-title">🔧 Panel Admin</h3>
             <div class="admin-controls">
                 <div style="margin-bottom: 15px;">
-                    <label style="font-size: 11px; color: #666; display: block; margin-bottom: 5px;">Token de GitHub:</label>
+                    <label style="font-size: 12px; color: #666; display: block; margin-bottom: 5px;">Token de GitHub:</label>
                     <input type="password" id="github-token" class="token-input" placeholder="Pegá tu token de GitHub aquí">
-                    <p style="font-size: 9px; color: #666; margin-top: 3px;">Solo se guarda en tu navegador, nunca se envía a terceros</p>
+                    <p style="font-size: 10px; color: #666; margin-top: 3px;">Solo se guarda en tu navegador, nunca se envía a terceros</p>
                 </div>
                 
                 <div class="control-group">
-                    <input type="text" id="line1-name" placeholder="Línea 1">
-                    <input type="text" id="line1-number" placeholder="Número">
-                    <button class="toggle-btn active" id="line1-toggle" onclick="toggleLine(1)">ON</button>
+                    <h4>Línea 1</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line1-name" placeholder="Nombre de línea">
+                        <input type="text" id="line1-number" placeholder="Número">
+                        <button class="toggle-btn active" id="line1-toggle" onclick="toggleLine(1)">ON</button>
+                    </div>
                 </div>
+                
                 <div class="control-group">
-                    <input type="text" id="line2-name" placeholder="Línea 2">
-                    <input type="text" id="line2-number" placeholder="Número">
-                    <button class="toggle-btn active" id="line2-toggle" onclick="toggleLine(2)">ON</button>
+                    <h4>Línea 2</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line2-name" placeholder="Nombre de línea">
+                        <input type="text" id="line2-number" placeholder="Número">
+                        <button class="toggle-btn active" id="line2-toggle" onclick="toggleLine(2)">ON</button>
+                    </div>
                 </div>
+                
                 <div class="control-group">
-                    <input type="text" id="line3-name" placeholder="Línea 3">
-                    <input type="text" id="line3-number" placeholder="Número">
-                    <button class="toggle-btn active" id="line3-toggle" onclick="toggleLine(3)">ON</button>
+                    <h4>Línea 3</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line3-name" placeholder="Nombre de línea">
+                        <input type="text" id="line3-number" placeholder="Número">
+                        <button class="toggle-btn active" id="line3-toggle" onclick="toggleLine(3)">ON</button>
+                    </div>
                 </div>
+                
                 <div class="control-group">
-                    <input type="text" id="line4-name" placeholder="Línea 4">
-                    <input type="text" id="line4-number" placeholder="Número">
-                    <button class="toggle-btn active" id="line4-toggle" onclick="toggleLine(4)">ON</button>
+                    <h4>Línea 4</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line4-name" placeholder="Nombre de línea">
+                        <input type="text" id="line4-number" placeholder="Número">
+                        <button class="toggle-btn active" id="line4-toggle" onclick="toggleLine(4)">ON</button>
+                    </div>
                 </div>
+                
                 <div class="control-group">
-                    <input type="text" id="line5-name" placeholder="Línea 5">
-                    <input type="text" id="line5-number" placeholder="Número">
-                    <button class="toggle-btn active" id="line5-toggle" onclick="toggleLine(5)">ON</button>
+                    <h4>Línea 5</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line5-name" placeholder="Nombre de línea">
+                        <input type="text" id="line5-number" placeholder="Número">
+                        <button class="toggle-btn active" id="line5-toggle" onclick="toggleLine(5)">ON</button>
+                    </div>
                 </div>
+                
                 <div class="control-group">
-                    <input type="text" id="line6-name" placeholder="Línea 6">
-                    <input type="text" id="line6-number" placeholder="Número">
-                    <button class="toggle-btn active" id="line6-toggle" onclick="toggleLine(6)">ON</button>
+                    <h4>Línea 6</h4>
+                    <div class="control-inputs">
+                        <input type="text" id="line6-name" placeholder="Nombre de línea">
+                        <input type="text" id="line6-number" placeholder="Número">
+                        <button class="toggle-btn active" id="line6-toggle" onclick="toggleLine(6)">ON</button>
+                    </div>
                 </div>
+                
                 <button class="save-btn" id="save-btn" onclick="saveConfiguration()">💾 Guardar en GitHub</button>
                 
                 <!-- Admin de Noticias -->
                 <div class="news-admin">
-                    <h4>📢 Noticias</h4>
-                    <textarea id="news-input" placeholder="Nueva noticia..."></textarea>
+                    <h4>📢 Gestión de Noticias</h4>
+                    <textarea id="news-input" placeholder="Escribir nueva noticia..."></textarea>
                     <div class="news-admin-controls">
                         <button class="add-news-btn" onclick="addNews()">Agregar</button>
                         <button class="clear-news-btn" onclick="clearAllNews()">Limpiar</button>
@@ -465,23 +540,64 @@
             </div>
         </div>
         
-        <div style="text-align: center; margin-top: 15px;">
-            <button onclick="toggleAdminPanel()" style="background: none; border: none; color: #666; font-size: 11px; cursor: pointer;">
-                Admin
-            </button>
-        </div>
-        
-        <!-- CONTADOR DIMINUTO CON ANALYTICS -->
+        <!-- Contador de visitas -->
         <div class="visit-counter">
             <span id="visit-count">Analytics activo</span>
         </div>
+        
+        <!-- Botón flotante admin -->
+        <button class="admin-toggle" onclick="toggleAdminPanel()">⚙️</button>
     </div>
 
     <script>
         // Configuración inicial
         let linesConfig = {};
         let newsItems = [];
+        let linesOrder = []; // Nuevo: orden de las líneas
         const GITHUB_API_URL = 'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json';
+
+        // ========== GESTIÓN DE ORDEN ALEATORIO ==========
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function initializeOrder() {
+            // Obtener orden guardado o crear uno aleatorio
+            const savedOrder = localStorage.getItem('fortunawild_lines_order');
+            if (savedOrder) {
+                try {
+                    linesOrder = JSON.parse(savedOrder);
+                    console.log('📋 Orden cargado desde localStorage:', linesOrder);
+                } catch (e) {
+                    console.log('❌ Error cargando orden, creando nuevo');
+                    linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6']);
+                }
+            } else {
+                // Primera vez: orden aleatorio
+                linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6']);
+                console.log('🎲 Nuevo orden aleatorio generado:', linesOrder);
+            }
+            localStorage.setItem('fortunawild_lines_order', JSON.stringify(linesOrder));
+        }
+
+        function moveLineToEnd(clickedLineKey) {
+            // Mover la línea clickeada al final
+            const index = linesOrder.indexOf(clickedLineKey);
+            if (index > -1) {
+                linesOrder.splice(index, 1); // Remover
+                linesOrder.push(clickedLineKey); // Agregar al final
+                localStorage.setItem('fortunawild_lines_order', JSON.stringify(linesOrder));
+                console.log('🔄 Línea', clickedLineKey, 'movida al final. Nuevo orden:', linesOrder);
+                
+                // Re-renderizar inmediatamente
+                updateDisplay();
+            }
+        }
 
         // ========== EVENTOS DE ANALYTICS ==========
         function trackWhatsAppClick(lineName, phoneNumber) {
@@ -520,58 +636,74 @@
             }
         }
 
-        // Cargar configuración desde GitHub
+        // Cargar configuración
         async function loadConfiguration() {
+            // Usar configuración real de FortunaWild
+            linesConfig = {
+                1: { name: "Fortuna Wild 1", number: "5491134202438", active: true },
+                2: { name: "Fortuna Wild 2", number: "5491125001348", active: true },
+                3: { name: "Fortuna Wild 3", number: "5491135111380", active: true },
+                4: { name: "Fortuna Wild 4 (AZUL)", number: "5491171802220", active: true },
+                5: { name: "Fortuna Wild 5", number: "5491162475512", active: true },
+                6: { name: "Fortuna Wild 6", number: "5491134224942", active: true }
+            };
+            
+            newsItems = [{
+                date: "14/8/2025",
+                content: "Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO",
+                highlight: true
+            }];
+
+            // Intentar cargar desde config.json si existe (opcional)
             try {
-                // PRIMERO: Intentar cargar desde config.json
                 const response = await fetch('config.json?t=' + Date.now());
                 if (response.ok) {
                     const config = await response.json();
-                    linesConfig = config.lines || {};
-                    newsItems = config.news || [];
-                    console.log('✅ Config cargado desde JSON:', config);
-                } else {
-                    throw new Error('No se pudo cargar config.json');
+                    linesConfig = config.lines || linesConfig;
+                    newsItems = config.news || newsItems;
+                    console.log('✅ Config actualizado desde JSON:', config);
                 }
             } catch (error) {
-                console.error('❌ Error cargando config.json:', error);
-                // FALLBACK: Usar configuración por defecto
-                linesConfig = {
-                    1: { name: "FortunaWild 1", number: "5491172218281", active: true },
-                    2: { name: "FortunaWild 2", number: "5491171802225", active: true },
-                    3: { name: "FortunaWild 3", number: "5491135111380", active: true },
-                    4: { name: "FortunaWild 4 (azul)", number: "5491162475418", active: true },
-                    5: { name: "FortunaWild 5", number: "5491162475512", active: true },
-                    6: { name: "FortunaWild 6", number: "5491134224942", active: true }
-                };
-                newsItems = [{
-                    date: "2025-01-15",
-                    content: "Sistema FortunaWild operativo! Contactanos por líneas disponibles.",
-                    highlight: true
-                }];
+                console.log('ℹ️ Usando configuración por defecto (config.json no encontrado)');
             }
+
+            // Inicializar orden aleatorio
+            initializeOrder();
             
             // SIEMPRE: Cargar cambios locales del admin si existen
             const saved = localStorage.getItem('whatsapp_lines_config');
             if (saved) {
-                const localConfig = JSON.parse(saved);
-                Object.keys(localConfig).forEach(key => {
-                    if (localConfig[key]) {
-                        linesConfig[key] = localConfig[key];
-                    }
-                });
+                try {
+                    const localConfig = JSON.parse(saved);
+                    Object.keys(localConfig).forEach(key => {
+                        if (localConfig[key]) {
+                            linesConfig[key] = localConfig[key];
+                        }
+                    });
+                } catch (e) {
+                    console.log('Error cargando config local:', e);
+                }
             }
             
             const savedNews = localStorage.getItem('fortunawild_news');
             if (savedNews) {
-                newsItems = JSON.parse(savedNews);
+                try {
+                    newsItems = JSON.parse(savedNews);
+                } catch (e) {
+                    console.log('Error cargando noticias locales:', e);
+                }
             }
             
+            console.log('🔧 Configuración final:', linesConfig);
+            console.log('📢 Noticias finales:', newsItems);
+            
+            // Actualizar displays
             updateDisplay();
             updateNewsDisplay();
             updateAdminPanel();
             
             // MOSTRAR CONTENIDO
+            console.log('👀 Mostrando contenido...');
             document.getElementById('loading').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
         }
@@ -668,47 +800,89 @@
             updateAdminPanel();
         }
 
-        // Actualizar display principal (GRID 2x3)
+        // Actualizar display principal (estilo WhatsApp)
         function updateDisplay() {
+            console.log('🔄 Actualizando display con orden:', linesOrder);
             const container = document.getElementById('whatsapp-lines');
+            
+            if (!container) {
+                console.error('❌ No se encontró el contenedor whatsapp-lines');
+                return;
+            }
+            
             container.innerHTML = '';
 
-            Object.keys(linesConfig).forEach(key => {
+            // Verificar que tenemos líneas configuradas
+            if (!linesConfig || Object.keys(linesConfig).length === 0) {
+                console.error('❌ No hay líneas configuradas');
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No hay líneas configuradas</div>';
+                return;
+            }
+
+            // Mostrar líneas en el orden especificado
+            linesOrder.forEach(key => {
                 const line = linesConfig[key];
+                if (!line) return; // Skip si la línea no existe
+                
+                console.log(`📱 Procesando línea ${key}:`, line);
+                
                 const isActive = line.active;
+                const currentTime = new Date().toLocaleTimeString('es-AR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    hour12: false 
+                });
                 
-                const lineElement = document.createElement('div');
-                lineElement.className = `whatsapp-line ${isActive ? 'active' : 'inactive'}`;
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-item ${isActive ? '' : 'inactive'}`;
                 
-                lineElement.innerHTML = `
-                    <div class="line-title">${line.name}</div>
-                    <span class="status-badge ${isActive ? 'online' : 'offline'}">
-                        ${isActive ? 'DISPONIBLE' : 'OCUPADA'}
-                    </span>
-                    <div class="phone-number">+${line.number}</div>
-                    ${isActive ? 
-                        `<a href="https://wa.me/${line.number}" class="whatsapp-btn" target="_blank" onclick="trackWhatsAppClick('${line.name}', '${line.number}'); event.stopPropagation();">
-                            💬 Ir al WhatsApp
-                        </a>` :
-                        `<button class="whatsapp-btn" disabled>
-                            ⏸️ No disponible
-                        </button>`
-                    }
+                // Emoji especial para línea 4 (AZUL)
+                const emoji = key === '4' ? '🔵' : '🎰';
+                
+                chatItem.innerHTML = `
+                    <div class="avatar ${isActive ? 'online' : 'offline'}">
+                        ${emoji}
+                    </div>
+                    <div class="chat-content">
+                        <div class="chat-header">
+                            <div class="chat-name">${line.name}</div>
+                            <div class="chat-time">${currentTime}</div>
+                        </div>
+                        <div class="chat-preview">
+                            <div class="chat-message">
+                                ${isActive ? 
+                                    `✅ Disponible - Haz clic para contactar +${line.number}` : 
+                                    `❌ No disponible en este momento`
+                                }
+                            </div>
+                            <div class="chat-status">
+                                <span class="status-badge ${isActive ? 'online' : 'offline'}">
+                                    ${isActive ? 'DISPONIBLE' : 'OCUPADA'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 `;
                 
-                // Hacer clickeable todo el div si está activo
+                // Hacer clickeable si está activo
                 if (isActive) {
-                    lineElement.onclick = function() {
+                    chatItem.onclick = function() {
+                        console.log('🔥 Click en línea:', key, line.name);
                         trackWhatsAppClick(line.name, line.number);
+                        
+                        // Mover al final DESPUÉS del click
+                        setTimeout(() => {
+                            moveLineToEnd(key);
+                        }, 100);
+                        
                         window.open(`https://wa.me/${line.number}`, '_blank');
                     };
                 }
                 
-                container.appendChild(lineElement);
+                container.appendChild(chatItem);
             });
-
-            const lastUpdate = localStorage.getItem('last_update') || 'Carga inicial';
-            document.getElementById('last-update-time').textContent = lastUpdate;
+            
+            console.log('✅ Display actualizado, elementos creados:', container.children.length);
         }
 
         // Actualizar panel de administración
@@ -741,11 +915,11 @@
             container.innerHTML = '';
 
             if (newsItems.length === 0) {
-                container.innerHTML = '<p style="color: #666; text-align: center; font-style: italic; font-size: 11px;">Sin noticias</p>';
+                container.innerHTML = '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">Sin noticias por el momento</p>';
                 return;
             }
 
-            newsItems.slice(0, 3).forEach(news => {
+            newsItems.slice(0, 5).forEach(news => {
                 const newsElement = document.createElement('div');
                 newsElement.className = `news-item ${news.highlight ? 'news-highlight' : ''}`;
                 
@@ -764,22 +938,25 @@
             
             if (content) {
                 const newNews = {
-                    date: new Date().toLocaleString(),
+                    date: new Date().toLocaleDateString('es-AR'),
                     content: content,
                     highlight: false
                 };
                 
                 newsItems.unshift(newNews);
+                localStorage.setItem('fortunawild_news', JSON.stringify(newsItems));
                 updateNewsDisplay();
+                input.value = '';
                 alert('✅ Noticia agregada! Recuerda guardar para que se aplique globalmente.');
             } else {
-                alert('Escribe una noticia primero');
+                alert('❌ Escribe una noticia primero');
             }
         }
 
         function clearAllNews() {
             if (confirm('¿Eliminar todas las noticias?')) {
                 newsItems = [];
+                localStorage.setItem('fortunawild_news', JSON.stringify(newsItems));
                 updateNewsDisplay();
                 alert('✅ Noticias eliminadas localmente. Recuerda guardar para aplicar globalmente.');
             }
@@ -789,12 +966,13 @@
         function toggleAdminPanel() {
             const panel = document.getElementById('admin-panel');
             if (panel.style.display === 'none') {
-                const password = prompt('Contraseña:');
+                const password = prompt('🔐 Contraseña de administrador:');
                 if (password === '4616203Id') {
                     panel.style.display = 'block';
                     trackAdminAccess(); // Rastrear acceso al admin
+                    panel.scrollIntoView({ behavior: 'smooth' });
                 } else if (password !== null) {
-                    alert('Contraseña incorrecta');
+                    alert('❌ Contraseña incorrecta');
                 }
             } else {
                 panel.style.display = 'none';
