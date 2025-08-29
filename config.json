@@ -32,24 +32,26 @@
     },
     "7": {
       "name": "Fortuna Wild 7",
-      "number": "",
-      "active": false
+      "number": "1125001380",
+      "active": false,
+      "outOfService": false
     },
     "8": {
       "name": "Fortuna Wild 8",
-      "number": "",
-      "active": false
+      "number": "1125001380",
+      "active": true,
+      "outOfService": false
     }
   },
   "news": [
     {
       "date": "28/8/2025",
-      "content": "Bienvenidos! Esta es nuestra web donde vas a poder encontrar todas nuestras l√≠neas activas. En caso de que tus WhatsApp aparezcan con un tilde. Siempre podr√°s abrir esta p√°gina y podr√°s ver nuestras l√≠neas activas para poder jugar sin interrupciones",
+      "content": "Bienvenidos! Esta es nuestra web donde vas a poder encontrar todas nuestras lÌneas activas. En caso de que tus WhatsApp aparezcan con un tilde. Siempre podr·s abrir esta p·gina y podr·s ver nuestras lÌneas activas para poder jugar sin interrupciones",
       "highlight": false
     },
     {
       "date": "14/8/2025",
-      "content": "Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO N√öMERO",
+      "content": "Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO",
       "highlight": true
     }
   ]
