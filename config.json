@@ -29,14 +29,21 @@
       "name": "Fortuna Wild 6",
       "number": "5491134224942",
       "active": true
+    },
+    "7": {
+      "name": "Fortuna Wild 7",
+      "number": "",
+      "active": false,
+      "outOfService": true
+    },
+    "8": {
+      "name": "Fortuna Wild 8",
+      "number": "",
+      "active": false,
+      "outOfService": true
     }
   },
   "news": [
-    {
-      "date": "28/8/2025",
-      "content": "Bienvenidos! Esta es nuestra web donde vas a poder encontrar todas nuestras l�neas activas. En caso de que tus WhatsApp aparezcan con un tilde. Siempre podr�s abrir esta p�gina y podr�s ver nuestras l�neas activas para poder jugar sin interrupciones",
-      "highlight": false
-    },
     {
       "date": "14/8/2025",
       "content": "Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO",
