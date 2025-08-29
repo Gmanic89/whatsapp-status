@@ -43,6 +43,8 @@
             padding: 15px 20px;
             display: flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             box-shadow: 0 2px 3px rgba(0,0,0,0.1);
         }
         
@@ -851,12 +853,14 @@
                         <div class="chat-preview">
                             <div class="chat-message">
                                 ${isActive ? 
-                                    `✅ En Linea - Toca acá y pedi CBU` : 
+                                    `✅ Disponible - Haz clic para contactar +${line.number}` : 
                                     `❌ No disponible en este momento`
                                 }
                             </div>
                             <div class="chat-status">
-                                
+                                <span class="status-badge ${isActive ? 'online' : 'offline'}">
+                                    ${isActive ? 'DISPONIBLE' : 'OCUPADA'}
+                                </span>
                             </div>
                         </div>
                     </div>
