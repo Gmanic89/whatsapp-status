@@ -528,24 +528,6 @@
                     </div>
                 </div>
                 
-                <div class="control-group">
-                    <h4>Línea 7</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line7-name" placeholder="Nombre de línea">
-                        <input type="text" id="line7-number" placeholder="Número">
-                        <button class="toggle-btn inactive" id="line7-toggle" onclick="toggleLine(7)">OFF</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 8</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line8-name" placeholder="Nombre de línea">
-                        <input type="text" id="line8-number" placeholder="Número">
-                        <button class="toggle-btn inactive" id="line8-toggle" onclick="toggleLine(8)">OFF</button>
-                    </div>
-                </div>
-                
                 <button class="save-btn" id="save-btn" onclick="saveConfiguration()">💾 Guardar en GitHub</button>
                 
                 <!-- Admin de Noticias -->
@@ -729,17 +711,13 @@
             }
             
             // Actualizar configuración con los valores del admin panel
-            for (let i = 1; i <= 8; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const name = document.getElementById(`line${i}-name`).value.trim();
                 const number = document.getElementById(`line${i}-number`).value.trim();
                 
                 if (name && number) {
                     linesConfig[i].name = name;
                     linesConfig[i].number = number;
-                    // Si se agrega número a líneas 7-8, quitarles el outOfService
-                    if (i >= 7 && number) {
-                        linesConfig[i].outOfService = false;
-                    }
                 }
             }
             
@@ -905,14 +883,14 @@
                 document.getElementById('github-token').value = savedToken;
             }
             
-            for (let i = 1; i <= 8; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const line = linesConfig[i];
                 
                 document.getElementById(`line${i}-name`).value = line.name;
                 document.getElementById(`line${i}-number`).value = line.number;
                 
                 const toggleBtn = document.getElementById(`line${i}-toggle`);
-                if (line.active && !line.outOfService) {
+                if (line.active) {
                     toggleBtn.textContent = 'ON';
                     toggleBtn.className = 'toggle-btn active';
                 } else {
