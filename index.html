@@ -836,10 +836,12 @@
                 const chatItem = document.createElement('div');
                 chatItem.className = `chat-item ${isActive ? '' : 'inactive'}`;
                 
-                // Usar imagen de Fortuna en lugar de emoji
+                // Imagen específica para cada línea
+                const avatarImage = key === '4' ? 'fortu4.png' : 'for.png';
+                
                 chatItem.innerHTML = `
                     <div class="avatar ${isActive ? 'online' : 'offline'}">
-                        <img src="for.png" alt="Fortuna" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="${avatarImage}" alt="Fortuna" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div class="chat-content">
                         <div class="chat-header">
