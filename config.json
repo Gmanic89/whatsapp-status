@@ -32,15 +32,15 @@
     },
     "7": {
       "name": "Fortuna Wild 7",
-      "number": "1125001380",
+      "number": "",
       "active": false,
-      "outOfService": false
+      "outOfService": true
     },
     "8": {
       "name": "Fortuna Wild 8",
-      "number": "1125001380",
-      "active": true,
-      "outOfService": false
+      "number": "",
+      "active": false,
+      "outOfService": true
     }
   },
   "news": [
