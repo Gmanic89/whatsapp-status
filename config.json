@@ -2,12 +2,12 @@
   "lines": {
     "1": {
       "name": "Fortuna Wild 1",
-      "number": "5491162475512",
+      "number": "5491134202438",
       "active": true
     },
     "2": {
       "name": "Fortuna Wild 2",
-      "number": "5491134224942",
+      "number": "5491125001348",
       "active": true
     },
     "3": {
@@ -43,21 +43,5 @@
       "outOfService": true
     }
   },
-  "news": [
-    {
-      "date": "30/8/2025",
-      "content": "La línea 5 cambió de número!",
-      "highlight": false
-    },
-    {
-      "date": "28/8/2025",
-      "content": "Bienvenidos! Esta es nuestra web donde vas a poder encontrar todas nuestras líneas activas. En caso de que tus WhatsApp aparezcan con un tilde. Siempre podrás abrir esta página y podrás ver nuestras líneas activas para poder jugar sin interrupciones",
-      "highlight": false
-    },
-    {
-      "date": "14/8/2025",
-      "content": "Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO",
-      "highlight": true
-    }
-  ]
+  "news": []
 }
