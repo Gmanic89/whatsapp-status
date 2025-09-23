@@ -43,5 +43,11 @@
       "outOfService": true
     }
   },
-  "news": []
+  "news": [
+    {
+      "date": "23/9/2025",
+      "content": "Hace click en el WhatsApp para pedir cbu",
+      "highlight": false
+    }
+  ]
 }
