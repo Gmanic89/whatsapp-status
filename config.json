@@ -27,7 +27,7 @@
     },
     "6": {
       "name": "Fortuna Wild 6",
-      "number": "5491134651658",
+      "number": "5491134224942",
       "active": true
     },
     "7": {
@@ -44,6 +44,11 @@
     }
   },
   "news": [
+    {
+      "date": "8/10/2025",
+      "content": "Atención!! Nueva Línea 2!!!",
+      "highlight": false
+    },
     {
       "date": "23/9/2025",
       "content": "Hace click en el WhatsApp para pedir cbu",
