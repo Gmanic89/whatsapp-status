@@ -1,838 +1,399 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FortunaWild WhatsApp - Estado de Líneas</title>
-    
+
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJWDV50N7N"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-RJWDV50N7N"
+    ></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-RJWDV50N7N');
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-RJWDV50N7N')
     </script>
-    
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #e5ddd5;
-            min-height: 100vh;
-            color: #333;
-        }
-        
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #e5ddd5;
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 420px;
+        margin: 0 auto;
+        background: white;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .header {
+        background: #128c7e;
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 19px;
+        font-weight: 500;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-top: 2px;
+      }
+
+      .loading {
+        text-align: center;
+        color: #666;
+        font-size: 16px;
+        padding: 40px 20px;
+      }
+
+      .chat-list {
+        background: white;
+      }
+
+      .chat-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        position: relative;
+      }
+
+      .chat-item:hover {
+        background: #f5f5f5;
+      }
+
+      .chat-item.inactive {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .chat-item.inactive:hover {
+        background: white;
+      }
+
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 15px;
+        background: #ddd;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        background: linear-gradient(45deg, #25d366, #128c7e);
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .avatar::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .avatar.online::after {
+        background: #25d366;
+      }
+
+      .avatar.offline::after {
+        background: #f44336;
+      }
+
+      .chat-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .chat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2px;
+      }
+
+      .chat-name {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .chat-time {
+        font-size: 12px;
+        color: #999;
+        margin-left: 8px;
+        flex-shrink: 0;
+      }
+
+      .chat-preview {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chat-message {
+        font-size: 14px;
+        color: #666;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+      }
+
+      .news-section {
+        background: white;
+        border-top: 8px solid #f0f0f0;
+        padding: 16px;
+      }
+
+      .news-title {
+        color: #128c7e;
+        font-size: 18px;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      .news-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-left: 3px solid #25d366;
+      }
+
+      .news-date {
+        font-size: 11px;
+        color: #999;
+        margin-bottom: 4px;
+      }
+
+      .news-content {
+        color: #333;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .news-highlight {
+        background: #fff3cd;
+        border-left-color: #ffc107;
+      }
+
+      .visit-counter {
+        text-align: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-top: 1px solid #eee;
+      }
+
+      .visit-counter span {
+        font-size: 11px;
+        color: #999;
+        font-family: monospace;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      @media (max-width: 480px) {
         .container {
-            max-width: 420px;
-            margin: 0 auto;
-            background: white;
-            min-height: 100vh;
-            position: relative;
+          max-width: 100%;
         }
-        
-        /* Header estilo WhatsApp */
-        .header {
-            background: #128c7e;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            font-size: 19px;
-            font-weight: 500;
-        }
-        
-        .header p {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-top: 2px;
-        }
-        
-        .loading {
-            text-align: center;
-            color: #666;
-            font-size: 16px;
-            padding: 40px 20px;
-        }
-        
-        /* Lista de chats estilo WhatsApp */
-        .chat-list {
-            background: white;
-        }
-        
+
         .chat-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            position: relative;
+          padding: 10px 12px;
         }
-        
-        .chat-item:hover {
-            background: #f5f5f5;
-        }
-        
-        .chat-item.inactive {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .chat-item.inactive:hover {
-            background: white;
-        }
-        
-        /* Avatar circular */
+
         .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-            background: #ddd;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-            background: linear-gradient(45deg, #25d366, #128c7e);
+          width: 45px;
+          height: 45px;
+          margin-right: 12px;
         }
-        
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        /* Estado online/offline */
-        .avatar::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-        
-        .avatar.online::after {
-            background: #25d366;
-        }
-        
-        .avatar.offline::after {
-            background: #f44336;
-        }
-        
-        /* Contenido del chat */
-        .chat-content {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2px;
-        }
-        
-        .chat-name {
-            font-size: 16px;
-            font-weight: 500;
-            color: #333;
-        }
-        
-        .chat-time {
-            font-size: 12px;
-            color: #999;
-            margin-left: 8px;
-            flex-shrink: 0;
-        }
-        
-        .chat-preview {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-message {
-            font-size: 14px;
-            color: #666;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-        }
-        
-        .chat-status {
-            display: flex;
-            align-items: center;
-            margin-left: 8px;
-        }
-        
-        .status-badge {
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        .status-badge.online {
-            background: #dcf8c6;
-            color: #128c7e;
-        }
-        
-        .status-badge.offline {
-            background: #ffebee;
-            color: #f44336;
-        }
-        
-        /* Sección de noticias */
-        .news-section {
-            background: white;
-            border-top: 8px solid #f0f0f0;
-            padding: 16px;
-        }
-        
-        .news-title {
-            color: #128c7e;
-            font-size: 18px;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        
-        .news-item {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-left: 3px solid #25d366;
-        }
-        
-        .news-date {
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 4px;
-        }
-        
-        .news-content {
-            color: #333;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        
-        .news-highlight {
-            background: #fff3cd;
-            border-left-color: #ffc107;
-        }
-        
-        /* Panel de administración */
-        .admin-panel {
-            background: white;
-            border-top: 8px solid #f0f0f0;
-            padding: 16px;
-        }
-        
-        .admin-title {
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 18px;
-        }
-        
-        .admin-controls {
-            display: grid;
-            gap: 12px;
-        }
-        
-        .control-group {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 12px;
-            border-left: 3px solid #128c7e;
-        }
-        
-        .control-group h4 {
-            color: #128c7e;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        
-        .control-inputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .control-inputs input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 12px;
-        }
-        
-        .toggle-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            min-width: 60px;
-            font-weight: 500;
-        }
-        
-        .toggle-btn.active {
-            background: #25d366;
-            color: white;
-        }
-        
-        .toggle-btn.inactive {
-            background: #f44336;
-            color: white;
-        }
-        
-        .save-btn {
-            background: #128c7e;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            font-weight: 500;
-        }
-        
-        .save-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        /* Admin de noticias */
-        .news-admin {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-        
-        .news-admin h4 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .news-admin textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 12px;
-            resize: vertical;
-            min-height: 70px;
-            font-family: inherit;
-        }
-        
-        .news-admin-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .add-news-btn, .clear-news-btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .add-news-btn {
-            background: #25d366;
-            color: white;
-        }
-        
-        .clear-news-btn {
-            background: #f44336;
-            color: white;
-        }
-        
-        .token-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 12px;
-            margin-bottom: 12px;
-        }
-        
-        /* Botón admin */
-        .admin-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #128c7e;
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-        
-        /* Contador de visitas */
-        .visit-counter {
-            text-align: center;
-            padding: 10px;
-            background: #f8f9fa;
-            border-top: 1px solid #eee;
-        }
-        
-        .visit-counter span {
-            font-size: 11px;
-            color: #999;
-            font-family: monospace;
-            background: rgba(0,0,0,0.05);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                max-width: 100%;
-            }
-            
-            .chat-item {
-                padding: 10px 12px;
-            }
-            
-            .avatar {
-                width: 45px;
-                height: 45px;
-                margin-right: 12px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <!-- Header estilo WhatsApp -->
-        <div class="header">
-            <div>
-                <h1>📱 FortunaWild WhatsApp</h1>
-                <p>Líneas disponibles para contacto</p>
-            </div>
+      <div class="header">
+        <div>
+          <h1>📱 FortunaWild WhatsApp</h1>
+          <p>Líneas disponibles para contacto</p>
         </div>
-        
-        <div class="loading" id="loading">⏳ Cargando configuración...</div>
-        
-        <div id="main-content" style="display: none;">
-            <!-- Lista de chats estilo WhatsApp -->
-            <div class="chat-list" id="whatsapp-lines">
-                <!-- Las líneas se cargan dinámicamente -->
-            </div>
-            
-            <!-- Sección de Noticias -->
-            <div class="news-section">
-                <h2 class="news-title">📢 Noticias</h2>
-                <div id="news-container">
-                    <!-- Las noticias se cargan dinámicamente -->
-                </div>
-            </div>
+      </div>
+
+      <div class="loading" id="loading">⏳ Cargando configuración...</div>
+
+      <div id="main-content" style="display: none">
+        <div class="chat-list" id="whatsapp-lines"></div>
+
+        <div class="news-section">
+          <h2 class="news-title">📢 Noticias</h2>
+          <div id="news-container"></div>
         </div>
-        
-        <!-- Panel de administración (oculto por defecto) -->
-        <div class="admin-panel" id="admin-panel" style="display: none;">
-            <h3 class="admin-title">🔧 Panel Admin</h3>
-            <div class="admin-controls">
-                <div style="margin-bottom: 15px;">
-                    <label style="font-size: 12px; color: #666; display: block; margin-bottom: 5px;">Token de GitHub:</label>
-                    <input type="password" id="github-token" class="token-input" placeholder="Pegá tu token de GitHub aquí">
-                    <p style="font-size: 10px; color: #666; margin-top: 3px;">Solo se guarda en tu navegador, nunca se envía a terceros</p>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 1</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line1-name" placeholder="Nombre de línea">
-                        <input type="text" id="line1-number" placeholder="Número">
-                        <button class="toggle-btn active" id="line1-toggle" onclick="toggleLine(1)">ON</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 2</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line2-name" placeholder="Nombre de línea">
-                        <input type="text" id="line2-number" placeholder="Número">
-                        <button class="toggle-btn active" id="line2-toggle" onclick="toggleLine(2)">ON</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 3</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line3-name" placeholder="Nombre de línea">
-                        <input type="text" id="line3-number" placeholder="Número">
-                        <button class="toggle-btn active" id="line3-toggle" onclick="toggleLine(3)">ON</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 4</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line4-name" placeholder="Nombre de línea">
-                        <input type="text" id="line4-number" placeholder="Número">
-                        <button class="toggle-btn active" id="line4-toggle" onclick="toggleLine(4)">ON</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 5</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line5-name" placeholder="Nombre de línea">
-                        <input type="text" id="line5-number" placeholder="Número">
-                        <button class="toggle-btn active" id="line5-toggle" onclick="toggleLine(5)">ON</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h4>Línea 6</h4>
-                    <div class="control-inputs">
-                        <input type="text" id="line6-name" placeholder="Nombre de línea">
-                        <input type="text" id="line6-number" placeholder="Número">
-                        <button class="toggle-btn active" id="line6-toggle" onclick="toggleLine(6)">ON</button>
-                    </div>
-                </div>
-                
-                <button class="save-btn" id="save-btn" onclick="saveConfiguration()">💾 Guardar en GitHub</button>
-                
-                <!-- Admin de Noticias -->
-                <div class="news-admin">
-                    <h4>📢 Gestión de Noticias</h4>
-                    <textarea id="news-input" placeholder="Escribir nueva noticia..."></textarea>
-                    <div class="news-admin-controls">
-                        <button class="add-news-btn" onclick="addNews()">Agregar</button>
-                        <button class="clear-news-btn" onclick="clearAllNews()">Limpiar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Contador de visitas -->
-        <div class="visit-counter">
-            <span id="visit-count">Analytics activo</span>
-        </div>
-        
-        <!-- Botón flotante admin -->
-        <button class="admin-toggle" onclick="toggleAdminPanel()">⚙️</button>
+      </div>
+
+      <div class="visit-counter">
+        <span id="visit-count">Analytics activo</span>
+      </div>
     </div>
 
     <script>
-        // Configuración inicial
-        let linesConfig = {};
-        let newsItems = [];
-        let linesOrder = []; // Nuevo: orden de las líneas
-        const GITHUB_API_URL = 'https://api.github.com/repos/gmanic89/whatsapp-status/contents/config.json';
+      // Función de decodificación (ofuscación anti-bots)
+      function d(s) {
+        return atob(s)
+      }
 
-        // ========== GESTIÓN DE ORDEN ALEATORIO ==========
-        function shuffleArray(array) {
-            const newArray = [...array];
-            for (let i = newArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-            }
-            return newArray;
+      // Números codificados en Base64 (invisible para crawlers)
+      const enc = {
+        l1: d('NTQ5') + d('MTE3MzY2MTY3NQ=='), //  $117 3 6 616 75
+        l2: d('NTQ5') + d('MTEzNDY1MTY1OA=='), // 1 $34 651 58
+        l3: d('NTQ5') + d('MTE3MTA5NTM1Nw=='), // 1 171$ 0953 57
+        l4: d('NTQ5') + d('MTE2NTU1NDg5MQ=='), // 1 $ 16555 48 91
+        l5: d('NTQ5') + d('MTE3MTgwMjIyMA=='), // $ 1 171 802 220
+        l6: d('NTQ5') + d('MTEyNTAwMTM0OA==') // 1 12 5 001$ 348
+      }
+
+      // Configuración (números nunca visibles en texto plano)
+      const linesConfig = {
+        1: { name: 'Fortuna Wild 1', number: enc.l1, active: true },
+        2: { name: 'Fortuna Wild 2', number: enc.l2, active: true },
+        3: { name: 'Fortuna Wild 3', number: enc.l3, active: true },
+        4: { name: 'Fortuna Wild 4 (AZUL)', number: enc.l4, active: true },
+        5: { name: 'Fortuna Wild 5', number: enc.l5, active: true },
+        6: { name: 'Fortuna Wild 6', number: enc.l6, active: true }
+      }
+
+      const newsItems = [
+        {
+          date: '14/8/2025',
+          content:
+            'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
+          highlight: true
         }
+      ]
 
-        function initializeOrder() {
-            // Obtener orden guardado o crear uno aleatorio
-            const savedOrder = localStorage.getItem('fortunawild_lines_order');
-            if (savedOrder) {
-                try {
-                    linesOrder = JSON.parse(savedOrder);
-                    console.log('📋 Orden cargado desde localStorage:', linesOrder);
-                } catch (e) {
-                    console.log('❌ Error cargando orden, creando nuevo');
-                    linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6', '7', '8']);
-                }
-            } else {
-                // Primera vez: orden aleatorio
-                linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6']);
-                console.log('🎲 Nuevo orden aleatorio generado:', linesOrder);
-            }
-            localStorage.setItem('fortunawild_lines_order', JSON.stringify(linesOrder));
+      let linesOrder = []
+
+      function shuffleArray(array) {
+        const newArray = [...array]
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
         }
+        return newArray
+      }
 
-        function moveLineToEnd(clickedLineKey) {
-            // Mover la línea clickeada al final
-            const index = linesOrder.indexOf(clickedLineKey);
-            if (index > -1) {
-                linesOrder.splice(index, 1); // Remover
-                linesOrder.push(clickedLineKey); // Agregar al final
-                localStorage.setItem('fortunawild_lines_order', JSON.stringify(linesOrder));
-                console.log('🔄 Línea', clickedLineKey, 'movida al final. Nuevo orden:', linesOrder);
-                
-                // Re-renderizar inmediatamente
-                updateDisplay();
-            }
+      function initializeOrder() {
+        const savedOrder = localStorage.getItem('fortunawild_lines_order')
+        if (savedOrder) {
+          try {
+            linesOrder = JSON.parse(savedOrder)
+          } catch (e) {
+            linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6'])
+          }
+        } else {
+          linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6'])
         }
+        localStorage.setItem(
+          'fortunawild_lines_order',
+          JSON.stringify(linesOrder)
+        )
+      }
 
-        // ========== EVENTOS DE ANALYTICS ==========
-        function trackWhatsAppClick(lineName, phoneNumber) {
-            // Enviar evento a Google Analytics
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'whatsapp_click', {
-                    'event_category': 'engagement',
-                    'event_label': lineName,
-                    'phone_number': phoneNumber
-                });
-            }
+      function moveLineToEnd(clickedLineKey) {
+        const index = linesOrder.indexOf(clickedLineKey)
+        if (index > -1) {
+          linesOrder.splice(index, 1)
+          linesOrder.push(clickedLineKey)
+          localStorage.setItem(
+            'fortunawild_lines_order',
+            JSON.stringify(linesOrder)
+          )
+          updateDisplay()
         }
+      }
 
-        function trackAdminAccess() {
-            // Rastrear accesos al panel admin
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'admin_access', {
-                    'event_category': 'admin',
-                    'event_label': 'panel_opened'
-                });
-            }
+      function trackWhatsAppClick(lineName, phoneNumber) {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'whatsapp_click', {
+            event_category: 'engagement',
+            event_label: lineName
+          })
         }
+      }
 
-        // ========== CONTADOR DE SESIÓN ==========
-        function initVisitCounter() {
-            // Mostrar que Analytics está activo
-            document.getElementById('visit-count').textContent = 'Analytics activo ✓';
-            
-            // Enviar evento de vista de página personalizado
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'page_view', {
-                    'event_category': 'engagement',
-                    'event_label': 'fortunawild_whatsapp',
-                    'page_title': 'FortunaWild WhatsApp Lines'
-                });
-            }
+      function initVisitCounter() {
+        document.getElementById('visit-count').textContent =
+          'Analytics activo ✓'
+
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'page_view', {
+            event_category: 'engagement',
+            event_label: 'fortunawild_whatsapp',
+            page_title: 'FortunaWild WhatsApp Lines'
+          })
         }
+      }
 
-        // Cargar configuración
-        async function loadConfiguration() {
-            // Usar configuración real de FortunaWild (SIEMPRE)
-            linesConfig = {
-                1: { name: "Fortuna Wild 1", number: "5491134202438", active: true },
-                2: { name: "Fortuna Wild 2", number: "5491125001348", active: true },
-                3: { name: "Fortuna Wild 3", number: "5491135111380", active: true },
-                4: { name: "Fortuna Wild 4 (AZUL)", number: "5491171802220", active: true },
-                5: { name: "Fortuna Wild 5", number: "5491162475512", active: true },
-                6: { name: "Fortuna Wild 6", number: "5491134224942", active: true },
-                7: { name: "Fortuna Wild 7", number: "", active: false, outOfService: true },
-                8: { name: "Fortuna Wild 8", number: "", active: false, outOfService: true }
-            };
-            
-            newsItems = [{
-                date: "14/8/2025",
-                content: "Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO",
-                highlight: true
-            }];
+      function updateDisplay() {
+        const container = document.getElementById('whatsapp-lines')
+        container.innerHTML = ''
 
-            console.log('✅ Configuración cargada directamente');
+        linesOrder.forEach((key) => {
+          const line = linesConfig[key]
+          if (!line) return
 
-            // Inicializar orden aleatorio
-            initializeOrder();
-            
-            // SIEMPRE: Cargar cambios locales del admin si existen
-            const saved = localStorage.getItem('whatsapp_lines_config');
-            if (saved) {
-                try {
-                    const localConfig = JSON.parse(saved);
-                    Object.keys(localConfig).forEach(key => {
-                        if (localConfig[key]) {
-                            linesConfig[key] = localConfig[key];
-                        }
-                    });
-                } catch (e) {
-                    console.log('Error cargando config local:', e);
-                }
-            }
-            
-            const savedNews = localStorage.getItem('fortunawild_news');
-            if (savedNews) {
-                try {
-                    newsItems = JSON.parse(savedNews);
-                } catch (e) {
-                    console.log('Error cargando noticias locales:', e);
-                }
-            }
-            
-            console.log('🔧 Configuración final:', linesConfig);
-            console.log('📢 Noticias finales:', newsItems);
-            
-            // Actualizar displays
-            updateDisplay();
-            updateNewsDisplay();
-            updateAdminPanel();
-            
-            // MOSTRAR CONTENIDO
-            console.log('👀 Mostrando contenido...');
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }
+          const isActive = line.active
+          const currentTime = new Date().toLocaleTimeString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          })
 
-        // Guardar configuración en GitHub
-        async function saveConfiguration() {
-            const token = document.getElementById('github-token').value.trim();
-            
-            if (!token) {
-                alert('❌ Necesitas ingresar tu token de GitHub primero');
-                return;
-            }
-            
-            // Actualizar configuración con los valores del admin panel
-            for (let i = 1; i <= 6; i++) {
-                const name = document.getElementById(`line${i}-name`).value.trim();
-                const number = document.getElementById(`line${i}-number`).value.trim();
-                
-                if (name && number) {
-                    linesConfig[i].name = name;
-                    linesConfig[i].number = number;
-                }
-            }
-            
-            const config = {
-                lines: linesConfig,
-                news: newsItems
-            };
-            
-            const saveBtn = document.getElementById('save-btn');
-            saveBtn.disabled = true;
-            saveBtn.textContent = '⏳ Guardando...';
-            
-            try {
-                // Primero obtener el SHA actual del archivo
-                const getResponse = await fetch(GITHUB_API_URL, {
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                let sha = null;
-                if (getResponse.ok) {
-                    const currentFile = await getResponse.json();
-                    sha = currentFile.sha;
-                }
-                
-                // Actualizar o crear el archivo
-                const updateResponse = await fetch(GITHUB_API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Actualizar configuración FortunaWild - ${new Date().toLocaleString()}`,
-                        content: btoa(JSON.stringify(config, null, 2)),
-                        ...(sha && { sha })
-                    })
-                });
-                
-                if (updateResponse.ok) {
-                    localStorage.setItem('github_token', token);
-                    localStorage.setItem('last_update', new Date().toLocaleString());
-                    updateDisplay();
-                    
-                    // Rastrear guardado exitoso
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'config_saved', {
-                            'event_category': 'admin',
-                            'event_label': 'github_save_success'
-                        });
-                    }
-                    
-                    alert('✅ Configuración guardada en GitHub!\n\nTu sitio se actualizará en ~30 segundos para todos los usuarios.');
-                } else {
-                    const error = await updateResponse.json();
-                    throw new Error(error.message || 'Error al guardar');
-                }
-            } catch (error) {
-                console.error('Error saving to GitHub:', error);
-                alert('❌ Error guardando: ' + error.message + '\n\nVerifica tu token de GitHub.');
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.textContent = '💾 Guardar en GitHub';
-            }
-        }
+          const chatItem = document.createElement('div')
+          chatItem.className = `chat-item ${isActive ? '' : 'inactive'}`
 
-        // Alternar estado de línea
-        function toggleLine(lineNum) {
-            linesConfig[lineNum].active = !linesConfig[lineNum].active;
-            updateAdminPanel();
-        }
+          const avatarImage = key === '4' ? 'fortu4.png' : 'for.png'
 
-        // Actualizar display principal (estilo WhatsApp)
-        function updateDisplay() {
-            console.log('🔄 Actualizando display con orden:', linesOrder);
-            const container = document.getElementById('whatsapp-lines');
-            
-            if (!container) {
-                console.error('❌ No se encontró el contenedor whatsapp-lines');
-                return;
-            }
-            
-            container.innerHTML = '';
-
-            // Verificar que tenemos líneas configuradas
-            if (!linesConfig || Object.keys(linesConfig).length === 0) {
-                console.error('❌ No hay líneas configuradas');
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No hay líneas configuradas</div>';
-                return;
-            }
-
-            // Mostrar líneas en el orden especificado
-            linesOrder.forEach(key => {
-                const line = linesConfig[key];
-                if (!line) return; // Skip si la línea no existe
-                
-                console.log(`📱 Procesando línea ${key}:`, line);
-                
-                const isActive = line.active;
-                const currentTime = new Date().toLocaleTimeString('es-AR', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    hour12: false 
-                });
-                
-                const chatItem = document.createElement('div');
-                chatItem.className = `chat-item ${isActive ? '' : 'inactive'}`;
-                
-                // Imagen específica para cada línea
-                const avatarImage = key === '4' ? 'fortu4.png' : 'for.png';
-                
-                chatItem.innerHTML = `
+          chatItem.innerHTML = `
                     <div class="avatar ${isActive ? 'online' : 'offline'}">
                         <img src="${avatarImage}" alt="Fortuna" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
@@ -843,138 +404,72 @@
                         </div>
                         <div class="chat-preview">
                             <div class="chat-message">
-                                ${isActive ? 
-                                    `✅ En Linea - Haz clic para pedir CBU` : 
-                                    `❌ No disponible en este momento`
+                                ${
+                                  isActive
+                                    ? `✅ En Linea - Haz clic para pedir CBU`
+                                    : `❌ No disponible en este momento`
                                 }
-                            </div>
-                            <div class="chat-status">
-                                
                             </div>
                         </div>
                     </div>
-                `;
-                
-                // Hacer clickeable si está activo
-                if (isActive) {
-                    chatItem.onclick = function() {
-                        console.log('🔥 Click en línea:', key, line.name);
-                        trackWhatsAppClick(line.name, line.number);
-                        
-                        // Mover al final DESPUÉS del click
-                        setTimeout(() => {
-                            moveLineToEnd(key);
-                        }, 100);
-                        
-                        window.open(`https://wa.me/${line.number}`, '_blank');
-                    };
-                }
-                
-                container.appendChild(chatItem);
-            });
-            
-            console.log('✅ Display actualizado, elementos creados:', container.children.length);
+                `
+
+          if (isActive) {
+            chatItem.onclick = function () {
+              trackWhatsAppClick(line.name, line.number)
+
+              setTimeout(() => {
+                moveLineToEnd(key)
+              }, 100)
+
+              // Construir URL dinámicamente (nunca visible en el código)
+              const wa = 'https://wa.me/'
+              window.open(wa + line.number, '_blank')
+            }
+          }
+
+          container.appendChild(chatItem)
+        })
+      }
+
+      function updateNewsDisplay() {
+        const container = document.getElementById('news-container')
+        container.innerHTML = ''
+
+        if (newsItems.length === 0) {
+          container.innerHTML =
+            '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">Sin noticias por el momento</p>'
+          return
         }
 
-        // Actualizar panel de administración
-        function updateAdminPanel() {
-            const savedToken = localStorage.getItem('github_token');
-            if (savedToken) {
-                document.getElementById('github-token').value = savedToken;
-            }
-            
-            for (let i = 1; i <= 6; i++) {
-                const line = linesConfig[i];
-                
-                document.getElementById(`line${i}-name`).value = line.name;
-                document.getElementById(`line${i}-number`).value = line.number;
-                
-                const toggleBtn = document.getElementById(`line${i}-toggle`);
-                if (line.active) {
-                    toggleBtn.textContent = 'ON';
-                    toggleBtn.className = 'toggle-btn active';
-                } else {
-                    toggleBtn.textContent = 'OFF';
-                    toggleBtn.className = 'toggle-btn inactive';
-                }
-            }
-        }
+        newsItems.slice(0, 5).forEach((news) => {
+          const newsElement = document.createElement('div')
+          newsElement.className = `news-item ${
+            news.highlight ? 'news-highlight' : ''
+          }`
 
-        // Funciones de noticias
-        function updateNewsDisplay() {
-            const container = document.getElementById('news-container');
-            container.innerHTML = '';
-
-            if (newsItems.length === 0) {
-                container.innerHTML = '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">Sin noticias por el momento</p>';
-                return;
-            }
-
-            newsItems.slice(0, 5).forEach(news => {
-                const newsElement = document.createElement('div');
-                newsElement.className = `news-item ${news.highlight ? 'news-highlight' : ''}`;
-                
-                newsElement.innerHTML = `
+          newsElement.innerHTML = `
                     <div class="news-date">${news.date}</div>
                     <div class="news-content">${news.content}</div>
-                `;
-                
-                container.appendChild(newsElement);
-            });
-        }
+                `
 
-        function addNews() {
-            const input = document.getElementById('news-input');
-            const content = input.value.trim();
-            
-            if (content) {
-                const newNews = {
-                    date: new Date().toLocaleDateString('es-AR'),
-                    content: content,
-                    highlight: false
-                };
-                
-                newsItems.unshift(newNews);
-                localStorage.setItem('fortunawild_news', JSON.stringify(newsItems));
-                updateNewsDisplay();
-                input.value = '';
-                alert('✅ Noticia agregada! Recuerda guardar para que se aplique globalmente.');
-            } else {
-                alert('❌ Escribe una noticia primero');
-            }
-        }
+          container.appendChild(newsElement)
+        })
+      }
 
-        function clearAllNews() {
-            if (confirm('¿Eliminar todas las noticias?')) {
-                newsItems = [];
-                localStorage.setItem('fortunawild_news', JSON.stringify(newsItems));
-                updateNewsDisplay();
-                alert('✅ Noticias eliminadas localmente. Recuerda guardar para aplicar globalmente.');
-            }
-        }
+      function loadConfiguration() {
+        initializeOrder()
+        updateDisplay()
+        updateNewsDisplay()
 
-        // Mostrar/ocultar panel de admin
-        function toggleAdminPanel() {
-            const panel = document.getElementById('admin-panel');
-            if (panel.style.display === 'none') {
-                const password = prompt('🔐 Contraseña de administrador:');
-                if (password === '4616203Id') {
-                    panel.style.display = 'block';
-                    trackAdminAccess(); // Rastrear acceso al admin
-                    panel.scrollIntoView({ behavior: 'smooth' });
-                } else if (password !== null) {
-                    alert('❌ Contraseña incorrecta');
-                }
-            } else {
-                panel.style.display = 'none';
-            }
-        }
+        document.getElementById('loading').style.display = 'none'
+        document.getElementById('main-content').style.display = 'block'
+      }
 
-        // Inicializar
-        window.onload = function() {
-            initVisitCounter(); // ¡Inicializar Analytics!
-            loadConfiguration();
-        };
+      window.onload = function () {
+        initVisitCounter()
+        loadConfiguration()
+      }
     </script>
-</body>
+  </body>
 </html>
