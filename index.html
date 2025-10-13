@@ -19,20 +19,6 @@
       gtag('config', 'G-RJWDV50N7N')
     </script>
 
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/68ed00693744141950704261/1j7esj7p5';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
-
     <style>
       * {
         margin: 0;
@@ -43,11 +29,17 @@ s0.parentNode.insertBefore(s1,s0);
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #e5ddd5;
-        height: 100vh;
         color: #333;
-        overflow: hidden;
+        overflow-y: auto;
         margin: 0;
         padding: 0;
+      }
+      
+      @media (min-width: 481px) {
+        body {
+          height: 100vh;
+          overflow: hidden;
+        }
       }
 
       .container {
@@ -55,9 +47,14 @@ s0.parentNode.insertBefore(s1,s0);
         margin: 0 auto;
         background: white;
         position: relative;
-        height: 100vh;
         display: flex;
         flex-direction: column;
+      }
+      
+      @media (min-width: 481px) {
+        .container {
+          height: 100vh;
+        }
       }
 
       .header {
@@ -275,6 +272,21 @@ s0.parentNode.insertBefore(s1,s0);
           width: 45px;
           height: 45px;
           margin-right: 12px;
+        }
+        
+        .telegram-fixed {
+          position: relative;
+          padding: 10px 16px;
+        }
+        
+        #main-content {
+          height: auto !important;
+          min-height: 100vh;
+        }
+        
+        .chat-list {
+          max-height: none !important;
+          overflow-y: visible !important;
         }
       }
     </style>
