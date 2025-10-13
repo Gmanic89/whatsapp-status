@@ -37,8 +37,9 @@
         max-width: 420px;
         margin: 0 auto;
         background: white;
-        min-height: 100vh;
+        min-height: auto;
         position: relative;
+        overflow-y: auto;
       }
 
       .header {
@@ -72,6 +73,8 @@
 
       .chat-list {
         background: white;
+        max-height: none;
+        overflow: visible;
       }
 
       .chat-item {
@@ -264,6 +267,11 @@
       <div id="main-content" style="display: none">
         <div class="chat-list" id="whatsapp-lines"></div>
 
+        <div class="news-section" style="background: #e3f2fd; border-top: 8px solid #2196f3;">
+          <h2 class="news-title" style="color: #1976d2;">💬 Telegram Oficial</h2>
+          <div id="telegram-container"></div>
+        </div>
+
         <div class="news-section">
           <h2 class="news-title">📢 Noticias</h2>
           <div id="news-container"></div>
@@ -283,12 +291,19 @@
 
       // Números codificados en Base64 (invisible para crawlers)
       const enc = {
-        l1: d('NTQ5') + d('MTE3MzY2MTY3NQ=='), //  $117 3 6 616 75
-        l2: d('NTQ5') + d('MTEzNDY1MTY1OA=='), // 1 $34 651 58
-        l3: d('NTQ5') + d('MTE3MTA5NTM1Nw=='), // 1 171$ 0953 57
-        l4: d('NTQ5') + d('MTE2NTU1NDg5MQ=='), // 1 $ 16555 48 91
-        l5: d('NTQ5') + d('MTE3MTgwMjIyMA=='), // $ 1 171 802 220
-        l6: d('NTQ5') + d('MTEyNTAwMTM0OA==') // 1 12 5 001$ 348
+        l1: d('NTQ5') + d('MjIxNTc3NzA0Ng=='),
+        l2: d('NTQ5') + d('MTE3MTA5NTM1Nw=='),
+        l3: d('NTQ5') + d('MTE3MzY2MTY3NQ=='),
+        l4: d('NTQ5') + d('MTE3MTA5NTM1Nw=='),
+        l5: d('NTQ5') + d('MTE2NTU1NDg5MQ=='),
+        l6: d('NTQ5') + d('MTE3MTgwMjIyMA=='),
+        l7: d('NTQ5') + d('MTE3MjIxODI4MQ=='),
+        l8: d('NTQ5') + d('MjIxNDQwNzM3MQ=='),
+        l9: d('NTQ5') + d('MTE2MjQ3NTU2NQ=='),
+        l10: d('NTQ5') + d('MTEyNTAwMTM0OA=='),
+        l11: d('NTQ5') + d('MTEzNDIwMjQzOA=='),
+        l12: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
+        telegram: d('Zm9ydHVuYXdpbGQ=')
       }
 
       // Configuración (números nunca visibles en texto plano)
@@ -296,16 +311,27 @@
         1: { name: 'Fortuna Wild 1', number: enc.l1, active: true },
         2: { name: 'Fortuna Wild 2', number: enc.l2, active: true },
         3: { name: 'Fortuna Wild 3', number: enc.l3, active: true },
-        4: { name: 'Fortuna Wild 4 (AZUL)', number: enc.l4, active: true },
+        4: { name: 'Fortuna Wild 4', number: enc.l4, active: true },
         5: { name: 'Fortuna Wild 5', number: enc.l5, active: true },
-        6: { name: 'Fortuna Wild 6', number: enc.l6, active: true }
+        6: { name: 'Fortuna Wild 6', number: enc.l6, active: true },
+        7: { name: 'Fortuna Wild 7', number: enc.l7, active: true },
+        8: { name: 'Fortuna Wild 8', number: enc.l8, active: true },
+        9: { name: 'Fortuna Wild 9', number: enc.l9, active: true },
+        10: { name: 'Fortuna Wild 10', number: enc.l10, active: true },
+        11: { name: 'Fortuna Wild 11', number: enc.l11, active: true },
+        12: { name: 'Fortuna Wild 12 (Soporte)', number: enc.l12, active: true }
+      }
+
+      const telegramConfig = {
+        username: enc.telegram,
+        active: true
       }
 
       const newsItems = [
         {
           date: '14/8/2025',
           content:
-            'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
+            'Hace click en cualquiera de nuestros chats y comenzá a jugar!',
           highlight: true
         }
       ]
@@ -327,10 +353,10 @@
           try {
             linesOrder = JSON.parse(savedOrder)
           } catch (e) {
-            linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6'])
+            linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
           }
         } else {
-          linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6'])
+          linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
         }
         localStorage.setItem(
           'fortunawild_lines_order',
@@ -432,6 +458,57 @@
         })
       }
 
+      function updateTelegramDisplay() {
+        const container = document.getElementById('telegram-container')
+        
+        if (!telegramConfig.active) {
+          container.innerHTML = '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">No disponible en este momento</p>'
+          return
+        }
+
+        const currentTime = new Date().toLocaleTimeString('es-AR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+
+        const telegramItem = document.createElement('div')
+        telegramItem.className = 'chat-item'
+        telegramItem.style.background = '#e3f2fd'
+        telegramItem.style.border = '2px solid #2196f3'
+        telegramItem.style.borderRadius = '8px'
+        telegramItem.style.marginBottom = '0'
+
+        telegramItem.innerHTML = `
+          <div class="avatar online" style="background: linear-gradient(45deg, #2196f3, #0d47a1);">
+            <span style="font-size: 24px;">✈️</span>
+          </div>
+          <div class="chat-content">
+            <div class="chat-header">
+              <div class="chat-name" style="color: #1976d2;">FortunaWild Telegram</div>
+              <div class="chat-time">${currentTime}</div>
+            </div>
+            <div class="chat-preview">
+              <div class="chat-message" style="color: #0d47a1; font-weight: 500;">
+                ✅ Disponible - Haz clic para contactar
+              </div>
+            </div>
+          </div>
+        `
+
+        telegramItem.onclick = function() {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'telegram_click', {
+              event_category: 'engagement',
+              event_label: 'FortunaWild Telegram'
+            })
+          }
+          window.open('https://t.me/' + telegramConfig.username, '_blank')
+        }
+
+        container.appendChild(telegramItem)
+      }
+
       function updateNewsDisplay() {
         const container = document.getElementById('news-container')
         container.innerHTML = ''
@@ -460,6 +537,7 @@
       function loadConfiguration() {
         initializeOrder()
         updateDisplay()
+        updateTelegramDisplay()
         updateNewsDisplay()
 
         document.getElementById('loading').style.display = 'none'
