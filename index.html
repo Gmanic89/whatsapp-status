@@ -29,18 +29,21 @@
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #e5ddd5;
-        min-height: 100vh;
+        height: 100vh;
         color: #333;
-        overflow-y: auto;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
       }
 
       .container {
         max-width: 420px;
         margin: 0 auto;
         background: white;
-        min-height: auto;
         position: relative;
-        overflow-y: auto;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
       .header {
@@ -52,6 +55,7 @@
         justify-content: center;
         text-align: center;
         box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
       }
 
       .header h1 {
@@ -74,8 +78,19 @@
 
       .chat-list {
         background: white;
-        max-height: none;
-        overflow: visible;
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 0;
+      }
+      
+      .content-wrapper {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .whatsapp-numbers {
+        flex: 0 0 auto;
       }
 
       .chat-item {
@@ -183,6 +198,14 @@
         flex: 1;
       }
 
+      .telegram-fixed {
+        background: #e3f2fd;
+        border-top: 3px solid #2196f3;
+        padding: 8px 16px;
+        flex-shrink: 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      }
+
       .news-section {
         background: white;
         border-top: 8px solid #f0f0f0;
@@ -222,19 +245,7 @@
       }
 
       .visit-counter {
-        text-align: center;
-        padding: 10px;
-        background: #f8f9fa;
-        border-top: 1px solid #eee;
-      }
-
-      .visit-counter span {
-        font-size: 11px;
-        color: #999;
-        font-family: monospace;
-        background: rgba(0, 0, 0, 0.05);
-        padding: 4px 8px;
-        border-radius: 4px;
+        display: none;
       }
 
       @media (max-width: 480px) {
@@ -265,18 +276,18 @@
 
       <div class="loading" id="loading">⏳ Cargando configuración...</div>
 
-      <div id="main-content" style="display: none">
-        <div class="chat-list" id="whatsapp-lines"></div>
-
-        <div class="news-section" style="background: #e3f2fd; border-top: 8px solid #2196f3;">
-          <h2 class="news-title" style="color: #1976d2;">💬 Telegram Oficial</h2>
-          <div id="telegram-container"></div>
+      <div id="main-content" style="display: none; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+        <div class="chat-list" id="scroll-container">
+          <div class="content-wrapper">
+            <div class="whatsapp-numbers" id="whatsapp-lines"></div>
+            <div class="news-section">
+              <h2 class="news-title">📢 Noticias</h2>
+              <div id="news-container"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="news-section">
-          <h2 class="news-title">📢 Noticias</h2>
-          <div id="news-container"></div>
-        </div>
+        <div class="telegram-fixed" id="telegram-container"></div>
       </div>
 
       <div class="visit-counter">
@@ -304,7 +315,7 @@
         l10: d('NTQ5') + d('MTEyNTAwMTM0OA=='),
         l11: d('NTQ5') + d('MTEzNDIwMjQzOA=='),
         l12: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
-        telegram: d('Zm9ydHVuYXdpbGQ=')
+        telegram: d('Zm9ydHVuYXdpbGQwMQ==')
       }
 
       // Configuración (números nunca visibles en texto plano)
@@ -320,7 +331,7 @@
         9: { name: 'Fortuna Wild 9', number: enc.l9, active: true },
         10: { name: 'Fortuna Wild 10', number: enc.l10, active: true },
         11: { name: 'Fortuna Wild 11', number: enc.l11, active: true },
-        12: { name: 'Fortuna Wild 12 (Soporte)', number: enc.l12, active: true }
+        12: { name: 'Soporte Técnico', number: enc.l12, active: true }
       }
 
       const telegramConfig = {
@@ -332,7 +343,7 @@
         {
           date: '14/8/2025',
           content:
-            'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
+            'Hace click en cualquiera de los chats y te llevará con nosotros',
           highlight: true
         }
       ]
@@ -350,15 +361,28 @@
 
       function initializeOrder() {
         const savedOrder = localStorage.getItem('fortunawild_lines_order')
+        const allLines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        
         if (savedOrder) {
           try {
-            linesOrder = JSON.parse(savedOrder)
+            const parsed = JSON.parse(savedOrder)
+            // Verificar si el orden guardado tiene las 12 líneas
+            if (parsed.length === 12) {
+              linesOrder = parsed
+            } else {
+              // Si no tiene 12, crear uno nuevo
+              console.log('Orden guardado incompleto, creando nuevo');
+              linesOrder = shuffleArray(allLines)
+            }
           } catch (e) {
-            linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+            console.log('Error parseando orden guardado, creando nuevo');
+            linesOrder = shuffleArray(allLines)
           }
         } else {
-          linesOrder = shuffleArray(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+          linesOrder = shuffleArray(allLines)
         }
+        
+        console.log('Orden inicializado:', linesOrder);
         localStorage.setItem(
           'fortunawild_lines_order',
           JSON.stringify(linesOrder)
@@ -388,9 +412,7 @@
       }
 
       function initVisitCounter() {
-        document.getElementById('visit-count').textContent =
-          'Analytics activo ✓'
-
+        // Analytics silencioso - sin mostrar mensaje
         if (typeof gtag !== 'undefined') {
           gtag('event', 'page_view', {
             event_category: 'engagement',
@@ -404,9 +426,17 @@
         const container = document.getElementById('whatsapp-lines')
         container.innerHTML = ''
 
+        console.log('Mostrando líneas:', linesOrder);
+        console.log('Total líneas a mostrar:', linesOrder.length);
+
         linesOrder.forEach((key) => {
           const line = linesConfig[key]
-          if (!line) return
+          console.log('Procesando línea', key, ':', line);
+          
+          if (!line) {
+            console.log('Línea', key, 'no encontrada en configuración');
+            return;
+          }
 
           const isActive = line.active
           const currentTime = new Date().toLocaleTimeString('es-AR', {
@@ -457,6 +487,8 @@
 
           container.appendChild(chatItem)
         })
+        
+        console.log('Elementos añadidos al contenedor:', container.children.length);
       }
 
       function updateTelegramDisplay() {
@@ -475,22 +507,24 @@
 
         const telegramItem = document.createElement('div')
         telegramItem.className = 'chat-item'
-        telegramItem.style.background = '#e3f2fd'
-        telegramItem.style.border = '2px solid #2196f3'
-        telegramItem.style.borderRadius = '8px'
+        telegramItem.style.background = 'transparent'
+        telegramItem.style.border = 'none'
+        telegramItem.style.borderRadius = '0'
         telegramItem.style.marginBottom = '0'
+        telegramItem.style.borderBottom = 'none'
+        telegramItem.style.padding = '6px 0'
 
         telegramItem.innerHTML = `
-          <div class="avatar online" style="background: linear-gradient(45deg, #2196f3, #0d47a1);">
-            <span style="font-size: 24px;">✈️</span>
+          <div class="avatar online" style="background: linear-gradient(45deg, #2196f3, #0d47a1); width: 45px; height: 45px; font-size: 20px;">
+            <span style="font-size: 22px;">✈️</span>
           </div>
           <div class="chat-content">
             <div class="chat-header">
-              <div class="chat-name" style="color: #1976d2;">FortunaWild Telegram</div>
-              <div class="chat-time">${currentTime}</div>
+              <div class="chat-name" style="color: #1976d2; font-size: 15px;">💬 FortunaWild Telegram</div>
+              <div class="chat-time" style="font-size: 11px;">${currentTime}</div>
             </div>
             <div class="chat-preview">
-              <div class="chat-message" style="color: #0d47a1; font-weight: 500;">
+              <div class="chat-message" style="color: #0d47a1; font-weight: 500; font-size: 13px;">
                 ✅ Disponible - Haz clic para contactar
               </div>
             </div>
@@ -542,7 +576,7 @@
         updateNewsDisplay()
 
         document.getElementById('loading').style.display = 'none'
-        document.getElementById('main-content').style.display = 'block'
+        document.getElementById('main-content').style.display = 'flex'
       }
 
       window.onload = function () {
