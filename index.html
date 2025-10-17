@@ -484,12 +484,15 @@
             chatItem.onclick = function () {
               trackWhatsAppClick(line.name, line.number)
 
+              // Redireccionar a página intermedia en lugar de WhatsApp directo
+              const redirectUrl = `redirect.html?phone=${line.number}&line=${encodeURIComponent(line.name)}`;
+              
               setTimeout(() => {
                 moveLineToEnd(key)
               }, 100)
 
-              const wa = 'https://wa.me/'
-              window.open(wa + line.number, '_blank')
+              // Abrir en nueva pestaña
+              window.open(redirectUrl, '_blank');
             }
           }
 

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectando...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .timer {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .manual-link {
+            display: none;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: white;
+            color: #128c7e;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .manual-link:hover {
+            transform: scale(1.05);
+        }
+
+        .manual-link.show {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">💬</div>
+        <h1>Conectando con WhatsApp</h1>
+        <p>Espera un momento mientras te conectamos con un asesor...</p>
+        <div class="spinner"></div>
+        <div class="timer" id="timer"></div>
+        <a href="#" class="manual-link" id="manualLink">Abrir WhatsApp manualmente</a>
+    </div>
+
+    <script>
+        // Función para obtener parámetros de URL
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Generar ID único para esta sesión
+        function generateSessionId() {
+            return 'fw_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Generar parámetros aleatorios para ofuscar origen
+        function generateRandomParams() {
+            const sources = ['web', 'mobile', 'desktop', 'tablet', 'app'];
+            const campaigns = ['promo', 'info', 'support', 'consulta', 'ayuda'];
+            const refs = ['direct', 'organic', 'social', 'email', 'search'];
+            
+            const randomSource = sources[Math.floor(Math.random() * sources.length)];
+            const randomCampaign = campaigns[Math.floor(Math.random() * campaigns.length)];
+            const randomRef = refs[Math.floor(Math.random() * refs.length)];
+            const randomId = Math.random().toString(36).substr(2, 8);
+            
+            return `src=${randomSource}&utm_campaign=${randomCampaign}&ref=${randomRef}&sid=${randomId}`;
+        }
+
+        // Obtener número de teléfono de la URL
+        const phoneNumber = getUrlParameter('phone');
+        const lineName = getUrlParameter('line') || 'FortunaWild';
+
+        if (!phoneNumber) {
+            document.querySelector('p').textContent = 'Error: No se especificó número de contacto';
+            document.querySelector('.spinner').style.display = 'none';
+        } else {
+            // Delay aleatorio entre 1.5 y 3.5 segundos
+            const randomDelay = Math.floor(Math.random() * 2000) + 1500;
+            
+            // Contador visual
+            let countdown = Math.ceil(randomDelay / 1000);
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `Redirigiendo en ${countdown} segundos...`;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    timerElement.textContent = `Redirigiendo en ${countdown} segundos...`;
+                } else {
+                    clearInterval(countdownInterval);
+                    timerElement.textContent = 'Abriendo WhatsApp...';
+                }
+            }, 1000);
+
+            // Construir URL de WhatsApp con parámetros aleatorios
+            const sessionId = generateSessionId();
+            const randomParams = generateRandomParams();
+            const waUrl = `https://wa.me/${phoneNumber}?text=Hola%20${encodeURIComponent(lineName)}&${randomParams}`;
+            
+            // Link manual por si falla el redirect automático
+            const manualLink = document.getElementById('manualLink');
+            manualLink.href = waUrl;
+
+            // Métodos de redirección rotativos
+            const redirectMethods = [
+                // Método 1: window.location
+                () => {
+                    setTimeout(() => {
+                        window.location.href = waUrl;
+                    }, randomDelay);
+                },
+                
+                // Método 2: window.open con _self
+                () => {
+                    setTimeout(() => {
+                        window.open(waUrl, '_self');
+                    }, randomDelay);
+                },
+                
+                // Método 3: Link invisible con click
+                () => {
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.href = waUrl;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Cerrar la página después de 2 segundos
+                        setTimeout(() => {
+                            window.close();
+                            // Si no se puede cerrar, volver atrás
+                            if (!window.closed) {
+                                window.history.back();
+                            }
+                        }, 2000);
+                    }, randomDelay);
+                }
+            ];
+
+            // Seleccionar método aleatorio
+            const randomMethod = redirectMethods[Math.floor(Math.random() * redirectMethods.length)];
+            randomMethod();
+
+            // Mostrar link manual después de 5 segundos
+            setTimeout(() => {
+                manualLink.classList.add('show');
+            }, 5000);
+
+            // Tracking (opcional)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'whatsapp_redirect', {
+                    event_category: 'redirect',
+                    event_label: lineName,
+                    session_id: sessionId
+                });
+            }
+        }
+    </script>
+</body>
+</html>
