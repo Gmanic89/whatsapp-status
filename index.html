@@ -255,7 +255,7 @@
         .container {
           max-width: 100%;
           height: 100vh;
-          height: 100dvh; /* Altura dinámica para móviles */
+          height: 100dvh;
         }
 
         .chat-item {
@@ -279,7 +279,7 @@
         }
         
         .chat-list {
-          padding-bottom: 70px; /* Espacio para que no tape el telegram */
+          padding-bottom: 70px;
         }
       }
     </style>
@@ -332,8 +332,7 @@
         l8: d('NTQ5') + d('MjIxNDQwNzM3MQ=='),
         l9: d('NTQ5') + d('MTE2MjQ3NTU2NQ=='),
         l10: d('NTQ5') + d('MTEyNTAwMTM0OA=='),
-        l11: d('NTQ5') + d('MTEzNDIwMjQzOA=='),
-        l12: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
+        l11: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
         telegram: d('Zm9ydHVuYXdpbGQwMQ==')
       }
 
@@ -349,8 +348,7 @@
         8: { name: 'Fortuna Wild 8', number: enc.l8, active: true },
         9: { name: 'Fortuna Wild 9', number: enc.l9, active: true },
         10: { name: 'Fortuna Wild 10', number: enc.l10, active: true },
-        11: { name: 'Fortuna Wild 11', number: enc.l11, active: true },
-        12: { name: 'Soporte Técnico', number: enc.l12, active: true }
+        11: { name: 'Soporte Técnico', number: enc.l11, active: true }
       }
 
       const telegramConfig = {
@@ -380,16 +378,14 @@
 
       function initializeOrder() {
         const savedOrder = localStorage.getItem('fortunawild_lines_order')
-        const allLines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        const allLines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
         
         if (savedOrder) {
           try {
             const parsed = JSON.parse(savedOrder)
-            // Verificar si el orden guardado tiene las 12 líneas
-            if (parsed.length === 12) {
+            if (parsed.length === 11) {
               linesOrder = parsed
             } else {
-              // Si no tiene 12, crear uno nuevo
               console.log('Orden guardado incompleto, creando nuevo');
               linesOrder = shuffleArray(allLines)
             }
@@ -431,7 +427,6 @@
       }
 
       function initVisitCounter() {
-        // Analytics silencioso - sin mostrar mensaje
         if (typeof gtag !== 'undefined') {
           gtag('event', 'page_view', {
             event_category: 'engagement',
@@ -445,15 +440,10 @@
         const container = document.getElementById('whatsapp-lines')
         container.innerHTML = ''
 
-        console.log('Mostrando líneas:', linesOrder);
-        console.log('Total líneas a mostrar:', linesOrder.length);
-
         linesOrder.forEach((key) => {
           const line = linesConfig[key]
-          console.log('Procesando línea', key, ':', line);
           
           if (!line) {
-            console.log('Línea', key, 'no encontrada en configuración');
             return;
           }
 
@@ -498,7 +488,6 @@
                 moveLineToEnd(key)
               }, 100)
 
-              // Construir URL dinámicamente (nunca visible en el código)
               const wa = 'https://wa.me/'
               window.open(wa + line.number, '_blank')
             }
@@ -506,8 +495,6 @@
 
           container.appendChild(chatItem)
         })
-        
-        console.log('Elementos añadidos al contenedor:', container.children.length);
       }
 
       function updateTelegramDisplay() {
