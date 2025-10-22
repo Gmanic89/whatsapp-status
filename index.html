@@ -251,6 +251,140 @@
         display: none;
       }
 
+      /* Modal de confirmación */
+      .confirmation-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        padding: 20px;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        max-width: 380px;
+        width: 100%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-icon {
+        font-size: 50px;
+        margin-bottom: 10px;
+      }
+
+      .modal-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #128c7e;
+        margin-bottom: 5px;
+      }
+
+      .modal-subtitle {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .modal-tips {
+        background: #f0f8f5;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 20px 0;
+        border-left: 4px solid #25d366;
+      }
+
+      .modal-tips p {
+        font-size: 13px;
+        color: #555;
+        margin: 8px 0;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .modal-tips p::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #25d366;
+        font-weight: bold;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .modal-button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .modal-button.primary {
+        background: #25d366;
+        color: white;
+      }
+
+      .modal-button.primary:hover {
+        background: #20bd5a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+      }
+
+      .modal-button.secondary {
+        background: #f0f0f0;
+        color: #666;
+      }
+
+      .modal-button.secondary:hover {
+        background: #e0e0e0;
+      }
+
+      .rate-limit-warning {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        text-align: center;
+      }
+
+      .rate-limit-warning p {
+        font-size: 14px;
+        color: #856404;
+        margin: 5px 0;
+      }
+
       @media (max-width: 480px) {
         .container {
           max-width: 100%;
@@ -277,45 +411,42 @@
           margin: 0 auto;
           z-index: 100;
         }
-        
-        .chat-list {
-          padding-bottom: 70px;
-        }
       }
     </style>
   </head>
+
   <body>
     <div class="container">
       <div class="header">
         <div>
-          <h1>📱 FortunaWild WhatsApp</h1>
-          <p>Líneas disponibles para contacto</p>
+          <h1>🎰 FortunaWild WhatsApp</h1>
+          <p>Estado de Líneas en Tiempo Real</p>
         </div>
       </div>
 
-      <div class="loading" id="loading">⏳ Cargando configuración...</div>
+      <div id="loading" class="loading">Cargando líneas disponibles...</div>
 
-      <div id="main-content" style="display: none; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-        <div class="chat-list" id="scroll-container">
+      <div id="main-content" style="display: none; flex: 1; display: flex; flex-direction: column;">
+        <div class="chat-list">
           <div class="content-wrapper">
             <div class="whatsapp-numbers" id="whatsapp-lines"></div>
+
             <div class="news-section">
-              <h2 class="news-title">📢 Noticias</h2>
+              <div class="news-title">📢 Novedades</div>
               <div id="news-container"></div>
             </div>
           </div>
         </div>
 
-        <div class="telegram-fixed" id="telegram-container"></div>
-      </div>
-
-      <div class="visit-counter">
-        <span id="visit-count">Analytics activo</span>
+        <div class="telegram-fixed">
+          <div id="telegram-container" style="width: 100%;"></div>
+        </div>
       </div>
     </div>
 
+    <div class="visit-counter" id="visit-counter"></div>
+
     <script>
-      // Función de decodificación (ofuscación anti-bots)
       function d(s) {
         return atob(s)
       }
@@ -323,7 +454,7 @@
       // Números codificados en Base64 (invisible para crawlers)
       const enc = {
         l1: d('NTQ5') + d('MjIxNTc3NzA0Ng=='),
-        l2: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
+        l2: d('NTQ5') + d('MTE3MzU4ODkxOA=='), // NÚMERO ACTUALIZADO
         l3: d('NTQ5') + d('MTE3MzY2MTY3NQ=='),
         l4: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
         l5: d('NTQ5') + d('MTE2NTU1NDg5MQ=='),
@@ -339,7 +470,7 @@
       // Configuración (números nunca visibles en texto plano)
       const linesConfig = {
         1: { name: 'Fortuna Wild 1', number: enc.l1, active: false },
-        2: { name: 'Fortuna Wild 2', number: enc.l2, active: false },
+        2: { name: 'Fortuna Wild 2', number: enc.l2, active: true }, // ACTIVADO
         3: { name: 'Fortuna Wild 3', number: enc.l3, active: true },
         4: { name: 'Fortuna Wild 4', number: enc.l4, active: true },
         5: { name: 'Fortuna Wild 5', number: enc.l5, active: true },
@@ -358,14 +489,174 @@
 
       const newsItems = [
         {
-          date: '14/8/2025',
-          content:
-            'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
+          date: '22/10/2025',
+          content: '🛡️ Sistema de protección anti-spam activado para mayor estabilidad',
           highlight: true
+        },
+        {
+          date: '14/8/2025',
+          content: 'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
+          highlight: false
         }
       ]
 
       let linesOrder = []
+
+      // ============================================
+      // NUEVAS FUNCIONES DE PROTECCIÓN ANTI-SPAM
+      // ============================================
+
+      // Función para diversificar URLs de WhatsApp
+      function getRandomWhatsAppURL(phone) {
+        const formats = [
+          `https://wa.me/${phone}`,
+          `https://api.whatsapp.com/send?phone=${phone}`,
+          `https://web.whatsapp.com/send?phone=${phone}`
+        ];
+        
+        // Seleccionar formato aleatorio
+        const randomFormat = formats[Math.floor(Math.random() * formats.length)];
+        
+        // Agregar parámetros aleatorios para mayor diversificación
+        const randomParams = [
+          '',
+          `&text=${encodeURIComponent('Hola')}`,
+          `&app_absent=0`
+        ];
+        
+        const randomParam = randomParams[Math.floor(Math.random() * randomParams.length)];
+        
+        return randomFormat + randomParam;
+      }
+
+      // Rate Limiting: controlar frecuencia de clicks por usuario
+      function canUserClick(lineKey) {
+        const now = Date.now();
+        const clickHistory = JSON.parse(localStorage.getItem('click_history') || '{}');
+        const userClicks = clickHistory[lineKey] || [];
+        
+        // Filtrar clicks de los últimos 30 minutos
+        const recentClicks = userClicks.filter(time => now - time < 30 * 60 * 1000);
+        
+        // Máximo 3 clicks por línea cada 30 minutos
+        if (recentClicks.length >= 3) {
+          return {
+            allowed: false,
+            message: '⏱️ Has alcanzado el límite de intentos para esta línea. Por favor espera 30 minutos.',
+            remainingTime: Math.ceil((recentClicks[0] + 30 * 60 * 1000 - now) / 60000)
+          };
+        }
+        
+        // Registrar este click
+        recentClicks.push(now);
+        clickHistory[lineKey] = recentClicks;
+        localStorage.setItem('click_history', JSON.stringify(clickHistory));
+        
+        return { allowed: true };
+      }
+
+      // Detectar comportamiento de bot
+      function isLikelyBot() {
+        // Verificar User Agent
+        const botPatterns = /bot|crawler|spider|scraper|headless/i;
+        if (botPatterns.test(navigator.userAgent)) {
+          console.log('Bot detectado por User Agent');
+          return true;
+        }
+        
+        // Verificar clicks muy rápidos (menos de 1 segundo entre clicks)
+        const lastClick = localStorage.getItem('last_click_time');
+        const now = Date.now();
+        if (lastClick && (now - parseInt(lastClick)) < 1000) {
+          console.log('Comportamiento sospechoso: clicks muy rápidos');
+          return true;
+        }
+        localStorage.setItem('last_click_time', now.toString());
+        
+        // Verificar si tiene localStorage disponible (algunos bots no lo tienen)
+        try {
+          localStorage.setItem('test', 'test');
+          localStorage.removeItem('test');
+        } catch(e) {
+          console.log('Bot detectado: no tiene localStorage');
+          return true;
+        }
+        
+        return false;
+      }
+
+      // Modal de confirmación mejorado
+      function showConfirmationModal(line, lineKey) {
+        return new Promise((resolve) => {
+          const modal = document.createElement('div');
+          modal.className = 'confirmation-modal';
+          
+          const clickLimit = canUserClick(lineKey);
+          
+          modal.innerHTML = `
+            <div class="modal-content">
+              <div class="modal-header">
+                <div class="modal-icon">💬</div>
+                <div class="modal-title">${line.name}</div>
+                <div class="modal-subtitle">¿Deseas contactar por WhatsApp?</div>
+              </div>
+              
+              ${!clickLimit.allowed ? `
+                <div class="rate-limit-warning">
+                  <p><strong>⏱️ Límite alcanzado</strong></p>
+                  <p>Espera ${clickLimit.remainingTime} minutos antes de intentar nuevamente</p>
+                </div>
+              ` : `
+                <div class="modal-tips">
+                  <p>Guarda el contacto antes de escribir</p>
+                  <p>Sé paciente esperando respuesta</p>
+                  <p>No envíes mensajes repetidos</p>
+                </div>
+                
+                <div class="modal-actions">
+                  <button class="modal-button secondary" onclick="this.closest('.confirmation-modal').remove()">
+                    Cancelar
+                  </button>
+                  <button class="modal-button primary" id="confirm-button">
+                    Abrir WhatsApp
+                  </button>
+                </div>
+              `}
+              
+              ${clickLimit.allowed ? '' : `
+                <div class="modal-actions">
+                  <button class="modal-button secondary" onclick="this.closest('.confirmation-modal').remove()" style="flex: 1;">
+                    Entendido
+                  </button>
+                </div>
+              `}
+            </div>
+          `;
+          
+          document.body.appendChild(modal);
+          
+          if (clickLimit.allowed) {
+            document.getElementById('confirm-button').onclick = function() {
+              modal.remove();
+              resolve(true);
+            };
+          } else {
+            resolve(false);
+          }
+          
+          // Cerrar al hacer click fuera del modal
+          modal.onclick = function(e) {
+            if (e.target === modal) {
+              modal.remove();
+              resolve(false);
+            }
+          };
+        });
+      }
+
+      // ============================================
+      // FUNCIONES ORIGINALES (MANTENIDAS)
+      // ============================================
 
       function shuffleArray(array) {
         const newArray = [...array]
@@ -481,18 +772,33 @@
                 `
 
           if (isActive) {
-            chatItem.onclick = function () {
+            chatItem.onclick = async function () {
+              // Verificar si es un bot
+              if (isLikelyBot()) {
+                console.log('Acceso bloqueado: comportamiento de bot detectado');
+                return;
+              }
+
+              // Mostrar modal de confirmación
+              const confirmed = await showConfirmationModal(line, key);
+              
+              if (!confirmed) {
+                return;
+              }
+
               trackWhatsAppClick(line.name, line.number)
 
-              // Redireccionar a página intermedia en lugar de WhatsApp directo
-              const redirectUrl = `redirect.html?phone=${line.number}&line=${encodeURIComponent(line.name)}`;
+              // Usar URL diversificada
+              const whatsappURL = getRandomWhatsAppURL(line.number);
               
+              console.log('Abriendo WhatsApp con URL:', whatsappURL);
+
               setTimeout(() => {
                 moveLineToEnd(key)
               }, 100)
 
               // Abrir en nueva pestaña
-              window.open(redirectUrl, '_blank');
+              window.open(whatsappURL, '_blank');
             }
           }
 

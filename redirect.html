@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conectando...</title>
+    
+    <!-- Prevenir indexación por buscadores -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    
     <style>
         * {
             margin: 0;
@@ -86,145 +91,415 @@
             border-radius: 10px;
             font-weight: 500;
             transition: transform 0.2s;
+            cursor: pointer;
         }
 
         .manual-link:hover {
             transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
 
         .manual-link.show {
             display: inline-block;
+        }
+
+        .tips {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .tips.show {
+            display: block;
+        }
+
+        .tips ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .tips li {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+
+        .error-message {
+            color: #ffeb3b;
+            font-weight: 500;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">💬</div>
-        <h1>Conectando con WhatsApp</h1>
-        <p>Espera un momento mientras te conectamos con un asesor...</p>
-        <div class="spinner"></div>
+        <h1 id="title">Conectando con WhatsApp</h1>
+        <p id="description">Espera un momento mientras te conectamos con un asesor...</p>
+        <div class="spinner" id="spinner"></div>
         <div class="timer" id="timer"></div>
         <a href="#" class="manual-link" id="manualLink">Abrir WhatsApp manualmente</a>
+        
+        <div class="tips" id="tips">
+            <strong>💡 Tips para una mejor atención:</strong>
+            <ul>
+                <li>Guarda el contacto en tu teléfono</li>
+                <li>Escribe tu consulta de forma clara</li>
+                <li>Ten paciencia esperando respuesta</li>
+            </ul>
+        </div>
+        
+        <p class="error-message" id="errorMessage"></p>
     </div>
 
     <script>
-        // Función para obtener parámetros de URL
+        // ========================================
+        // PROTECCIONES ANTI-SPAM Y ANTI-BOT
+        // ========================================
+
+        // Verificar si es un bot
+        function isBot() {
+            const botPatterns = /bot|crawler|spider|scraper|headless|phantom|selenium/i;
+            return botPatterns.test(navigator.userAgent);
+        }
+
+        // Verificar comportamiento humano (movimiento del mouse)
+        let humanVerified = false;
+        let mouseMovements = 0;
+
+        document.addEventListener('mousemove', function() {
+            mouseMovements++;
+            if (mouseMovements > 3) {
+                humanVerified = true;
+            }
+        });
+
+        document.addEventListener('touchstart', function() {
+            humanVerified = true;
+        });
+
+        // Verificar si tiene capacidades básicas de un navegador real
+        function hasBasicBrowserFeatures() {
+            return typeof localStorage !== 'undefined' && 
+                   typeof sessionStorage !== 'undefined' &&
+                   typeof document.cookie !== 'undefined';
+        }
+
+        // Rate limiting: verificar accesos recientes
+        function checkRateLimit() {
+            const now = Date.now();
+            const recentAccesses = JSON.parse(localStorage.getItem('fw_redirect_history') || '[]');
+            
+            // Filtrar accesos de los últimos 5 minutos
+            const recent = recentAccesses.filter(time => now - time < 5 * 60 * 1000);
+            
+            // Máximo 5 redirects cada 5 minutos
+            if (recent.length >= 5) {
+                return {
+                    allowed: false,
+                    message: 'Demasiados intentos recientes. Por favor espera unos minutos.'
+                };
+            }
+            
+            // Registrar este acceso
+            recent.push(now);
+            localStorage.setItem('fw_redirect_history', JSON.stringify(recent));
+            
+            return { allowed: true };
+        }
+
+        // Generar fingerprint simple del navegador
+        function generateFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('fingerprint', 2, 2);
+            return canvas.toDataURL();
+        }
+
+        // ========================================
+        // FUNCIONES DE REDIRECCIÓN MEJORADAS
+        // ========================================
+
         function getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
-        // Generar ID único para esta sesión
         function generateSessionId() {
             return 'fw_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
 
-        // Generar parámetros aleatorios para ofuscar origen
         function generateRandomParams() {
-            const sources = ['web', 'mobile', 'desktop', 'tablet', 'app'];
-            const campaigns = ['promo', 'info', 'support', 'consulta', 'ayuda'];
-            const refs = ['direct', 'organic', 'social', 'email', 'search'];
+            const sources = ['web', 'mobile', 'desktop', 'tablet', 'app', 'pwa'];
+            const campaigns = ['promo', 'info', 'support', 'consulta', 'ayuda', 'contacto'];
+            const refs = ['direct', 'organic', 'social', 'email', 'search', 'referral'];
+            const mediums = ['cpc', 'organic', 'referral', 'social', 'email', 'direct'];
             
             const randomSource = sources[Math.floor(Math.random() * sources.length)];
             const randomCampaign = campaigns[Math.floor(Math.random() * campaigns.length)];
             const randomRef = refs[Math.floor(Math.random() * refs.length)];
+            const randomMedium = mediums[Math.floor(Math.random() * mediums.length)];
             const randomId = Math.random().toString(36).substr(2, 8);
+            const timestamp = Date.now();
             
-            return `src=${randomSource}&utm_campaign=${randomCampaign}&ref=${randomRef}&sid=${randomId}`;
+            return `src=${randomSource}&utm_campaign=${randomCampaign}&utm_medium=${randomMedium}&ref=${randomRef}&sid=${randomId}&t=${timestamp}`;
         }
 
-        // Obtener número de teléfono de la URL
+        // Diversificar URLs de WhatsApp (rotación aleatoria)
+        function getRandomWhatsAppURL(phone, message) {
+            const encodedMessage = encodeURIComponent(message);
+            const randomParams = generateRandomParams();
+            
+            const formats = [
+                `https://wa.me/${phone}?text=${encodedMessage}`,
+                `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`,
+                `https://web.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`,
+                `https://wa.me/${phone}?text=${encodedMessage}&${randomParams}`,
+                `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedMessage}&app_absent=0`
+            ];
+            
+            return formats[Math.floor(Math.random() * formats.length)];
+        }
+
+        // ========================================
+        // LÓGICA PRINCIPAL
+        // ========================================
+
         const phoneNumber = getUrlParameter('phone');
         const lineName = getUrlParameter('line') || 'FortunaWild';
+        const sessionId = generateSessionId();
 
+        // Elementos del DOM
+        const titleEl = document.getElementById('title');
+        const descriptionEl = document.getElementById('description');
+        const spinnerEl = document.getElementById('spinner');
+        const timerEl = document.getElementById('timer');
+        const manualLinkEl = document.getElementById('manualLink');
+        const tipsEl = document.getElementById('tips');
+        const errorEl = document.getElementById('errorMessage');
+
+        // Validación de número de teléfono
         if (!phoneNumber) {
-            document.querySelector('p').textContent = 'Error: No se especificó número de contacto';
-            document.querySelector('.spinner').style.display = 'none';
+            titleEl.textContent = 'Error de Conexión';
+            descriptionEl.textContent = 'No se especificó un número de contacto válido';
+            spinnerEl.style.display = 'none';
+            errorEl.textContent = 'Por favor, intenta nuevamente desde el inicio';
+            
+            setTimeout(() => {
+                window.history.back();
+            }, 3000);
+            
         } else {
-            // Delay aleatorio entre 1.5 y 3.5 segundos
-            const randomDelay = Math.floor(Math.random() * 2000) + 1500;
+            
+            // Verificar si es un bot
+            if (isBot()) {
+                console.log('Bot detectado, bloqueando redirect');
+                titleEl.textContent = 'Verificación requerida';
+                descriptionEl.textContent = 'Por favor, verifica que eres humano';
+                spinnerEl.style.display = 'none';
+                errorEl.textContent = 'Si ves este mensaje, por favor contacta a soporte';
+                
+                // No hacer redirect si es un bot
+                throw new Error('Bot detectado');
+            }
+
+            // Verificar características del navegador
+            if (!hasBasicBrowserFeatures()) {
+                console.log('Navegador sin características básicas');
+                errorEl.textContent = 'Tu navegador no es compatible. Por favor usa un navegador actualizado.';
+            }
+
+            // Verificar rate limit
+            const rateLimitCheck = checkRateLimit();
+            if (!rateLimitCheck.allowed) {
+                titleEl.textContent = 'Límite Alcanzado';
+                descriptionEl.textContent = rateLimitCheck.message;
+                spinnerEl.style.display = 'none';
+                timerEl.textContent = 'Por favor espera unos minutos antes de intentar nuevamente';
+                
+                setTimeout(() => {
+                    window.history.back();
+                }, 5000);
+                
+                throw new Error('Rate limit excedido');
+            }
+
+            // Delay aleatorio entre 2 y 4 segundos (más natural)
+            const randomDelay = Math.floor(Math.random() * 2000) + 2000;
             
             // Contador visual
             let countdown = Math.ceil(randomDelay / 1000);
-            const timerElement = document.getElementById('timer');
-            timerElement.textContent = `Redirigiendo en ${countdown} segundos...`;
+            timerEl.textContent = `Redirigiendo en ${countdown} segundos...`;
             
             const countdownInterval = setInterval(() => {
                 countdown--;
                 if (countdown > 0) {
-                    timerElement.textContent = `Redirigiendo en ${countdown} segundos...`;
+                    timerEl.textContent = `Redirigiendo en ${countdown} segundos...`;
                 } else {
                     clearInterval(countdownInterval);
-                    timerElement.textContent = 'Abriendo WhatsApp...';
+                    timerEl.textContent = 'Abriendo WhatsApp...';
                 }
             }, 1000);
 
-            // Construir URL de WhatsApp con parámetros aleatorios
-            const sessionId = generateSessionId();
-            const randomParams = generateRandomParams();
-            const waUrl = `https://wa.me/${phoneNumber}?text=Hola%20${encodeURIComponent(lineName)}&${randomParams}`;
+            // Construir mensaje inicial
+            const initialMessage = `Hola ${lineName}, necesito información`;
             
-            // Link manual por si falla el redirect automático
-            const manualLink = document.getElementById('manualLink');
-            manualLink.href = waUrl;
+            // Generar URL de WhatsApp con formato aleatorio
+            const waUrl = getRandomWhatsAppURL(phoneNumber, initialMessage);
+            
+            console.log('Redirect URL generada:', waUrl.substring(0, 50) + '...');
 
-            // Métodos de redirección rotativos
+            // Configurar link manual
+            manualLinkEl.href = waUrl;
+            manualLinkEl.onclick = function(e) {
+                e.preventDefault();
+                window.open(waUrl, '_blank', 'noopener,noreferrer');
+                
+                // Mostrar mensaje de éxito
+                titleEl.textContent = '✅ Enlace Abierto';
+                descriptionEl.textContent = 'Si no se abrió WhatsApp, verifica tu configuración';
+                spinnerEl.style.display = 'none';
+                
+                setTimeout(() => {
+                    window.close();
+                    if (!window.closed) {
+                        window.history.back();
+                    }
+                }, 2000);
+            };
+
+            // Métodos de redirección diversos (rotación aleatoria)
             const redirectMethods = [
-                // Método 1: window.location
+                // Método 1: window.location (directo)
                 () => {
                     setTimeout(() => {
                         window.location.href = waUrl;
                     }, randomDelay);
                 },
                 
-                // Método 2: window.open con _self
+                // Método 2: Meta refresh
                 () => {
                     setTimeout(() => {
-                        window.open(waUrl, '_self');
+                        const meta = document.createElement('meta');
+                        meta.httpEquiv = 'refresh';
+                        meta.content = `0;url=${waUrl}`;
+                        document.head.appendChild(meta);
                     }, randomDelay);
                 },
                 
-                // Método 3: Link invisible con click
+                // Método 3: window.open con posterior cierre
+                () => {
+                    setTimeout(() => {
+                        const opened = window.open(waUrl, '_blank', 'noopener,noreferrer');
+                        
+                        if (opened) {
+                            // Cerrar página actual después de 2 segundos
+                            setTimeout(() => {
+                                window.close();
+                                if (!window.closed) {
+                                    window.history.back();
+                                }
+                            }, 2000);
+                        } else {
+                            // Si no se pudo abrir, mostrar link manual
+                            manualLinkEl.classList.add('show');
+                            tipsEl.classList.add('show');
+                            timerEl.textContent = 'No se pudo abrir automáticamente';
+                        }
+                    }, randomDelay);
+                },
+                
+                // Método 4: Link invisible con click programático
                 () => {
                     setTimeout(() => {
                         const link = document.createElement('a');
                         link.href = waUrl;
                         link.target = '_blank';
                         link.rel = 'noopener noreferrer';
+                        link.style.display = 'none';
                         document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
                         
-                        // Cerrar la página después de 2 segundos
+                        // Simular click humano
+                        const clickEvent = new MouseEvent('click', {
+                            view: window,
+                            bubbles: true,
+                            cancelable: true
+                        });
+                        link.dispatchEvent(clickEvent);
+                        
                         setTimeout(() => {
+                            document.body.removeChild(link);
                             window.close();
-                            // Si no se puede cerrar, volver atrás
                             if (!window.closed) {
                                 window.history.back();
                             }
-                        }, 2000);
+                        }, 1500);
                     }, randomDelay);
                 }
             ];
 
-            // Seleccionar método aleatorio
+            // Seleccionar método aleatorio (más impredecible para WhatsApp)
             const randomMethod = redirectMethods[Math.floor(Math.random() * redirectMethods.length)];
-            randomMethod();
+            
+            console.log('Método de redirect seleccionado:', redirectMethods.indexOf(randomMethod) + 1);
+            
+            // Esperar verificación humana antes de redirect (opcional pero recomendado)
+            const humanCheckInterval = setInterval(() => {
+                if (humanVerified || mouseMovements > 2) {
+                    clearInterval(humanCheckInterval);
+                    randomMethod();
+                }
+            }, 100);
 
-            // Mostrar link manual después de 5 segundos
+            // Timeout: ejecutar de todos modos después del delay si no se verificó
             setTimeout(() => {
-                manualLink.classList.add('show');
-            }, 5000);
+                clearInterval(humanCheckInterval);
+                if (!humanVerified) {
+                    console.log('Ejecutando redirect sin verificación humana');
+                    randomMethod();
+                }
+            }, randomDelay - 500);
 
-            // Tracking (opcional)
+            // Mostrar link manual y tips después de 6 segundos
+            setTimeout(() => {
+                manualLinkEl.classList.add('show');
+                tipsEl.classList.add('show');
+            }, 6000);
+
+            // Tracking (si está disponible Google Analytics)
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'whatsapp_redirect', {
                     event_category: 'redirect',
                     event_label: lineName,
-                    session_id: sessionId
+                    session_id: sessionId,
+                    phone_masked: phoneNumber.substring(0, 6) + '...'
                 });
             }
+
+            // Guardar fingerprint para análisis (opcional)
+            try {
+                const fingerprint = generateFingerprint();
+                sessionStorage.setItem('fw_fp', fingerprint.substring(0, 50));
+            } catch(e) {
+                console.log('No se pudo generar fingerprint');
+            }
         }
+
+        // Prevenir navegación hacia atrás accidental
+        window.addEventListener('popstate', function(event) {
+            if (phoneNumber) {
+                // Permitir volver atrás pero mostrar confirmación
+                const confirmed = confirm('¿Deseas cancelar la conexión con WhatsApp?');
+                if (!confirmed) {
+                    window.history.forward();
+                }
+            }
+        });
     </script>
 </body>
 </html>
