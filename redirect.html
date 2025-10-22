@@ -250,16 +250,14 @@
             return `src=${randomSource}&utm_campaign=${randomCampaign}&utm_medium=${randomMedium}&ref=${randomRef}&sid=${randomId}&t=${timestamp}`;
         }
 
-        // Diversificar URLs de WhatsApp (rotación aleatoria)
+        // Diversificar URLs de WhatsApp (rotación aleatoria) - SOLO FORMATOS MÓVILES
         function getRandomWhatsAppURL(phone, message) {
             const encodedMessage = encodeURIComponent(message);
-            const randomParams = generateRandomParams();
             
+            // Solo formatos que funcionan en móviles (sin web.whatsapp.com)
             const formats = [
                 `https://wa.me/${phone}?text=${encodedMessage}`,
                 `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`,
-                `https://web.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`,
-                `https://wa.me/${phone}?text=${encodedMessage}&${randomParams}`,
                 `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedMessage}&app_absent=0`
             ];
             
@@ -329,8 +327,8 @@
                 throw new Error('Rate limit excedido');
             }
 
-            // Delay aleatorio entre 2 y 4 segundos (más natural)
-            const randomDelay = Math.floor(Math.random() * 2000) + 2000;
+            // Delay más corto y natural (1.5 a 2.5 segundos)
+            const randomDelay = Math.floor(Math.random() * 1000) + 1500;
             
             // Contador visual
             let countdown = Math.ceil(randomDelay / 1000);
@@ -373,97 +371,29 @@
                 }, 2000);
             };
 
-            // Métodos de redirección diversos (rotación aleatoria)
-            const redirectMethods = [
-                // Método 1: window.location (directo)
-                () => {
-                    setTimeout(() => {
+            // Método de redirección simple y confiable para móviles
+            setTimeout(() => {
+                // Intentar abrir en nueva pestaña primero
+                const opened = window.open(waUrl, '_blank');
+                
+                // Si falló o el usuario bloqueó popups, usar location.href
+                setTimeout(() => {
+                    if (!opened || opened.closed) {
                         window.location.href = waUrl;
-                    }, randomDelay);
-                },
-                
-                // Método 2: Meta refresh
-                () => {
-                    setTimeout(() => {
-                        const meta = document.createElement('meta');
-                        meta.httpEquiv = 'refresh';
-                        meta.content = `0;url=${waUrl}`;
-                        document.head.appendChild(meta);
-                    }, randomDelay);
-                },
-                
-                // Método 3: window.open con posterior cierre
-                () => {
-                    setTimeout(() => {
-                        const opened = window.open(waUrl, '_blank', 'noopener,noreferrer');
-                        
-                        if (opened) {
-                            // Cerrar página actual después de 2 segundos
+                    } else {
+                        // Si abrió correctamente, cerrar esta página
+                        setTimeout(() => {
+                            window.close();
+                            // Si no se puede cerrar, volver atrás
                             setTimeout(() => {
-                                window.close();
                                 if (!window.closed) {
                                     window.history.back();
                                 }
-                            }, 2000);
-                        } else {
-                            // Si no se pudo abrir, mostrar link manual
-                            manualLinkEl.classList.add('show');
-                            tipsEl.classList.add('show');
-                            timerEl.textContent = 'No se pudo abrir automáticamente';
-                        }
-                    }, randomDelay);
-                },
-                
-                // Método 4: Link invisible con click programático
-                () => {
-                    setTimeout(() => {
-                        const link = document.createElement('a');
-                        link.href = waUrl;
-                        link.target = '_blank';
-                        link.rel = 'noopener noreferrer';
-                        link.style.display = 'none';
-                        document.body.appendChild(link);
-                        
-                        // Simular click humano
-                        const clickEvent = new MouseEvent('click', {
-                            view: window,
-                            bubbles: true,
-                            cancelable: true
-                        });
-                        link.dispatchEvent(clickEvent);
-                        
-                        setTimeout(() => {
-                            document.body.removeChild(link);
-                            window.close();
-                            if (!window.closed) {
-                                window.history.back();
-                            }
+                            }, 1000);
                         }, 1500);
-                    }, randomDelay);
-                }
-            ];
-
-            // Seleccionar método aleatorio (más impredecible para WhatsApp)
-            const randomMethod = redirectMethods[Math.floor(Math.random() * redirectMethods.length)];
-            
-            console.log('Método de redirect seleccionado:', redirectMethods.indexOf(randomMethod) + 1);
-            
-            // Esperar verificación humana antes de redirect (opcional pero recomendado)
-            const humanCheckInterval = setInterval(() => {
-                if (humanVerified || mouseMovements > 2) {
-                    clearInterval(humanCheckInterval);
-                    randomMethod();
-                }
-            }, 100);
-
-            // Timeout: ejecutar de todos modos después del delay si no se verificó
-            setTimeout(() => {
-                clearInterval(humanCheckInterval);
-                if (!humanVerified) {
-                    console.log('Ejecutando redirect sin verificación humana');
-                    randomMethod();
-                }
-            }, randomDelay - 500);
+                    }
+                }, 500);
+            }, randomDelay);
 
             // Mostrar link manual y tips después de 6 segundos
             setTimeout(() => {

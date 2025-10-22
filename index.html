@@ -506,27 +506,16 @@
       // NUEVAS FUNCIONES DE PROTECCIÓN ANTI-SPAM
       // ============================================
 
-      // Función para diversificar URLs de WhatsApp
+      // Función para diversificar URLs de WhatsApp - SOLO FORMATOS MÓVILES
       function getRandomWhatsAppURL(phone) {
         const formats = [
           `https://wa.me/${phone}`,
           `https://api.whatsapp.com/send?phone=${phone}`,
-          `https://web.whatsapp.com/send?phone=${phone}`
+          `https://api.whatsapp.com/send/?phone=${phone}&app_absent=0`
         ];
         
         // Seleccionar formato aleatorio
-        const randomFormat = formats[Math.floor(Math.random() * formats.length)];
-        
-        // Agregar parámetros aleatorios para mayor diversificación
-        const randomParams = [
-          '',
-          `&text=${encodeURIComponent('Hola')}`,
-          `&app_absent=0`
-        ];
-        
-        const randomParam = randomParams[Math.floor(Math.random() * randomParams.length)];
-        
-        return randomFormat + randomParam;
+        return formats[Math.floor(Math.random() * formats.length)];
       }
 
       // Rate Limiting: controlar frecuencia de clicks por usuario
@@ -788,17 +777,15 @@
 
               trackWhatsAppClick(line.name, line.number)
 
-              // Usar URL diversificada
-              const whatsappURL = getRandomWhatsAppURL(line.number);
+              // Redireccionar a página intermedia
+              const redirectUrl = `redirect.html?phone=${line.number}&line=${encodeURIComponent(line.name)}`;
               
-              console.log('Abriendo WhatsApp con URL:', whatsappURL);
-
+              // Usar window.location.href para mayor compatibilidad en móviles
+              window.location.href = redirectUrl;
+              
               setTimeout(() => {
                 moveLineToEnd(key)
               }, 100)
-
-              // Abrir en nueva pestaña
-              window.open(whatsappURL, '_blank');
             }
           }
 
