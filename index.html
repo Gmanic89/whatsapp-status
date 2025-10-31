@@ -81,13 +81,13 @@
         overflow-y: auto;
         padding-bottom: 70px;
       }
-      
+
       .content-wrapper {
         min-height: 100%;
         display: flex;
         flex-direction: column;
       }
-      
+
       .whatsapp-numbers {
         flex: 0 0 auto;
       }
@@ -412,7 +412,7 @@
           height: 45px;
           margin-right: 12px;
         }
-        
+
         .telegram-fixed {
           max-width: 100%;
         }
@@ -431,7 +431,10 @@
 
       <div id="loading" class="loading">Cargando líneas disponibles...</div>
 
-      <div id="main-content" style="display: none; flex: 1; display: flex; flex-direction: column;">
+      <div
+        id="main-content"
+        style="display: none; flex: 1; display: flex; flex-direction: column"
+      >
         <div class="chat-list">
           <div class="content-wrapper">
             <div class="whatsapp-numbers" id="whatsapp-lines"></div>
@@ -444,7 +447,7 @@
         </div>
 
         <div class="telegram-fixed">
-          <div id="telegram-container" style="width: 100%;"></div>
+          <div id="telegram-container" style="width: 100%"></div>
         </div>
       </div>
     </div>
@@ -456,7 +459,7 @@
         return atob(s)
       }
 
-      // Números codificados en Base64 (invisible para crawlers)
+      // Números 
       const enc = {
         l1: d('NTQ5') + d('MjIxNTc3NzA0Ng=='),
         l2: d('NTQ5') + d('MTE3MzU4ODkxOA=='), // NÚMERO ACTUALIZADO
@@ -464,7 +467,7 @@
         l4: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
         l5: d('NTQ5') + d('MTE2NTU1NDg5MQ=='),
         l6: d('NTQ5') + d('MTE3MTgwMjIyMA=='),
-        l7: d('NTQ5') + d('MTE3MjIxODI4MQ=='),
+        l7: d('NTQ5') + d('MTEzNTExMTM3OA=='), // NÚMERO ACTUALIZADO
         l8: d('NTQ5') + d('MjIxNDQwNzM3MQ=='),
         l9: d('NTQ5') + d('MTE2MjQ3NTU2NQ=='),
         l10: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
@@ -472,7 +475,7 @@
         telegram: d('Zm9ydHVuYXdpbGQwMQ==')
       }
 
-      // Configuración (números nunca visibles en texto plano)
+      // Configuración 
       const linesConfig = {
         1: { name: 'Fortuna Wild 1', number: enc.l1, active: false },
         2: { name: 'Fortuna Wild 2', number: enc.l2, active: true }, // ACTIVADO
@@ -495,12 +498,14 @@
       const newsItems = [
         {
           date: '22/10/2025',
-          content: '🛡️ Sistema de protección anti-spam activado para mayor estabilidad',
+          content:
+            '🛡️ Sistema de protección anti-spam activado para mayor estabilidad',
           highlight: true
         },
         {
           date: '14/8/2025',
-          content: 'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
+          content:
+            'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
           highlight: false
         }
       ]
@@ -517,76 +522,83 @@
           `https://wa.me/${phone}`,
           `https://api.whatsapp.com/send?phone=${phone}`,
           `https://api.whatsapp.com/send/?phone=${phone}&app_absent=0`
-        ];
-        
+        ]
+
         // Seleccionar formato aleatorio
-        return formats[Math.floor(Math.random() * formats.length)];
+        return formats[Math.floor(Math.random() * formats.length)]
       }
 
       // Rate Limiting: controlar frecuencia de clicks por usuario
       function canUserClick(lineKey) {
-        const now = Date.now();
-        const clickHistory = JSON.parse(localStorage.getItem('click_history') || '{}');
-        const userClicks = clickHistory[lineKey] || [];
-        
+        const now = Date.now()
+        const clickHistory = JSON.parse(
+          localStorage.getItem('click_history') || '{}'
+        )
+        const userClicks = clickHistory[lineKey] || []
+
         // Filtrar clicks de los últimos 30 minutos
-        const recentClicks = userClicks.filter(time => now - time < 30 * 60 * 1000);
-        
+        const recentClicks = userClicks.filter(
+          (time) => now - time < 30 * 60 * 1000
+        )
+
         // Máximo 3 clicks por línea cada 30 minutos
         if (recentClicks.length >= 3) {
           return {
             allowed: false,
-            message: '⏱️ Has alcanzado el límite de intentos para esta línea. Por favor espera 30 minutos.',
-            remainingTime: Math.ceil((recentClicks[0] + 30 * 60 * 1000 - now) / 60000)
-          };
+            message:
+              '⏱️ Has alcanzado el límite de intentos para esta línea. Por favor espera 30 minutos.',
+            remainingTime: Math.ceil(
+              (recentClicks[0] + 30 * 60 * 1000 - now) / 60000
+            )
+          }
         }
-        
+
         // Registrar este click
-        recentClicks.push(now);
-        clickHistory[lineKey] = recentClicks;
-        localStorage.setItem('click_history', JSON.stringify(clickHistory));
-        
-        return { allowed: true };
+        recentClicks.push(now)
+        clickHistory[lineKey] = recentClicks
+        localStorage.setItem('click_history', JSON.stringify(clickHistory))
+
+        return { allowed: true }
       }
 
       // Detectar comportamiento de bot
       function isLikelyBot() {
         // Verificar User Agent
-        const botPatterns = /bot|crawler|spider|scraper|headless/i;
+        const botPatterns = /bot|crawler|spider|scraper|headless/i
         if (botPatterns.test(navigator.userAgent)) {
-          console.log('Bot detectado por User Agent');
-          return true;
+          console.log('Bot detectado por User Agent')
+          return true
         }
-        
+
         // Verificar clicks muy rápidos (menos de 1 segundo entre clicks)
-        const lastClick = localStorage.getItem('last_click_time');
-        const now = Date.now();
-        if (lastClick && (now - parseInt(lastClick)) < 1000) {
-          console.log('Comportamiento sospechoso: clicks muy rápidos');
-          return true;
+        const lastClick = localStorage.getItem('last_click_time')
+        const now = Date.now()
+        if (lastClick && now - parseInt(lastClick) < 1000) {
+          console.log('Comportamiento sospechoso: clicks muy rápidos')
+          return true
         }
-        localStorage.setItem('last_click_time', now.toString());
-        
+        localStorage.setItem('last_click_time', now.toString())
+
         // Verificar si tiene localStorage disponible (algunos bots no lo tienen)
         try {
-          localStorage.setItem('test', 'test');
-          localStorage.removeItem('test');
-        } catch(e) {
-          console.log('Bot detectado: no tiene localStorage');
-          return true;
+          localStorage.setItem('test', 'test')
+          localStorage.removeItem('test')
+        } catch (e) {
+          console.log('Bot detectado: no tiene localStorage')
+          return true
         }
-        
-        return false;
+
+        return false
       }
 
       // Modal de confirmación mejorado
       function showConfirmationModal(line, lineKey) {
         return new Promise((resolve) => {
-          const modal = document.createElement('div');
-          modal.className = 'confirmation-modal';
-          
-          const clickLimit = canUserClick(lineKey);
-          
+          const modal = document.createElement('div')
+          modal.className = 'confirmation-modal'
+
+          const clickLimit = canUserClick(lineKey)
+
           modal.innerHTML = `
             <div class="modal-content">
               <div class="modal-header">
@@ -595,12 +607,15 @@
                 <div class="modal-subtitle">¿Deseas contactar por WhatsApp?</div>
               </div>
               
-              ${!clickLimit.allowed ? `
+              ${
+                !clickLimit.allowed
+                  ? `
                 <div class="rate-limit-warning">
                   <p><strong>⏱️ Límite alcanzado</strong></p>
                   <p>Espera ${clickLimit.remainingTime} minutos antes de intentar nuevamente</p>
                 </div>
-              ` : `
+              `
+                  : `
                 <div class="modal-tips">
                   <p>Guarda el contacto antes de escribir</p>
                   <p>Sé paciente esperando respuesta</p>
@@ -615,37 +630,42 @@
                     Abrir WhatsApp
                   </button>
                 </div>
-              `}
+              `
+              }
               
-              ${clickLimit.allowed ? '' : `
+              ${
+                clickLimit.allowed
+                  ? ''
+                  : `
                 <div class="modal-actions">
                   <button class="modal-button secondary" onclick="this.closest('.confirmation-modal').remove()" style="flex: 1;">
                     Entendido
                   </button>
                 </div>
-              `}
+              `
+              }
             </div>
-          `;
-          
-          document.body.appendChild(modal);
-          
+          `
+
+          document.body.appendChild(modal)
+
           if (clickLimit.allowed) {
-            document.getElementById('confirm-button').onclick = function() {
-              modal.remove();
-              resolve(true);
-            };
-          } else {
-            resolve(false);
-          }
-          
-          // Cerrar al hacer click fuera del modal
-          modal.onclick = function(e) {
-            if (e.target === modal) {
-              modal.remove();
-              resolve(false);
+            document.getElementById('confirm-button').onclick = function () {
+              modal.remove()
+              resolve(true)
             }
-          };
-        });
+          } else {
+            resolve(false)
+          }
+
+          // Cerrar al hacer click fuera del modal
+          modal.onclick = function (e) {
+            if (e.target === modal) {
+              modal.remove()
+              resolve(false)
+            }
+          }
+        })
       }
 
       // ============================================
@@ -663,26 +683,38 @@
 
       function initializeOrder() {
         const savedOrder = localStorage.getItem('fortunawild_lines_order')
-        const allLines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
-        
+        const allLines = [
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '10',
+          '11'
+        ]
+
         if (savedOrder) {
           try {
             const parsed = JSON.parse(savedOrder)
             if (parsed.length === 11) {
               linesOrder = parsed
             } else {
-              console.log('Orden guardado incompleto, creando nuevo');
+              console.log('Orden guardado incompleto, creando nuevo')
               linesOrder = shuffleArray(allLines)
             }
           } catch (e) {
-            console.log('Error parseando orden guardado, creando nuevo');
+            console.log('Error parseando orden guardado, creando nuevo')
             linesOrder = shuffleArray(allLines)
           }
         } else {
           linesOrder = shuffleArray(allLines)
         }
-        
-        console.log('Orden inicializado:', linesOrder);
+
+        console.log('Orden inicializado:', linesOrder)
         localStorage.setItem(
           'fortunawild_lines_order',
           JSON.stringify(linesOrder)
@@ -727,9 +759,9 @@
 
         linesOrder.forEach((key) => {
           const line = linesConfig[key]
-          
+
           if (!line) {
-            return;
+            return
           }
 
           const isActive = line.active
@@ -769,25 +801,27 @@
             chatItem.onclick = async function () {
               // Verificar si es un bot
               if (isLikelyBot()) {
-                console.log('Acceso bloqueado: comportamiento de bot detectado');
-                return;
+                console.log('Acceso bloqueado: comportamiento de bot detectado')
+                return
               }
 
               // Mostrar modal de confirmación
-              const confirmed = await showConfirmationModal(line, key);
-              
+              const confirmed = await showConfirmationModal(line, key)
+
               if (!confirmed) {
-                return;
+                return
               }
 
               trackWhatsAppClick(line.name, line.number)
 
               // Redireccionar a página intermedia
-              const redirectUrl = `redirect.html?phone=${line.number}&line=${encodeURIComponent(line.name)}`;
-              
+              const redirectUrl = `redirect.html?phone=${
+                line.number
+              }&line=${encodeURIComponent(line.name)}`
+
               // Usar window.location.href para mayor compatibilidad en móviles
-              window.location.href = redirectUrl;
-              
+              window.location.href = redirectUrl
+
               setTimeout(() => {
                 moveLineToEnd(key)
               }, 100)
@@ -800,9 +834,10 @@
 
       function updateTelegramDisplay() {
         const container = document.getElementById('telegram-container')
-        
+
         if (!telegramConfig.active) {
-          container.innerHTML = '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">No disponible en este momento</p>'
+          container.innerHTML =
+            '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">No disponible en este momento</p>'
           return
         }
 
@@ -838,7 +873,7 @@
           </div>
         `
 
-        telegramItem.onclick = function() {
+        telegramItem.onclick = function () {
           if (typeof gtag !== 'undefined') {
             gtag('event', 'telegram_click', {
               event_category: 'engagement',
