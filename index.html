@@ -242,24 +242,84 @@
             return formats[Math.floor(Math.random() * formats.length)];
         }
 
-        // Rate limiting
+        // Rate limiting con límite de 3 clicks totales que se resetea cada 30 minutos
         function canUserClick() {
             const now = Date.now();
             const lastClick = localStorage.getItem('last_fortunawild_click');
+            const firstClickTime = localStorage.getItem('fortunawild_first_click_time');
+            const totalClicks = parseInt(localStorage.getItem('fortunawild_total_clicks') || '0');
             
-            if (lastClick && now - parseInt(lastClick) < 3000) {
-                return false;
+            // Verificar si han pasado 30 minutos desde el primer click
+            if (firstClickTime) {
+                const timeElapsed = now - parseInt(firstClickTime);
+                const thirtyMinutes = 30 * 60 * 1000; // 30 minutos en milisegundos
+                
+                if (timeElapsed >= thirtyMinutes) {
+                    // Resetear el contador después de 30 minutos
+                    console.log('30 minutos transcurridos, reseteando contador');
+                    localStorage.removeItem('fortunawild_total_clicks');
+                    localStorage.removeItem('fortunawild_first_click_time');
+                    localStorage.removeItem('last_fortunawild_click');
+                    
+                    // Recargar la página para actualizar la UI
+                    location.reload();
+                    return { allowed: false, reason: 'reload' };
+                }
             }
             
+            // Verificar clicks muy rápidos (menos de 3 segundos)
+            if (lastClick && now - parseInt(lastClick) < 3000) {
+                return { allowed: false, reason: 'fast', message: 'Por favor espera unos segundos antes de intentar nuevamente' };
+            }
+            
+            // Verificar límite de 3 clicks totales
+            if (totalClicks >= 3) {
+                // Calcular tiempo restante
+                const timeElapsed = now - parseInt(firstClickTime);
+                const thirtyMinutes = 30 * 60 * 1000;
+                const timeRemaining = thirtyMinutes - timeElapsed;
+                const minutesRemaining = Math.ceil(timeRemaining / 60000);
+                
+                return { 
+                    allowed: false, 
+                    reason: 'limit', 
+                    message: `Has alcanzado el límite de 3 intentos. Podrás intentar nuevamente en ${minutesRemaining} minutos.` 
+                };
+            }
+            
+            // Si es el primer click, guardar el timestamp
+            if (totalClicks === 0) {
+                localStorage.setItem('fortunawild_first_click_time', now.toString());
+            }
+            
+            // Incrementar contador y guardar timestamp
+            const newTotal = totalClicks + 1;
+            localStorage.setItem('fortunawild_total_clicks', newTotal.toString());
             localStorage.setItem('last_fortunawild_click', now.toString());
-            return true;
+            
+            return { allowed: true, remaining: 3 - newTotal };
         }
 
         // Evento WhatsApp
         document.getElementById('whatsappBtn').onclick = function() {
-            if (!canUserClick()) {
-                alert('Por favor espera unos segundos antes de intentar nuevamente');
+            const clickCheck = canUserClick();
+            
+            if (!clickCheck.allowed) {
+                alert(clickCheck.message);
+                
+                // Si alcanzó el límite, deshabilitar botones visualmente
+                if (clickCheck.reason === 'limit') {
+                    document.getElementById('whatsappBtn').style.opacity = '0.5';
+                    document.getElementById('whatsappBtn').style.cursor = 'not-allowed';
+                    document.getElementById('telegramBtn').style.opacity = '0.5';
+                    document.getElementById('telegramBtn').style.cursor = 'not-allowed';
+                }
                 return;
+            }
+
+            // Mostrar clicks restantes
+            if (clickCheck.remaining !== undefined && clickCheck.remaining > 0) {
+                console.log(`Te quedan ${clickCheck.remaining} intentos`);
             }
 
             // Mostrar loading
@@ -295,9 +355,24 @@
 
         // Evento Telegram
         document.getElementById('telegramBtn').onclick = function() {
-            if (!canUserClick()) {
-                alert('Por favor espera unos segundos antes de intentar nuevamente');
+            const clickCheck = canUserClick();
+            
+            if (!clickCheck.allowed) {
+                alert(clickCheck.message);
+                
+                // Si alcanzó el límite, deshabilitar botones visualmente
+                if (clickCheck.reason === 'limit') {
+                    document.getElementById('whatsappBtn').style.opacity = '0.5';
+                    document.getElementById('whatsappBtn').style.cursor = 'not-allowed';
+                    document.getElementById('telegramBtn').style.opacity = '0.5';
+                    document.getElementById('telegramBtn').style.cursor = 'not-allowed';
+                }
                 return;
+            }
+
+            // Mostrar clicks restantes
+            if (clickCheck.remaining !== undefined && clickCheck.remaining > 0) {
+                console.log(`Te quedan ${clickCheck.remaining} intentos`);
             }
 
             // Mostrar loading
@@ -329,6 +404,48 @@
                 page_title: 'FortunaWild Simple Contact'
             });
         }
+
+        // Verificar si ya alcanzó el límite al cargar la página
+        window.onload = function() {
+            const now = Date.now();
+            const totalClicks = parseInt(localStorage.getItem('fortunawild_total_clicks') || '0');
+            const firstClickTime = localStorage.getItem('fortunawild_first_click_time');
+            
+            // Verificar si han pasado 30 minutos
+            if (firstClickTime) {
+                const timeElapsed = now - parseInt(firstClickTime);
+                const thirtyMinutes = 30 * 60 * 1000;
+                
+                if (timeElapsed >= thirtyMinutes && totalClicks > 0) {
+                    // Resetear automáticamente
+                    localStorage.removeItem('fortunawild_total_clicks');
+                    localStorage.removeItem('fortunawild_first_click_time');
+                    localStorage.removeItem('last_fortunawild_click');
+                    console.log('Límite reseteado automáticamente');
+                }
+            }
+            
+            // Verificar límite actual
+            const currentClicks = parseInt(localStorage.getItem('fortunawild_total_clicks') || '0');
+            
+            if (currentClicks >= 3) {
+                const firstClick = localStorage.getItem('fortunawild_first_click_time');
+                if (firstClick) {
+                    const timeElapsed = now - parseInt(firstClick);
+                    const thirtyMinutes = 30 * 60 * 1000;
+                    const timeRemaining = thirtyMinutes - timeElapsed;
+                    const minutesRemaining = Math.ceil(timeRemaining / 60000);
+                    
+                    document.getElementById('whatsappBtn').style.opacity = '0.5';
+                    document.getElementById('whatsappBtn').style.cursor = 'not-allowed';
+                    document.getElementById('telegramBtn').style.opacity = '0.5';
+                    document.getElementById('telegramBtn').style.cursor = 'not-allowed';
+                    
+                    document.querySelector('.info-text').textContent = `⏱️ Límite alcanzado. Espera ${minutesRemaining} minutos`;
+                    document.querySelector('.info-text').style.color = '#ffeb3b';
+                }
+            }
+        };
     </script>
 </body>
 </html>
