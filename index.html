@@ -1,930 +1,334 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FortunaWild WhatsApp - Estado de Líneas</title>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FortunaWild - Contacto</title>
+    
     <!-- Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-RJWDV50N7N"
-    ></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJWDV50N7N"></script>
     <script>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-      gtag('config', 'G-RJWDV50N7N')
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RJWDV50N7N');
     </script>
-
+    
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #e5ddd5;
-        min-height: 100vh;
-        color: #333;
-        margin: 0;
-        padding: 0;
-      }
-
-      .container {
-        max-width: 420px;
-        margin: 0 auto;
-        background: white;
-        position: relative;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .header {
-        background: #128c7e;
-        color: white;
-        padding: 15px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-        flex-shrink: 0;
-      }
-
-      .header h1 {
-        font-size: 19px;
-        font-weight: 500;
-      }
-
-      .header p {
-        font-size: 14px;
-        opacity: 0.8;
-        margin-top: 2px;
-      }
-
-      .loading {
-        text-align: center;
-        color: #666;
-        font-size: 16px;
-        padding: 40px 20px;
-      }
-
-      .chat-list {
-        background: white;
-        flex: 1;
-        overflow-y: auto;
-        padding-bottom: 70px;
-      }
-
-      .content-wrapper {
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .whatsapp-numbers {
-        flex: 0 0 auto;
-      }
-
-      .chat-item {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        border-bottom: 1px solid #f0f0f0;
-        cursor: pointer;
-        transition: background 0.2s ease;
-        position: relative;
-      }
-
-      .chat-item:hover {
-        background: #f5f5f5;
-      }
-
-      .chat-item.inactive {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      .chat-item.inactive:hover {
-        background: white;
-      }
-
-      .avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 15px;
-        background: #ddd;
-        flex-shrink: 0;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        color: white;
-        background: linear-gradient(45deg, #25d366, #128c7e);
-      }
-
-      .avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .avatar::after {
-        content: '';
-        position: absolute;
-        bottom: 2px;
-        right: 2px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 2px solid white;
-      }
-
-      .avatar.online::after {
-        background: #25d366;
-      }
-
-      .avatar.offline::after {
-        background: #f44336;
-      }
-
-      .chat-content {
-        flex: 1;
-        min-width: 0;
-      }
-
-      .chat-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 2px;
-      }
-
-      .chat-name {
-        font-size: 16px;
-        font-weight: 500;
-        color: #333;
-      }
-
-      .chat-time {
-        font-size: 12px;
-        color: #999;
-        margin-left: 8px;
-        flex-shrink: 0;
-      }
-
-      .chat-preview {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .chat-message {
-        font-size: 14px;
-        color: #666;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        flex: 1;
-      }
-
-      .telegram-fixed {
-        background: #e3f2fd;
-        border-top: 3px solid #2196f3;
-        padding: 6px 16px;
-        flex-shrink: 0;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        height: 58px;
-        display: flex;
-        align-items: center;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        max-width: 420px;
-        margin: 0 auto;
-        z-index: 100;
-      }
-
-      .news-section {
-        background: white;
-        border-top: 8px solid #f0f0f0;
-        padding: 16px;
-      }
-
-      .news-title {
-        color: #128c7e;
-        font-size: 18px;
-        margin-bottom: 12px;
-        font-weight: 500;
-      }
-
-      .news-item {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 8px;
-        border-left: 3px solid #25d366;
-      }
-
-      .news-date {
-        font-size: 11px;
-        color: #999;
-        margin-bottom: 4px;
-      }
-
-      .news-content {
-        color: #333;
-        font-size: 14px;
-        line-height: 1.4;
-      }
-
-      .news-highlight {
-        background: #fff3cd;
-        border-left-color: #ffc107;
-      }
-
-      .visit-counter {
-        display: none;
-      }
-
-      /* Modal de confirmación */
-      .confirmation-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-        padding: 20px;
-      }
-
-      .modal-content {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        max-width: 380px;
-        width: 100%;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        animation: slideUp 0.3s ease;
-      }
-
-      @keyframes slideUp {
-        from {
-          transform: translateY(50px);
-          opacity: 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
 
-      .modal-header {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      .modal-icon {
-        font-size: 50px;
-        margin-bottom: 10px;
-      }
-
-      .modal-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #128c7e;
-        margin-bottom: 5px;
-      }
-
-      .modal-subtitle {
-        font-size: 14px;
-        color: #666;
-      }
-
-      .modal-tips {
-        background: #f0f8f5;
-        border-radius: 10px;
-        padding: 15px;
-        margin: 20px 0;
-        border-left: 4px solid #25d366;
-      }
-
-      .modal-tips p {
-        font-size: 13px;
-        color: #555;
-        margin: 8px 0;
-        padding-left: 20px;
-        position: relative;
-      }
-
-      .modal-tips p::before {
-        content: '✓';
-        position: absolute;
-        left: 0;
-        color: #25d366;
-        font-weight: bold;
-      }
-
-      .modal-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      .modal-button {
-        flex: 1;
-        padding: 12px;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .modal-button.primary {
-        background: #25d366;
-        color: white;
-      }
-
-      .modal-button.primary:hover {
-        background: #20bd5a;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-      }
-
-      .modal-button.secondary {
-        background: #f0f0f0;
-        color: #666;
-      }
-
-      .modal-button.secondary:hover {
-        background: #e0e0e0;
-      }
-
-      .rate-limit-warning {
-        background: #fff3cd;
-        border: 1px solid #ffc107;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 15px 0;
-        text-align: center;
-      }
-
-      .rate-limit-warning p {
-        font-size: 14px;
-        color: #856404;
-        margin: 5px 0;
-      }
-
-      @media (max-width: 480px) {
         body {
-          min-height: 100vh;
-          min-height: 100dvh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #075e54;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
         .container {
-          max-width: 100%;
-          min-height: 100vh;
-          min-height: 100dvh;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
         }
 
-        .chat-item {
-          padding: 10px 12px;
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
         }
 
-        .avatar {
-          width: 45px;
-          height: 45px;
-          margin-right: 12px;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        .telegram-fixed {
-          max-width: 100%;
+        h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-      }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-button {
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: 600;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .whatsapp-button {
+            background: #25d366;
+            color: white;
+        }
+
+        .whatsapp-button:hover {
+            background: #20bd5a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .telegram-button {
+            background: #0088cc;
+            color: white;
+        }
+
+        .telegram-button:hover {
+            background: #0077b3;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.4);
+        }
+
+        .button-icon {
+            font-size: 28px;
+        }
+
+        .info-text {
+            color: white;
+            margin-top: 30px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 26px;
+            }
+
+            .contact-button {
+                padding: 18px 30px;
+                font-size: 18px;
+            }
+
+            .logo {
+                font-size: 60px;
+            }
+        }
     </style>
-  </head>
-
-  <body>
+</head>
+<body>
     <div class="container">
-      <div class="header">
-        <div>
-          <h1>🎰 FortunaWild WhatsApp</h1>
-          <p>Estado de Líneas en Tiempo Real</p>
+        <div class="logo">🎰</div>
+        <h1>FortunaWild</h1>
+        
+        <div class="button-container">
+            <button class="contact-button whatsapp-button" id="whatsappBtn">
+                <span class="button-icon">💬</span>
+                <span>Ir a WhatsApp</span>
+            </button>
+            
+            <button class="contact-button telegram-button" id="telegramBtn">
+                <span class="button-icon">✈️</span>
+                <span>Ir a Telegram</span>
+            </button>
         </div>
-      </div>
-
-      <div id="loading" class="loading">Cargando líneas disponibles...</div>
-
-      <div
-        id="main-content"
-        style="display: none; flex: 1; display: flex; flex-direction: column"
-      >
-        <div class="chat-list">
-          <div class="content-wrapper">
-            <div class="whatsapp-numbers" id="whatsapp-lines"></div>
-
-            <div class="news-section">
-              <div class="news-title">📢 Novedades</div>
-              <div id="news-container"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="telegram-fixed">
-          <div id="telegram-container" style="width: 100%"></div>
-        </div>
-      </div>
+        
+        <p class="info-text">Elige tu método de contacto preferido</p>
     </div>
 
-    <div class="visit-counter" id="visit-counter"></div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Conectando...</p>
+        </div>
+    </div>
 
     <script>
-      function d(s) {
-        return atob(s)
-      }
-
-      // Números 
-      const enc = {
-        l1: d('NTQ5') + d('MjIxNTc3NzA0Ng=='),
-        l2: d('NTQ5') + d('MTE3MzU4ODkxOA=='), // NÚMERO ACTUALIZADO
-        l3: d('NTQ5') + d('MTE3MzY2MTY3NQ=='),
-        l4: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
-        l5: d('NTQ5') + d('MTE2NTU1NDg5MQ=='),
-        l6: d('NTQ5') + d('MTE3MTgwMjIyMA=='),
-        l7: d('NTQ5') + d('MTEzNTExMTM3OA=='), // NÚMERO ACTUALIZADO
-        l8: d('NTQ5') + d('MjIxNDQwNzM3MQ=='),
-        l9: d('NTQ5') + d('MTE2MjQ3NTU2NQ=='),
-        l10: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
-        l11: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
-        telegram: d('Zm9ydHVuYXdpbGQwMQ==')
-      }
-
-      // Configuración 
-      const linesConfig = {
-        1: { name: 'Fortuna Wild 1', number: enc.l1, active: false },
-        2: { name: 'Fortuna Wild 2', number: enc.l2, active: true }, // ACTIVADO
-        3: { name: 'Fortuna Wild 3', number: enc.l3, active: true },
-        4: { name: 'Fortuna Wild 4', number: enc.l4, active: true },
-        5: { name: 'Fortuna Wild 5', number: enc.l5, active: true },
-        6: { name: 'Fortuna Wild 6', number: enc.l6, active: true },
-        7: { name: 'Fortuna Wild 7', number: enc.l7, active: true },
-        8: { name: 'Fortuna Wild 8', number: enc.l8, active: true },
-        9: { name: 'Fortuna Wild 9', number: enc.l9, active: true },
-        10: { name: 'Fortuna Wild 10', number: enc.l10, active: true },
-        11: { name: 'Soporte Técnico', number: enc.l11, active: true }
-      }
-
-      const telegramConfig = {
-        username: enc.telegram,
-        active: true
-      }
-
-      const newsItems = [
-        {
-          date: '22/10/2025',
-          content:
-            '🛡️ Sistema de protección anti-spam activado para mayor estabilidad',
-          highlight: true
-        },
-        {
-          date: '14/8/2025',
-          content:
-            'Es probable que en breve FortunaWild1 Deje de funcionar ATENTOS AL NUEVO NUMERO',
-          highlight: false
-        }
-      ]
-
-      let linesOrder = []
-
-      // ============================================
-      // NUEVAS FUNCIONES DE PROTECCIÓN ANTI-SPAM
-      // ============================================
-
-      // Función para diversificar URLs de WhatsApp - SOLO FORMATOS MÓVILES
-      function getRandomWhatsAppURL(phone) {
-        const formats = [
-          `https://wa.me/${phone}`,
-          `https://api.whatsapp.com/send?phone=${phone}`,
-          `https://api.whatsapp.com/send/?phone=${phone}&app_absent=0`
-        ]
-
-        // Seleccionar formato aleatorio
-        return formats[Math.floor(Math.random() * formats.length)]
-      }
-
-      // Rate Limiting: controlar frecuencia de clicks por usuario
-      function canUserClick(lineKey) {
-        const now = Date.now()
-        const clickHistory = JSON.parse(
-          localStorage.getItem('click_history') || '{}'
-        )
-        const userClicks = clickHistory[lineKey] || []
-
-        // Filtrar clicks de los últimos 30 minutos
-        const recentClicks = userClicks.filter(
-          (time) => now - time < 30 * 60 * 1000
-        )
-
-        // Máximo 3 clicks por línea cada 30 minutos
-        if (recentClicks.length >= 3) {
-          return {
-            allowed: false,
-            message:
-              '⏱️ Has alcanzado el límite de intentos para esta línea. Por favor espera 30 minutos.',
-            remainingTime: Math.ceil(
-              (recentClicks[0] + 30 * 60 * 1000 - now) / 60000
-            )
-          }
+        function d(s) {
+            return atob(s);
         }
 
-        // Registrar este click
-        recentClicks.push(now)
-        clickHistory[lineKey] = recentClicks
-        localStorage.setItem('click_history', JSON.stringify(clickHistory))
+        // Números de WhatsApp encriptados
+        const enc = {
+            l1: d('NTQ5') + d('MjIxNTc3NzA0Ng=='),
+            l2: d('NTQ5') + d('MTE3MzU4ODkxOA=='),
+            l3: d('NTQ5') + d('MTE3MzY2MTY3NQ=='),
+            l4: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
+            l5: d('NTQ5') + d('MTE2NTU1NDg5MQ=='),
+            l6: d('NTQ5') + d('MTE3MTgwMjIyMA=='),
+            l7: d('NTQ5') + d('MTEzNTExMTM3OA=='),
+            l8: d('NTQ5') + d('MjIxNDQwNzM3MQ=='),
+            l9: d('NTQ5') + d('MTE2MjQ3NTU2NQ=='),
+            l10: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
+            l11: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
+            telegram: d('Zm9ydHVuYXdpbGQwMQ==')
+        };
 
-        return { allowed: true }
-      }
+        // Configuración de líneas activas
+        const activeLines = [
+            { name: 'Fortuna Wild 2', number: enc.l2 },
+            { name: 'Fortuna Wild 3', number: enc.l3 },
+            { name: 'Fortuna Wild 4', number: enc.l4 },
+            { name: 'Fortuna Wild 5', number: enc.l5 },
+            { name: 'Fortuna Wild 6', number: enc.l6 },
+            { name: 'Fortuna Wild 7', number: enc.l7 },
+            { name: 'Fortuna Wild 8', number: enc.l8 },
+            { name: 'Fortuna Wild 9', number: enc.l9 },
+            { name: 'Fortuna Wild 10', number: enc.l10 },
+            { name: 'Soporte Técnico', number: enc.l11 }
+        ];
 
-      // Detectar comportamiento de bot
-      function isLikelyBot() {
-        // Verificar User Agent
-        const botPatterns = /bot|crawler|spider|scraper|headless/i
-        if (botPatterns.test(navigator.userAgent)) {
-          console.log('Bot detectado por User Agent')
-          return true
+        // Función para seleccionar línea aleatoria
+        function getRandomLine() {
+            const randomIndex = Math.floor(Math.random() * activeLines.length);
+            return activeLines[randomIndex];
         }
 
-        // Verificar clicks muy rápidos (menos de 1 segundo entre clicks)
-        const lastClick = localStorage.getItem('last_click_time')
-        const now = Date.now()
-        if (lastClick && now - parseInt(lastClick) < 1000) {
-          console.log('Comportamiento sospechoso: clicks muy rápidos')
-          return true
-        }
-        localStorage.setItem('last_click_time', now.toString())
-
-        // Verificar si tiene localStorage disponible (algunos bots no lo tienen)
-        try {
-          localStorage.setItem('test', 'test')
-          localStorage.removeItem('test')
-        } catch (e) {
-          console.log('Bot detectado: no tiene localStorage')
-          return true
+        // Función para diversificar URLs de WhatsApp
+        function getRandomWhatsAppURL(phone, message) {
+            const encodedMessage = encodeURIComponent(message);
+            const formats = [
+                `https://wa.me/${phone}?text=${encodedMessage}`,
+                `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`,
+                `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedMessage}&app_absent=0`
+            ];
+            return formats[Math.floor(Math.random() * formats.length)];
         }
 
-        return false
-      }
+        // Rate limiting
+        function canUserClick() {
+            const now = Date.now();
+            const lastClick = localStorage.getItem('last_fortunawild_click');
+            
+            if (lastClick && now - parseInt(lastClick) < 3000) {
+                return false;
+            }
+            
+            localStorage.setItem('last_fortunawild_click', now.toString());
+            return true;
+        }
 
-      // Modal de confirmación mejorado
-      function showConfirmationModal(line, lineKey) {
-        return new Promise((resolve) => {
-          const modal = document.createElement('div')
-          modal.className = 'confirmation-modal'
+        // Evento WhatsApp
+        document.getElementById('whatsappBtn').onclick = function() {
+            if (!canUserClick()) {
+                alert('Por favor espera unos segundos antes de intentar nuevamente');
+                return;
+            }
 
-          const clickLimit = canUserClick(lineKey)
+            // Mostrar loading
+            document.getElementById('loadingOverlay').classList.add('show');
 
-          modal.innerHTML = `
-            <div class="modal-content">
-              <div class="modal-header">
-                <div class="modal-icon">💬</div>
-                <div class="modal-title">${line.name}</div>
-                <div class="modal-subtitle">¿Deseas contactar por WhatsApp?</div>
-              </div>
-              
-              ${
-                !clickLimit.allowed
-                  ? `
-                <div class="rate-limit-warning">
-                  <p><strong>⏱️ Límite alcanzado</strong></p>
-                  <p>Espera ${clickLimit.remainingTime} minutos antes de intentar nuevamente</p>
-                </div>
-              `
-                  : `
-                <div class="modal-tips">
-                  <p>Guarda el contacto antes de escribir</p>
-                  <p>Sé paciente esperando respuesta</p>
-                  <p>No envíes mensajes repetidos</p>
-                </div>
+            // Seleccionar línea aleatoria
+            const selectedLine = getRandomLine();
+            
+            // Tracking
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'whatsapp_random_click', {
+                    event_category: 'engagement',
+                    event_label: selectedLine.name
+                });
+            }
+
+            // Mensaje inicial
+            const initialMessage = `Hola ${selectedLine.name}, necesito información`;
+            
+            // Generar URL con formato aleatorio
+            const waUrl = getRandomWhatsAppURL(selectedLine.number, initialMessage);
+
+            // Redirigir después de un breve delay
+            setTimeout(() => {
+                window.location.href = waUrl;
                 
-                <div class="modal-actions">
-                  <button class="modal-button secondary" onclick="this.closest('.confirmation-modal').remove()">
-                    Cancelar
-                  </button>
-                  <button class="modal-button primary" id="confirm-button">
-                    Abrir WhatsApp
-                  </button>
-                </div>
-              `
-              }
-              
-              ${
-                clickLimit.allowed
-                  ? ''
-                  : `
-                <div class="modal-actions">
-                  <button class="modal-button secondary" onclick="this.closest('.confirmation-modal').remove()" style="flex: 1;">
-                    Entendido
-                  </button>
-                </div>
-              `
-              }
-            </div>
-          `
+                // Ocultar loading después de la redirección
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').classList.remove('show');
+                }, 2000);
+            }, 800);
+        };
 
-          document.body.appendChild(modal)
-
-          if (clickLimit.allowed) {
-            document.getElementById('confirm-button').onclick = function () {
-              modal.remove()
-              resolve(true)
+        // Evento Telegram
+        document.getElementById('telegramBtn').onclick = function() {
+            if (!canUserClick()) {
+                alert('Por favor espera unos segundos antes de intentar nuevamente');
+                return;
             }
-          } else {
-            resolve(false)
-          }
 
-          // Cerrar al hacer click fuera del modal
-          modal.onclick = function (e) {
-            if (e.target === modal) {
-              modal.remove()
-              resolve(false)
+            // Mostrar loading
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            // Tracking
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'telegram_click', {
+                    event_category: 'engagement',
+                    event_label: 'FortunaWild Telegram'
+                });
             }
-          }
-        })
-      }
 
-      // ============================================
-      // FUNCIONES ORIGINALES (MANTENIDAS)
-      // ============================================
+            // Redirigir a Telegram
+            setTimeout(() => {
+                window.location.href = 'https://t.me/' + enc.telegram;
+                
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').classList.remove('show');
+                }, 2000);
+            }, 800);
+        };
 
-      function shuffleArray(array) {
-        const newArray = [...array]
-        for (let i = newArray.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
-          ;[newArray[i], newArray[j]] = [newArray[j], newArray[i]]
-        }
-        return newArray
-      }
-
-      function initializeOrder() {
-        const savedOrder = localStorage.getItem('fortunawild_lines_order')
-        const allLines = [
-          '1',
-          '2',
-          '3',
-          '4',
-          '5',
-          '6',
-          '7',
-          '8',
-          '9',
-          '10',
-          '11'
-        ]
-
-        if (savedOrder) {
-          try {
-            const parsed = JSON.parse(savedOrder)
-            if (parsed.length === 11) {
-              linesOrder = parsed
-            } else {
-              console.log('Orden guardado incompleto, creando nuevo')
-              linesOrder = shuffleArray(allLines)
-            }
-          } catch (e) {
-            console.log('Error parseando orden guardado, creando nuevo')
-            linesOrder = shuffleArray(allLines)
-          }
-        } else {
-          linesOrder = shuffleArray(allLines)
-        }
-
-        console.log('Orden inicializado:', linesOrder)
-        localStorage.setItem(
-          'fortunawild_lines_order',
-          JSON.stringify(linesOrder)
-        )
-      }
-
-      function moveLineToEnd(clickedLineKey) {
-        const index = linesOrder.indexOf(clickedLineKey)
-        if (index > -1) {
-          linesOrder.splice(index, 1)
-          linesOrder.push(clickedLineKey)
-          localStorage.setItem(
-            'fortunawild_lines_order',
-            JSON.stringify(linesOrder)
-          )
-          updateDisplay()
-        }
-      }
-
-      function trackWhatsAppClick(lineName, phoneNumber) {
+        // Tracking de visita
         if (typeof gtag !== 'undefined') {
-          gtag('event', 'whatsapp_click', {
-            event_category: 'engagement',
-            event_label: lineName
-          })
+            gtag('event', 'page_view', {
+                event_category: 'engagement',
+                event_label: 'fortunawild_simple',
+                page_title: 'FortunaWild Simple Contact'
+            });
         }
-      }
-
-      function initVisitCounter() {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'page_view', {
-            event_category: 'engagement',
-            event_label: 'fortunawild_whatsapp',
-            page_title: 'FortunaWild WhatsApp Lines'
-          })
-        }
-      }
-
-      function updateDisplay() {
-        const container = document.getElementById('whatsapp-lines')
-        container.innerHTML = ''
-
-        linesOrder.forEach((key) => {
-          const line = linesConfig[key]
-
-          if (!line) {
-            return
-          }
-
-          const isActive = line.active
-          const currentTime = new Date().toLocaleTimeString('es-AR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          })
-
-          const chatItem = document.createElement('div')
-          chatItem.className = `chat-item ${isActive ? '' : 'inactive'}`
-
-          const avatarImage = key === '4' ? 'fortu4.png' : 'for.png'
-
-          chatItem.innerHTML = `
-                    <div class="avatar ${isActive ? 'online' : 'offline'}">
-                        <img src="${avatarImage}" alt="Fortuna" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    <div class="chat-content">
-                        <div class="chat-header">
-                            <div class="chat-name">${line.name}</div>
-                            <div class="chat-time">${currentTime}</div>
-                        </div>
-                        <div class="chat-preview">
-                            <div class="chat-message">
-                                ${
-                                  isActive
-                                    ? `✅ En Linea - Haz clic para pedir CBU`
-                                    : `❌ No disponible en este momento`
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `
-
-          if (isActive) {
-            chatItem.onclick = async function () {
-              // Verificar si es un bot
-              if (isLikelyBot()) {
-                console.log('Acceso bloqueado: comportamiento de bot detectado')
-                return
-              }
-
-              // Mostrar modal de confirmación
-              const confirmed = await showConfirmationModal(line, key)
-
-              if (!confirmed) {
-                return
-              }
-
-              trackWhatsAppClick(line.name, line.number)
-
-              // Redireccionar a página intermedia
-              const redirectUrl = `redirect.html?phone=${
-                line.number
-              }&line=${encodeURIComponent(line.name)}`
-
-              // Usar window.location.href para mayor compatibilidad en móviles
-              window.location.href = redirectUrl
-
-              setTimeout(() => {
-                moveLineToEnd(key)
-              }, 100)
-            }
-          }
-
-          container.appendChild(chatItem)
-        })
-      }
-
-      function updateTelegramDisplay() {
-        const container = document.getElementById('telegram-container')
-
-        if (!telegramConfig.active) {
-          container.innerHTML =
-            '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">No disponible en este momento</p>'
-          return
-        }
-
-        const currentTime = new Date().toLocaleTimeString('es-AR', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        })
-
-        const telegramItem = document.createElement('div')
-        telegramItem.className = 'chat-item'
-        telegramItem.style.background = 'transparent'
-        telegramItem.style.border = 'none'
-        telegramItem.style.borderRadius = '0'
-        telegramItem.style.marginBottom = '0'
-        telegramItem.style.borderBottom = 'none'
-        telegramItem.style.padding = '4px 0'
-
-        telegramItem.innerHTML = `
-          <div class="avatar online" style="background: linear-gradient(45deg, #2196f3, #0d47a1); width: 40px; height: 40px; font-size: 18px;">
-            <span style="font-size: 20px;">✈️</span>
-          </div>
-          <div class="chat-content">
-            <div class="chat-header">
-              <div class="chat-name" style="color: #1976d2; font-size: 14px;">💬 FortunaWild Telegram</div>
-              <div class="chat-time" style="font-size: 10px;">${currentTime}</div>
-            </div>
-            <div class="chat-preview">
-              <div class="chat-message" style="color: #0d47a1; font-weight: 500; font-size: 12px;">
-                ✅ Disponible - Haz clic para contactar
-              </div>
-            </div>
-          </div>
-        `
-
-        telegramItem.onclick = function () {
-          if (typeof gtag !== 'undefined') {
-            gtag('event', 'telegram_click', {
-              event_category: 'engagement',
-              event_label: 'FortunaWild Telegram'
-            })
-          }
-          window.open('https://t.me/' + telegramConfig.username, '_blank')
-        }
-
-        container.appendChild(telegramItem)
-      }
-
-      function updateNewsDisplay() {
-        const container = document.getElementById('news-container')
-        container.innerHTML = ''
-
-        if (newsItems.length === 0) {
-          container.innerHTML =
-            '<p style="color: #666; text-align: center; font-style: italic; font-size: 13px; padding: 20px;">Sin noticias por el momento</p>'
-          return
-        }
-
-        newsItems.slice(0, 5).forEach((news) => {
-          const newsElement = document.createElement('div')
-          newsElement.className = `news-item ${
-            news.highlight ? 'news-highlight' : ''
-          }`
-
-          newsElement.innerHTML = `
-                    <div class="news-date">${news.date}</div>
-                    <div class="news-content">${news.content}</div>
-                `
-
-          container.appendChild(newsElement)
-        })
-      }
-
-      function loadConfiguration() {
-        initializeOrder()
-        updateDisplay()
-        updateTelegramDisplay()
-        updateNewsDisplay()
-
-        document.getElementById('loading').style.display = 'none'
-        document.getElementById('main-content').style.display = 'flex'
-      }
-
-      window.onload = function () {
-        initVisitCounter()
-        loadConfiguration()
-      }
     </script>
-  </body>
+</body>
 </html>
