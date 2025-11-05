@@ -615,9 +615,9 @@
 
         <div id="register-form">
             <h4>¡Hola! 👋</h4>
-            <p>Ingresá tu nombre o usuario para comenzar</p>
+            <p>Ingresá tu nombre y te conectaremos con nuestro bot de soporte</p>
             <input type="text" id="username-input" placeholder="Tu nombre o usuario" maxlength="30" autocomplete="off">
-            <button id="register-button">Comenzar Chat</button>
+            <button id="register-button">Ir al Bot de Telegram</button>
         </div>
 
         <div id="messages-area"></div>
@@ -850,70 +850,26 @@
         };
 
         // ========== CHAT WIDGET LOGIC ==========
-        let socket = null;
+        // Nombre del bot de Telegram
+        const TELEGRAM_BOT_USERNAME = 'fortunawild01_bot';
+
         let username = null;
-        let isRegistered = false;
 
         const chatButton = document.getElementById('chat-button');
         const chatContainer = document.getElementById('chat-container');
         const chatClose = document.getElementById('chat-close');
-        const registerForm = document.getElementById('register-form');
         const usernameInput = document.getElementById('username-input');
         const registerButton = document.getElementById('register-button');
-        const messagesArea = document.getElementById('messages-area');
-        const inputArea = document.getElementById('input-area');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        const imageButton = document.getElementById('image-button');
-        const imageInput = document.getElementById('image-input');
-        const connectionStatus = document.getElementById('connection-status');
 
         chatButton.addEventListener('click', () => {
             chatContainer.classList.add('active');
             chatButton.classList.add('hidden');
-            if (!socket) connectSocket();
         });
 
         chatClose.addEventListener('click', () => {
             chatContainer.classList.remove('active');
             chatButton.classList.remove('hidden');
         });
-
-        function connectSocket() {
-            socket = io(BACKEND_URL);
-
-            socket.on('connect', () => {
-                console.log('Conectado al servidor de chat');
-                showStatus('Conectado ✓', 'success');
-            });
-
-            socket.on('disconnect', () => {
-                console.log('Desconectado del servidor');
-                showStatus('Desconectado. Reconectando...', 'error');
-            });
-
-            socket.on('registered', (data) => {
-                if (data.success) {
-                    isRegistered = true;
-                    registerForm.style.display = 'none';
-                    messagesArea.classList.add('active');
-                    inputArea.classList.add('active');
-                    addSystemMessage('¡Conectado con soporte! Un agente te responderá pronto.');
-                }
-            });
-
-            socket.on('admin_message', (data) => {
-                addMessage('admin', data.message, data.timestamp);
-            });
-
-            socket.on('admin_image', (data) => {
-                addImageMessage('admin', data.imageData, data.caption, data.timestamp);
-            });
-
-            socket.on('error', (data) => {
-                showStatus(data.message, 'error');
-            });
-        }
 
         registerButton.addEventListener('click', register);
         usernameInput.addEventListener('keypress', (e) => {
@@ -926,124 +882,22 @@
                 alert('Por favor, ingresá un nombre válido (mínimo 2 caracteres)');
                 return;
             }
-            username = name;
-            socket.emit('register', username);
-        }
-
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
-            socket.emit('message', { message });
-            addMessage('user', message, new Date());
-            messageInput.value = '';
-            autoResize(messageInput);
-        }
-
-        imageButton.addEventListener('click', () => imageInput.click());
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (file.size > 5 * 1024 * 1024) {
-                alert('La imagen es muy grande. Máximo 5MB.');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const imageData = event.target.result;
-                socket.emit('image', { imageData, caption: '' });
-                addImageMessage('user', imageData, '', new Date());
-                imageInput.value = '';
-            };
-            reader.readAsDataURL(file);
-        });
-
-        function addMessage(type, text, timestamp) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.textContent = text;
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = formatTime(timestamp);
-            messageDiv.appendChild(bubble);
-            messageDiv.appendChild(time);
-            messagesArea.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function addImageMessage(type, imageSrc, caption, timestamp) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            const img = document.createElement('img');
-            img.className = 'message-image';
-            img.src = imageSrc;
-            img.onclick = () => window.open(imageSrc, '_blank');
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = formatTime(timestamp);
-            messageDiv.appendChild(img);
-            if (caption) {
-                const captionDiv = document.createElement('div');
-                captionDiv.className = 'message-bubble';
-                captionDiv.textContent = caption;
-                messageDiv.appendChild(captionDiv);
-            }
-            messageDiv.appendChild(time);
-            messagesArea.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function addSystemMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'system-message';
-            messageDiv.textContent = text;
-            messagesArea.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function showStatus(message, type) {
-            connectionStatus.textContent = message;
-            connectionStatus.className = 'connection-status show';
             
-            if (type === 'success') {
-                connectionStatus.style.background = '#d4edda';
-                connectionStatus.style.color = '#155724';
-            } else {
-                connectionStatus.style.background = '#f8d7da';
-                connectionStatus.style.color = '#721c24';
+            username = name;
+            
+            // Tracking
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'telegram_bot_click', {
+                    event_category: 'engagement',
+                    event_label: 'Chat Widget to Telegram Bot'
+                });
             }
-
-            setTimeout(() => {
-                connectionStatus.classList.remove('show');
-            }, 3000);
-        }
-
-        function formatTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function scrollToBottom() {
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        messageInput.addEventListener('input', function() {
-            autoResize(this);
-        });
-
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+            
+            // Redirigir al bot de Telegram con mensaje inicial
+            const message = `Hola, soy ${name}. Necesito información`;
+            const telegramBotUrl = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(name)}`;
+            
+            window.location.href = telegramBotUrl;
         }
     </script>
 </body>
