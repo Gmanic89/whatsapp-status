@@ -582,6 +582,47 @@
         }
       }
 
+      /* ========== MENÚ DE OPCIONES ========== */
+      .options-menu {
+        margin: 20px 0;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .option-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .option-button {
+        padding: 14px 20px;
+        background: white;
+        border: 2px solid #667eea;
+        border-radius: 12px;
+        color: #667eea;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .option-button:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .option-button:active {
+        transform: translateY(0);
+      }
+
       @media (max-width: 768px) {
         h1 {
           font-size: 26px;
@@ -948,6 +989,7 @@
       let socket = null
       let username = null
       let sessionId = null
+      let isReconnecting = false
 
       const chatButton = document.getElementById('chat-button')
       const chatContainer = document.getElementById('chat-container')
@@ -962,9 +1004,86 @@
       const connectionStatus = document.getElementById('connection-status')
       const typingIndicator = document.getElementById('typing-indicator')
 
+      // ========== PERSISTENCIA DE SESIÓN ==========
+      function saveSession(username, sessionId) {
+        const sessionData = {
+          username: username,
+          sessionId: sessionId,
+          timestamp: Date.now()
+        }
+        localStorage.setItem('fortunawild_chat_session', JSON.stringify(sessionData))
+        console.log('💾 Sesión guardada:', sessionData)
+      }
+
+      function loadSession() {
+        const savedSession = localStorage.getItem('fortunawild_chat_session')
+        if (!savedSession) return null
+
+        const sessionData = JSON.parse(savedSession)
+        
+        // ✅ SIN EXPIRACIÓN - La sesión dura indefinidamente
+        console.log('📂 Sesión cargada:', sessionData)
+        return sessionData
+      }
+
+      function saveMessage(type, text, timestamp) {
+        const messages = loadMessages()
+        messages.push({ type, text, timestamp: timestamp.toISOString() })
+        
+        // Guardar solo los últimos 50 mensajes
+        if (messages.length > 50) {
+          messages.shift()
+        }
+        
+        localStorage.setItem('fortunawild_chat_messages', JSON.stringify(messages))
+      }
+
+      function loadMessages() {
+        const savedMessages = localStorage.getItem('fortunawild_chat_messages')
+        return savedMessages ? JSON.parse(savedMessages) : []
+      }
+
+      function restoreMessages() {
+        const messages = loadMessages()
+        console.log('📨 Restaurando', messages.length, 'mensajes')
+        
+        messages.forEach(msg => {
+          addMessage(msg.type, msg.text, new Date(msg.timestamp), false)
+        })
+      }
+
+      // ========== EVENT LISTENERS ==========
       chatButton.addEventListener('click', () => {
-        chatContainer.classList.add('active')
-        chatButton.classList.add('hidden')
+        const savedSession = loadSession()
+        
+        if (savedSession) {
+          // Si ya hay sesión, solo abrir el chat
+          username = savedSession.username
+          sessionId = savedSession.sessionId
+          isReconnecting = true
+          
+          chatContainer.classList.add('active')
+          chatButton.classList.add('hidden')
+          
+          // Mostrar chat directamente
+          registerForm.style.display = 'none'
+          messagesArea.classList.add('active')
+          inputArea.classList.add('active')
+          
+          // Restaurar mensajes guardados
+          restoreMessages()
+          
+          addSystemMessage(`Reconectando como ${username}...`)
+          
+          // Conectar al backend
+          if (!socket || !socket.connected) {
+            connectToBot()
+          }
+        } else {
+          // Primera vez, mostrar formulario de registro
+          chatContainer.classList.add('active')
+          chatButton.classList.add('hidden')
+        }
       })
 
       chatClose.addEventListener('click', () => {
@@ -986,6 +1105,9 @@
 
         username = name
         sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+
+        // ✅ Guardar sesión
+        saveSession(username, sessionId)
 
         // Mostrar chat
         registerForm.style.display = 'none'
@@ -1023,7 +1145,8 @@
           // Registrar usuario en el bot
           socket.emit('web_chat_start', {
             username: username,
-            sessionId: sessionId
+            sessionId: sessionId,
+            isReconnecting: isReconnecting
           })
         })
 
@@ -1046,6 +1169,11 @@
             addImageMessage('bot', data.imageData, data.message || '')
           } else {
             addMessage('bot', data.message, new Date())
+          }
+
+          // ✅ Mostrar menú de opciones después del mensaje de bienvenida
+          if (data.showMenu) {
+            showOptionsMenu()
           }
         })
 
@@ -1090,7 +1218,7 @@
         // Mostrar mensaje del usuario
         addMessage('user', message, new Date())
 
-        // Enviar al bot - CORREGIDO: usa 'message' en lugar de 'web_chat_message'
+        // Enviar al bot
         socket.emit('message', {
           message: message
         })
@@ -1102,7 +1230,7 @@
         showTyping()
       }
 
-      function addMessage(type, text, timestamp) {
+      function addMessage(type, text, timestamp, shouldSave = true) {
         const messageDiv = document.createElement('div')
         messageDiv.className = `message ${type}`
 
@@ -1118,6 +1246,11 @@
         messageDiv.appendChild(time)
         messagesArea.appendChild(messageDiv)
         scrollToBottom()
+
+        // ✅ Guardar mensaje en localStorage
+        if (shouldSave) {
+          saveMessage(type, text, timestamp)
+        }
       }
 
       function addImageMessage(type, imageSrc, caption) {
@@ -1193,6 +1326,87 @@
         textarea.style.height = 'auto'
         textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
       }
+
+      // ========== MENÚ DE OPCIONES ==========
+      function showOptionsMenu() {
+        const menuDiv = document.createElement('div')
+        menuDiv.className = 'options-menu'
+        menuDiv.innerHTML = `
+          <div class="system-message">¿En qué podemos ayudarte?</div>
+          <div class="option-buttons">
+            <button class="option-button" onclick="selectOption('Solicitar CBU')">
+              💳 Solicitar CBU
+            </button>
+            <button class="option-button" onclick="selectOption('Realizar Retiro')">
+              💰 Realizar Retiro
+            </button>
+            <button class="option-button" onclick="selectOption('Otra Consulta')">
+              💬 Otra Consulta
+            </button>
+          </div>
+        `
+        messagesArea.appendChild(menuDiv)
+        scrollToBottom()
+      }
+
+      function selectOption(option) {
+        // Ocultar el menú
+        const menu = document.querySelector('.options-menu')
+        if (menu) {
+          menu.style.opacity = '0.5'
+          menu.style.pointerEvents = 'none'
+        }
+
+        // Mostrar la opción seleccionada como mensaje del usuario
+        addMessage('user', option, new Date())
+
+        // Enviar al bot
+        if (socket) {
+          socket.emit('message', {
+            message: option
+          })
+          showTyping()
+        }
+
+        // Tracking
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'chat_option_selected', {
+            event_category: 'engagement',
+            event_label: option
+          })
+        }
+      }
+
+      // ========== AUTO-CONEXIÓN AL CARGAR ==========
+      window.addEventListener('DOMContentLoaded', () => {
+        const savedSession = loadSession()
+        
+        if (savedSession) {
+          // Si hay sesión guardada, auto-abrir el chat
+          username = savedSession.username
+          sessionId = savedSession.sessionId
+          isReconnecting = true
+          
+          console.log('🔄 Sesión detectada, auto-conectando:', username)
+          
+          // Abrir chat automáticamente
+          chatContainer.classList.add('active')
+          chatButton.classList.add('hidden')
+          
+          // Mostrar chat directamente
+          registerForm.style.display = 'none'
+          messagesArea.classList.add('active')
+          inputArea.classList.add('active')
+          
+          // Restaurar mensajes guardados
+          restoreMessages()
+          
+          addSystemMessage(`Reconectando como ${username}...`)
+          
+          // Conectar al backend
+          connectToBot()
+        }
+      })
     </script>
   </body>
 </html>
