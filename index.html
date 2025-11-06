@@ -1105,6 +1105,7 @@
 
         username = name
         sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+        isReconnecting = false // ✅ Nueva sesión
 
         // ✅ Guardar sesión
         saveSession(username, sessionId)
@@ -1163,6 +1164,7 @@
         // Respuesta del bot (mensaje de bienvenida)
         socket.on('bot_message', (data) => {
           console.log('💬 Mensaje del bot recibido:', data)
+          console.log('🔍 showMenu:', data.showMenu) // ✅ LOG
           hideTyping()
 
           if (data.imageData) {
@@ -1171,8 +1173,9 @@
             addMessage('bot', data.message, new Date())
           }
 
-          // ✅ Mostrar menú de opciones después del mensaje de bienvenida
+          // ✅ Mostrar menú de opciones
           if (data.showMenu) {
+            console.log('📋 Mostrando menú de opciones') // ✅ LOG
             showOptionsMenu()
           }
         })
@@ -1327,8 +1330,9 @@
         textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
       }
 
-      // ========== MENÚ DE OPCIONES ==========
-      function showOptionsMenu() {
+      // ========== MENÚ DE OPCIONES (AHORA COMO FUNCIONES GLOBALES) ==========
+      window.showOptionsMenu = function() {
+        console.log('🎯 Ejecutando showOptionsMenu()') // ✅ LOG
         const menuDiv = document.createElement('div')
         menuDiv.className = 'options-menu'
         menuDiv.innerHTML = `
@@ -1347,9 +1351,12 @@
         `
         messagesArea.appendChild(menuDiv)
         scrollToBottom()
+        console.log('✅ Menú de opciones agregado al DOM') // ✅ LOG
       }
 
-      function selectOption(option) {
+      window.selectOption = function(option) {
+        console.log('🎯 Opción seleccionada:', option) // ✅ LOG
+        
         // Ocultar el menú
         const menu = document.querySelector('.options-menu')
         if (menu) {
