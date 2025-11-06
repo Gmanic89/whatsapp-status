@@ -757,34 +757,33 @@
         return atob(s)
       }
 
-      const enc = {
-        l1: d('NTQ5') + d('MjIxNTc3NzA0Ng=='),
-        l2: d('NTQ5') + d('MTE3MzU4ODkxOA=='),
-        l3: d('NTQ5') + d('MTE3MzY2MTY3NQ=='),
-        l4: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
-        l5: d('NTQ5') + d('MTE2NTU1NDg5MQ=='),
-        l6: d('NTQ5') + d('MTE3MTgwMjIyMA=='),
-        l7: d('NTQ5') + d('MTEzNTExMTM3OA=='),
-        l8: d('NTQ5') + d('MjIxNDQwNzM3MQ=='),
-        l9: d('NTQ5') + d('MTE2MjQ3NTU2NQ=='),
-        l10: d('NTQ5') + d('MTE3MzU3NTY5Mg=='),
-        l11: d('NTQ5') + d('MTE3MTA5NTM1NA=='),
-        telegram: d('Zm9ydHVuYXdpbGQwMQ==')
-      }
+const enc = {
+  l1: d('NTQ5') + d('MTYxMDg5MDc4'),      
+  l2: d('NTQ5') + d('MTYxMDg5MDc4'),      
+  l3: d('NTQ5') + d('MTYxMDg5MDc4'),      
+  l4: d('NTQ5') + d('MTYxMDg5MDc4'),      
+  l5: d('NTQ5') + d('MTYxMDg5MDc4'),      8
+  l6: d('NTQy') + d('MjIxNDQwNzM2Mw=='), // 542214363
+  l7: d('NTQy') + d('MjIxNDQwNzM2Mw=='), // 542214403
+  l8: d('NTQy') + d('MjIxNDQwNzM2Mw=='), // 54221447363
+  l9: d('NTQy') + d('MjIxNDQwNzM2Mw=='), // 54221463
+  l10: d('NTQy') + d('MjIxNDQwNzM2Mw=='), // 5422147363
+  l11: d('NTQ5') + d('MTE3MTA5NTM1NA=='), // Soporte (mngo el original)
+  telegram: d('Zm9ydHVuYXdpbGQwMQ==')
+}
 
-      const activeLines = [
-        { name: 'Fortuna Wild 2', number: enc.l2 },
-        { name: 'Fortuna Wild 3', number: enc.l3 },
-        { name: 'Fortuna Wild 4', number: enc.l4 },
-        { name: 'Fortuna Wild 5', number: enc.l5 },
-        { name: 'Fortuna Wild 6', number: enc.l6 },
-        { name: 'Fortuna Wild 7', number: enc.l7 },
-        { name: 'Fortuna Wild 8', number: enc.l8 },
-        { name: 'Fortuna Wild 9', number: enc.l9 },
-        { name: 'Fortuna Wild 10', number: enc.l10 },
-        { name: 'Soporte Técnico', number: enc.l11 }
-      ]
-
+const activeLines = [
+  { name: 'Fortuna Wild 2', number: enc.l2 },
+  { name: 'Fortuna Wild 3', number: enc.l3 },
+  { name: 'Fortuna Wild 4', number: enc.l4 },
+  { name: 'Fortuna Wild 5', number: enc.l5 },
+  { name: 'Fortuna Wild 6', number: enc.l6 },
+  { name: 'Fortuna Wild 7', number: enc.l7 },
+  { name: 'Fortuna Wild 8', number: enc.l8 },
+  { name: 'Fortuna Wild 9', number: enc.l9 },
+  { name: 'Fortuna Wild 10', number: enc.l10 },
+  { name: 'Soporte Técnico', number: enc.l11 }
+]
       function getRandomLine() {
         return activeLines[Math.floor(Math.random() * activeLines.length)]
       }
