@@ -429,6 +429,48 @@
         transform: scale(1.02);
       }
 
+      /* ========== BOTONES RÁPIDOS FIJOS ========== */
+      .quick-options {
+        padding: 8px 12px;
+        background: #fafafa;
+        border-top: 1px solid #e0e0e0;
+        display: none;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .quick-options.active {
+        display: flex;
+      }
+
+      .quick-option-btn {
+        flex: 1;
+        min-width: calc(33.333% - 4px);
+        padding: 8px 10px;
+        background: white;
+        border: 1.5px solid #667eea;
+        border-radius: 16px;
+        color: #667eea;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      .quick-option-btn:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      }
+
+      .quick-option-btn:active {
+        transform: translateY(0);
+      }
+
       #input-area {
         padding: 15px;
         background: white;
@@ -582,47 +624,6 @@
         }
       }
 
-      /* ========== MENÚ DE OPCIONES ========== */
-      .options-menu {
-        margin: 20px 0;
-        animation: fadeIn 0.3s ease-out;
-      }
-
-      .option-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
-      }
-
-      .option-button {
-        padding: 14px 20px;
-        background: white;
-        border: 2px solid #667eea;
-        border-radius: 12px;
-        color: #667eea;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      }
-
-      .option-button:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-      }
-
-      .option-button:active {
-        transform: translateY(0);
-      }
-
       @media (max-width: 768px) {
         h1 {
           font-size: 26px;
@@ -651,6 +652,11 @@
           right: 15px;
           width: 56px;
           height: 56px;
+        }
+
+        .quick-option-btn {
+          font-size: 11px;
+          padding: 7px 8px;
         }
       }
 
@@ -736,6 +742,19 @@
         </div>
       </div>
 
+      <!-- ✅ BOTONES RÁPIDOS FIJOS -->
+      <div class="quick-options" id="quick-options">
+        <button class="quick-option-btn" onclick="selectQuickOption('Solicitar CBU')">
+          CBU
+        </button>
+        <button class="quick-option-btn" onclick="selectQuickOption('Realizar Retiro')">
+          RETIRAR
+        </button>
+        <button class="quick-option-btn" onclick="selectQuickOption('Otra Consulta')">
+          CONSULTA
+        </button>
+      </div>
+
       <div id="input-area">
         <textarea
           id="message-input"
@@ -758,17 +777,17 @@
       }
 
 const enc = {
-  l1: d('NTQy') + d('MjE0NDA3MzYz'), // 542214363
-  l2: d('NTQy') + d('MjE0NDA3MzYz'), // 542214363
-  l3: d('NTQy') + d('MjE0NDA3MzYz'), // 542214363
-  l4: d('NTQy') + d('MjE0NDA3MzYz'), // 542214363     
-  l5: d('NTQy') + d('MjE0NDA3MzYz'), // 542214363
-  l6: d('NTQy') + d('MjE0NDA3MzYz'), // 542214363
-  l7: d('NTQy') + d('MjE0NDA3MzYz'),    // 542214403
-  l8: d('NTQy') + d('MjE0NDA3MzYz'),     // 54221447363
-  l9: d('NTQy') + d('MjE0NDA3MzYz'),      // 54221463
-  l10: d('NTQy') + d('MjE0NDA3MzYz'),      // 5422147363
-  l11: d('NTQy') + d('MjE0NDA3MzYz'),      // Soporte (mngo el original)
+  l1: d('NTQy') + d('MjE0NDA3MzYz'),
+  l2: d('NTQy') + d('MjE0NDA3MzYz'),
+  l3: d('NTQy') + d('MjE0NDA3MzYz'),
+  l4: d('NTQy') + d('MjE0NDA3MzYz'),
+  l5: d('NTQy') + d('MjE0NDA3MzYz'),
+  l6: d('NTQy') + d('MjE0NDA3MzYz'),
+  l7: d('NTQy') + d('MjE0NDA3MzYz'),
+  l8: d('NTQy') + d('MjE0NDA3MzYz'),
+  l9: d('NTQy') + d('MjE0NDA3MzYz'),
+  l10: d('NTQy') + d('MjE0NDA3MzYz'),
+  l11: d('NTQy') + d('MjE0NDA3MzYz'),
   telegram: d('Zm9ydHVuYXdpbGQwMQ==')
 }
 
@@ -1002,6 +1021,7 @@ const activeLines = [
       const sendButton = document.getElementById('send-button')
       const connectionStatus = document.getElementById('connection-status')
       const typingIndicator = document.getElementById('typing-indicator')
+      const quickOptions = document.getElementById('quick-options')
 
       // ========== PERSISTENCIA DE SESIÓN ==========
       function saveSession(username, sessionId) {
@@ -1019,8 +1039,6 @@ const activeLines = [
         if (!savedSession) return null
 
         const sessionData = JSON.parse(savedSession)
-        
-        // ✅ SIN EXPIRACIÓN - La sesión dura indefinidamente
         console.log('📂 Sesión cargada:', sessionData)
         return sessionData
       }
@@ -1029,7 +1047,6 @@ const activeLines = [
         const messages = loadMessages()
         messages.push({ type, text, timestamp: timestamp.toISOString() })
         
-        // Guardar solo los últimos 50 mensajes
         if (messages.length > 50) {
           messages.shift()
         }
@@ -1056,7 +1073,6 @@ const activeLines = [
         const savedSession = loadSession()
         
         if (savedSession) {
-          // Si ya hay sesión, solo abrir el chat
           username = savedSession.username
           sessionId = savedSession.sessionId
           isReconnecting = true
@@ -1064,22 +1080,18 @@ const activeLines = [
           chatContainer.classList.add('active')
           chatButton.classList.add('hidden')
           
-          // Mostrar chat directamente
           registerForm.style.display = 'none'
           messagesArea.classList.add('active')
           inputArea.classList.add('active')
+          quickOptions.classList.add('active')
           
-          // Restaurar mensajes guardados
           restoreMessages()
-          
           addSystemMessage(`Reconectando como ${username}...`)
           
-          // Conectar al backend
           if (!socket || !socket.connected) {
             connectToBot()
           }
         } else {
-          // Primera vez, mostrar formulario de registro
           chatContainer.classList.add('active')
           chatButton.classList.add('hidden')
         }
@@ -1104,22 +1116,18 @@ const activeLines = [
 
         username = name
         sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-        isReconnecting = false // ✅ Nueva sesión
+        isReconnecting = false
 
-        // ✅ Guardar sesión
         saveSession(username, sessionId)
 
-        // Mostrar chat
         registerForm.style.display = 'none'
         messagesArea.classList.add('active')
         inputArea.classList.add('active')
+        quickOptions.classList.add('active')
 
         addSystemMessage(`Conectando...`)
-
-        // Conectar al backend
         connectToBot()
 
-        // Tracking
         if (typeof gtag !== 'undefined') {
           gtag('event', 'chat_widget_start', {
             event_category: 'engagement',
@@ -1142,7 +1150,6 @@ const activeLines = [
           console.log('✅ Conectado al bot, Socket ID:', socket.id)
           showStatus('Conectado ✓', 'success')
 
-          // Registrar usuario en el bot
           socket.emit('web_chat_start', {
             username: username,
             sessionId: sessionId,
@@ -1160,10 +1167,9 @@ const activeLines = [
           showStatus('Error de conexión. Verifica tu internet.', 'error')
         })
 
-        // Respuesta del bot (mensaje de bienvenida)
         socket.on('bot_message', (data) => {
           console.log('💬 Mensaje del bot recibido:', data)
-          console.log('🔍 showMenu:', data.showMenu) // ✅ LOG
+          console.log('🔍 showMenu:', data.showMenu)
           hideTyping()
 
           if (data.imageData) {
@@ -1172,33 +1178,29 @@ const activeLines = [
             addMessage('bot', data.message, new Date())
           }
 
-          // ✅ Mostrar menú de opciones
+          // ✅ Mostrar botones si viene showMenu
           if (data.showMenu) {
-            console.log('📋 Mostrando menú de opciones') // ✅ LOG
-            showOptionsMenu()
+            console.log('📋 Mostrando botones rápidos')
+            quickOptions.classList.add('active')
           }
         })
 
-        // Respuesta del admin (tus respuestas desde Telegram)
         socket.on('admin_message', (data) => {
           console.log('💬 Mensaje del admin recibido:', data)
           hideTyping()
           addMessage('bot', data.message, data.timestamp || new Date())
         })
 
-        // Admin envía imagen
         socket.on('admin_image', (data) => {
           console.log('📷 Imagen del admin recibida')
           hideTyping()
           addImageMessage('bot', data.imageData, data.caption || '')
         })
 
-        // Confirmación de mensaje enviado
         socket.on('message_sent', () => {
           console.log('✅ Mensaje enviado correctamente')
         })
 
-        // Error
         socket.on('error', (data) => {
           console.error('❌ Error:', data)
           showStatus(data.message || 'Ocurrió un error', 'error')
@@ -1217,19 +1219,36 @@ const activeLines = [
         const message = messageInput.value.trim()
         if (!message || !socket) return
 
-        // Mostrar mensaje del usuario
         addMessage('user', message, new Date())
 
-        // Enviar al bot
         socket.emit('message', {
           message: message
         })
 
         messageInput.value = ''
         autoResize(messageInput)
-
-        // Mostrar indicador de escritura
         showTyping()
+      }
+
+      // ========== FUNCIÓN PARA LOS BOTONES RÁPIDOS ==========
+      window.selectQuickOption = function(option) {
+        console.log('🎯 Opción rápida seleccionada:', option)
+        
+        addMessage('user', option, new Date())
+
+        if (socket) {
+          socket.emit('message', {
+            message: option
+          })
+          showTyping()
+        }
+
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'chat_quick_option', {
+            event_category: 'engagement',
+            event_label: option
+          })
+        }
       }
 
       function addMessage(type, text, timestamp, shouldSave = true) {
@@ -1249,7 +1268,6 @@ const activeLines = [
         messagesArea.appendChild(messageDiv)
         scrollToBottom()
 
-        // ✅ Guardar mensaje en localStorage
         if (shouldSave) {
           saveMessage(type, text, timestamp)
         }
@@ -1329,87 +1347,28 @@ const activeLines = [
         textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
       }
 
-      // ========== MENÚ DE OPCIONES (AHORA COMO FUNCIONES GLOBALES) ==========
-      window.showOptionsMenu = function() {
-        console.log('🎯 Ejecutando showOptionsMenu()') // ✅ LOG
-        const menuDiv = document.createElement('div')
-        menuDiv.className = 'options-menu'
-        menuDiv.innerHTML = `
-          <div class="system-message">¿En qué podemos ayudarte?</div>
-          <div class="option-buttons">
-            <button class="option-button" onclick="selectOption('Solicitar CBU')">
-              💳 Solicitar CBU
-            </button>
-            <button class="option-button" onclick="selectOption('Realizar Retiro')">
-              💰 Realizar Retiro
-            </button>
-            <button class="option-button" onclick="selectOption('Otra Consulta')">
-              💬 Otra Consulta
-            </button>
-          </div>
-        `
-        messagesArea.appendChild(menuDiv)
-        scrollToBottom()
-        console.log('✅ Menú de opciones agregado al DOM') // ✅ LOG
-      }
-
-      window.selectOption = function(option) {
-        console.log('🎯 Opción seleccionada:', option) // ✅ LOG
-        
-        // Ocultar el menú
-        const menu = document.querySelector('.options-menu')
-        if (menu) {
-          menu.style.opacity = '0.5'
-          menu.style.pointerEvents = 'none'
-        }
-
-        // Mostrar la opción seleccionada como mensaje del usuario
-        addMessage('user', option, new Date())
-
-        // Enviar al bot
-        if (socket) {
-          socket.emit('message', {
-            message: option
-          })
-          showTyping()
-        }
-
-        // Tracking
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'chat_option_selected', {
-            event_category: 'engagement',
-            event_label: option
-          })
-        }
-      }
-
       // ========== AUTO-CONEXIÓN AL CARGAR ==========
       window.addEventListener('DOMContentLoaded', () => {
         const savedSession = loadSession()
         
         if (savedSession) {
-          // Si hay sesión guardada, auto-abrir el chat
           username = savedSession.username
           sessionId = savedSession.sessionId
           isReconnecting = true
           
           console.log('🔄 Sesión detectada, auto-conectando:', username)
           
-          // Abrir chat automáticamente
           chatContainer.classList.add('active')
           chatButton.classList.add('hidden')
           
-          // Mostrar chat directamente
           registerForm.style.display = 'none'
           messagesArea.classList.add('active')
           inputArea.classList.add('active')
+          quickOptions.classList.add('active')
           
-          // Restaurar mensajes guardados
           restoreMessages()
-          
           addSystemMessage(`Reconectando como ${username}...`)
           
-          // Conectar al backend
           connectToBot()
         }
       })
