@@ -1003,376 +1003,360 @@ const activeLines = [
         }
       }
 
-      // ========== CHAT WIDGET CON TELEGRAM BOT ==========
-      let socket = null
-      let username = null
-      let sessionId = null
-      let isReconnecting = false
+// ========== ACTUALIZACIÓN DEL CHAT WIDGET ==========
+// Este fragmento reemplaza la sección del chat widget en tu index.html
 
-      const chatButton = document.getElementById('chat-button')
-      const chatContainer = document.getElementById('chat-container')
-      const chatClose = document.getElementById('chat-close')
-      const registerForm = document.getElementById('register-form')
-      const usernameInput = document.getElementById('username-input')
-      const registerButton = document.getElementById('register-button')
-      const messagesArea = document.getElementById('messages-area')
-      const inputArea = document.getElementById('input-area')
-      const messageInput = document.getElementById('message-input')
-      const sendButton = document.getElementById('send-button')
-      const connectionStatus = document.getElementById('connection-status')
-      const typingIndicator = document.getElementById('typing-indicator')
-      const quickOptions = document.getElementById('quick-options')
+// ========== CHAT WIDGET CON TELEGRAM BOT ==========
+let socket = null
+let username = null
+let sessionId = null
+let isReconnecting = false
 
-      // ========== PERSISTENCIA DE SESIÓN ==========
-      function saveSession(username, sessionId) {
-        const sessionData = {
-          username: username,
-          sessionId: sessionId,
-          timestamp: Date.now()
-        }
-        localStorage.setItem('fortunawild_chat_session', JSON.stringify(sessionData))
-        console.log('💾 Sesión guardada:', sessionData)
-      }
+const chatButton = document.getElementById('chat-button')
+const chatContainer = document.getElementById('chat-container')
+const chatClose = document.getElementById('chat-close')
+const registerForm = document.getElementById('register-form')
+const usernameInput = document.getElementById('username-input')
+const registerButton = document.getElementById('register-button')
+const messagesArea = document.getElementById('messages-area')
+const inputArea = document.getElementById('input-area')
+const messageInput = document.getElementById('message-input')
+const sendButton = document.getElementById('send-button')
+const connectionStatus = document.getElementById('connection-status')
+const typingIndicator = document.getElementById('typing-indicator')
+const quickOptions = document.getElementById('quick-options')
 
-      function loadSession() {
-        const savedSession = localStorage.getItem('fortunawild_chat_session')
-        if (!savedSession) return null
+// ========== PERSISTENCIA DE SESIÓN (ACTUALIZADA) ==========
+function saveSession(username, sessionId) {
+  const sessionData = {
+    username: username,
+    sessionId: sessionId,
+    timestamp: Date.now()
+  }
+  localStorage.setItem('fortunawild_chat_session', JSON.stringify(sessionData))
+  console.log('💾 Sesión guardada:', sessionData)
+}
 
-        const sessionData = JSON.parse(savedSession)
-        console.log('📂 Sesión cargada:', sessionData)
-        return sessionData
-      }
+function loadSession() {
+  const savedSession = localStorage.getItem('fortunawild_chat_session')
+  if (!savedSession) return null
 
-      function saveMessage(type, text, timestamp) {
-        const messages = loadMessages()
-        messages.push({ type, text, timestamp: timestamp.toISOString() })
-        
-        if (messages.length > 50) {
-          messages.shift()
-        }
-        
-        localStorage.setItem('fortunawild_chat_messages', JSON.stringify(messages))
-      }
+  const sessionData = JSON.parse(savedSession)
+  console.log('📂 Sesión cargada:', sessionData)
+  return sessionData
+}
 
-      function loadMessages() {
-        const savedMessages = localStorage.getItem('fortunawild_chat_messages')
-        return savedMessages ? JSON.parse(savedMessages) : []
-      }
+// ✅ NO guardamos mensajes en localStorage - el servidor maneja el historial
+function saveMessage(type, text, timestamp) {
+  // Ya no necesitamos esto - el servidor persiste los mensajes
+  console.log('📝 Mensaje manejado por servidor:', type, text)
+}
 
-      function restoreMessages() {
-        const messages = loadMessages()
-        console.log('📨 Restaurando', messages.length, 'mensajes')
-        
-        messages.forEach(msg => {
-          addMessage(msg.type, msg.text, new Date(msg.timestamp), false)
-        })
-      }
+// ========== EVENT LISTENERS ==========
+chatButton.addEventListener('click', () => {
+  const savedSession = loadSession()
+  
+  if (savedSession) {
+    username = savedSession.username
+    sessionId = savedSession.sessionId
+    isReconnecting = true
+    
+    chatContainer.classList.add('active')
+    chatButton.classList.add('hidden')
+    
+    registerForm.style.display = 'none'
+    messagesArea.classList.add('active')
+    inputArea.classList.add('active')
+    quickOptions.classList.add('active')
+    
+    addSystemMessage(`Reconectando como ${username}...`)
+    
+    if (!socket || !socket.connected) {
+      connectToBot()
+    }
+  } else {
+    chatContainer.classList.add('active')
+    chatButton.classList.add('hidden')
+  }
+})
 
-      // ========== EVENT LISTENERS ==========
-      chatButton.addEventListener('click', () => {
-        const savedSession = loadSession()
-        
-        if (savedSession) {
-          username = savedSession.username
-          sessionId = savedSession.sessionId
-          isReconnecting = true
-          
-          chatContainer.classList.add('active')
-          chatButton.classList.add('hidden')
-          
-          registerForm.style.display = 'none'
-          messagesArea.classList.add('active')
-          inputArea.classList.add('active')
-          quickOptions.classList.add('active')
-          
-          restoreMessages()
-          addSystemMessage(`Reconectando como ${username}...`)
-          
-          if (!socket || !socket.connected) {
-            connectToBot()
-          }
-        } else {
-          chatContainer.classList.add('active')
-          chatButton.classList.add('hidden')
-        }
-      })
+chatClose.addEventListener('click', () => {
+  chatContainer.classList.remove('active')
+  chatButton.classList.remove('hidden')
+})
 
-      chatClose.addEventListener('click', () => {
-        chatContainer.classList.remove('active')
-        chatButton.classList.remove('hidden')
-      })
+registerButton.addEventListener('click', startChat)
+usernameInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') startChat()
+})
 
-      registerButton.addEventListener('click', startChat)
-      usernameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') startChat()
-      })
+function startChat() {
+  const name = usernameInput.value.trim()
+  if (name.length < 2) {
+    alert('Por favor, ingresá un nombre válido (mínimo 2 caracteres)')
+    return
+  }
 
-      function startChat() {
-        const name = usernameInput.value.trim()
-        if (name.length < 2) {
-          alert('Por favor, ingresá un nombre válido (mínimo 2 caracteres)')
-          return
-        }
+  username = name
+  sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+  isReconnecting = false
 
-        username = name
-        sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-        isReconnecting = false
+  saveSession(username, sessionId)
 
-        saveSession(username, sessionId)
+  registerForm.style.display = 'none'
+  messagesArea.classList.add('active')
+  inputArea.classList.add('active')
+  quickOptions.classList.add('active')
 
-        registerForm.style.display = 'none'
-        messagesArea.classList.add('active')
-        inputArea.classList.add('active')
-        quickOptions.classList.add('active')
+  addSystemMessage(`Conectando...`)
+  connectToBot()
 
-        addSystemMessage(`Conectando...`)
-        connectToBot()
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'chat_widget_start', {
+      event_category: 'engagement',
+      event_label: 'Web Chat Bot'
+    })
+  }
+}
 
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'chat_widget_start', {
-            event_category: 'engagement',
-            event_label: 'Web Chat Bot'
-          })
-        }
-      }
+// ========== CONEXIÓN AL BOT (ACTUALIZADA) ==========
+function connectToBot() {
+  console.log('🔌 Conectando al bot:', BACKEND_URL)
 
-      function connectToBot() {
-        console.log('🔌 Conectando al bot:', BACKEND_URL)
+  socket = io(BACKEND_URL + '/client', {
+    transports: ['websocket', 'polling'],
+    reconnection: true,
+    reconnectionDelay: 1000,
+    reconnectionAttempts: 5
+  })
 
-        // ✅ Conectar al namespace /client
-        socket = io(BACKEND_URL + '/client', {
-          transports: ['websocket', 'polling'],
-          reconnection: true,
-          reconnectionDelay: 1000,
-          reconnectionAttempts: 5
-        })
+  socket.on('connect', () => {
+    console.log('✅ Conectado al bot, Socket ID:', socket.id)
+    showStatus('Conectado ✓', 'success')
 
-        socket.on('connect', () => {
-          console.log('✅ Conectado al bot, Socket ID:', socket.id)
-          showStatus('Conectado ✓', 'success')
+    // ✅ Enviar isReconnecting
+    socket.emit('web_chat_start', {
+      username: username,
+      sessionId: sessionId,
+      isReconnecting: isReconnecting
+    })
+  })
 
-          socket.emit('web_chat_start', {
-            username: username,
-            sessionId: sessionId,
-            isReconnecting: isReconnecting
-          })
-        })
+  // ✅ NUEVO: Escuchar historial cuando se reconecta
+  socket.on('chat_history', (data) => {
+    console.log('📜 Historial recibido:', data.messages.length, 'mensajes')
+    
+    // Limpiar mensajes del área
+    messagesArea.innerHTML = ''
+    
+    // Renderizar mensajes históricos
+    data.messages.forEach(msg => {
+      addMessage(msg.type, msg.message, new Date(msg.timestamp))
+    })
+    
+    scrollToBottom()
+    showStatus('Historial cargado ✓', 'success')
+  })
 
-        socket.on('disconnect', () => {
-          console.log('❌ Desconectado del bot')
-          showStatus('Desconectado. Reconectando...', 'warning')
-        })
+  socket.on('disconnect', () => {
+    console.log('❌ Desconectado del bot')
+    showStatus('Desconectado. Reconectando...', 'warning')
+  })
 
-        socket.on('connect_error', (error) => {
-          console.error('❌ Error de conexión:', error)
-          showStatus('Error de conexión. Verifica tu internet.', 'error')
-        })
+  socket.on('connect_error', (error) => {
+    console.error('❌ Error de conexión:', error)
+    showStatus('Error de conexión. Verifica tu internet.', 'error')
+  })
 
-        socket.on('bot_message', (data) => {
-          console.log('💬 Mensaje del bot recibido:', data)
-          console.log('🔍 showMenu:', data.showMenu)
-          hideTyping()
+  socket.on('bot_message', (data) => {
+    console.log('💬 Mensaje del bot recibido:', data)
+    hideTyping()
 
-          if (data.imageData) {
-            addImageMessage('bot', data.imageData, data.message || '')
-          } else {
-            addMessage('bot', data.message, new Date())
-          }
+    if (data.imageData) {
+      addImageMessage('bot', data.imageData, data.message || '')
+    } else {
+      addMessage('bot', data.message, new Date())
+    }
 
-          // ✅ Mostrar botones si viene showMenu
-          if (data.showMenu) {
-            console.log('📋 Mostrando botones rápidos')
-            quickOptions.classList.add('active')
-          }
-        })
+    if (data.showMenu) {
+      console.log('📋 Mostrando botones rápidos')
+      quickOptions.classList.add('active')
+    }
+  })
 
-        socket.on('admin_message', (data) => {
-          console.log('💬 Mensaje del admin recibido:', data)
-          hideTyping()
-          addMessage('bot', data.message, data.timestamp || new Date())
-        })
+  socket.on('admin_message', (data) => {
+    console.log('💬 Mensaje del admin recibido:', data)
+    hideTyping()
+    addMessage('bot', data.message, data.timestamp || new Date())
+  })
 
-        socket.on('admin_image', (data) => {
-          console.log('📷 Imagen del admin recibida')
-          hideTyping()
-          addImageMessage('bot', data.imageData, data.caption || '')
-        })
+  socket.on('admin_image', (data) => {
+    console.log('📷 Imagen del admin recibida')
+    hideTyping()
+    addImageMessage('bot', data.imageData, data.caption || '')
+  })
 
-        socket.on('message_sent', () => {
-          console.log('✅ Mensaje enviado correctamente')
-        })
+  socket.on('message_sent', () => {
+    console.log('✅ Mensaje enviado correctamente')
+  })
 
-        socket.on('error', (data) => {
-          console.error('❌ Error:', data)
-          showStatus(data.message || 'Ocurrió un error', 'error')
-        })
-      }
+  socket.on('error', (data) => {
+    console.error('❌ Error:', data)
+    showStatus(data.message || 'Ocurrió un error', 'error')
+  })
+}
 
-      sendButton.addEventListener('click', sendMessage)
-      messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault()
-          sendMessage()
-        }
-      })
+sendButton.addEventListener('click', sendMessage)
+messageInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+})
 
-      function sendMessage() {
-        const message = messageInput.value.trim()
-        if (!message || !socket) return
+function sendMessage() {
+  const message = messageInput.value.trim()
+  if (!message || !socket) return
 
-        addMessage('user', message, new Date())
+  addMessage('user', message, new Date())
 
-        socket.emit('message', {
-          message: message
-        })
+  socket.emit('message', {
+    message: message
+  })
 
-        messageInput.value = ''
-        autoResize(messageInput)
-        showTyping()
-      }
+  messageInput.value = ''
+  autoResize(messageInput)
+  showTyping()
+}
 
-      // ========== FUNCIÓN PARA LOS BOTONES RÁPIDOS ==========
-      window.selectQuickOption = function(option) {
-        console.log('🎯 Opción rápida seleccionada:', option)
-        
-        addMessage('user', option, new Date())
+// ========== FUNCIÓN PARA LOS BOTONES RÁPIDOS ==========
+window.selectQuickOption = function(option) {
+  console.log('🎯 Opción rápida seleccionada:', option)
+  
+  addMessage('user', option, new Date())
 
-        if (socket) {
-          socket.emit('message', {
-            message: option
-          })
-          showTyping()
-        }
+  if (socket) {
+    socket.emit('message', {
+      message: option
+    })
+    showTyping()
+  }
 
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'chat_quick_option', {
-            event_category: 'engagement',
-            event_label: option
-          })
-        }
-      }
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'chat_quick_option', {
+      event_category: 'engagement',
+      event_label: option
+    })
+  }
+}
 
-      function addMessage(type, text, timestamp, shouldSave = true) {
-        const messageDiv = document.createElement('div')
-        messageDiv.className = `message ${type}`
+function addMessage(type, text, timestamp) {
+  const messageDiv = document.createElement('div')
+  messageDiv.className = `message ${type}`
 
-        const bubble = document.createElement('div')
-        bubble.className = 'message-bubble'
-        bubble.textContent = text
+  const bubble = document.createElement('div')
+  bubble.className = 'message-bubble'
+  bubble.textContent = text
 
-        const time = document.createElement('div')
-        time.className = 'message-time'
-        time.textContent = formatTime(timestamp)
+  const time = document.createElement('div')
+  time.className = 'message-time'
+  time.textContent = formatTime(timestamp)
 
-        messageDiv.appendChild(bubble)
-        messageDiv.appendChild(time)
-        messagesArea.appendChild(messageDiv)
-        scrollToBottom()
+  messageDiv.appendChild(bubble)
+  messageDiv.appendChild(time)
+  messagesArea.appendChild(messageDiv)
+  scrollToBottom()
+}
 
-        if (shouldSave) {
-          saveMessage(type, text, timestamp)
-        }
-      }
+function addImageMessage(type, imageSrc, caption) {
+  const messageDiv = document.createElement('div')
+  messageDiv.className = `message ${type}`
 
-      function addImageMessage(type, imageSrc, caption) {
-        const messageDiv = document.createElement('div')
-        messageDiv.className = `message ${type}`
+  const img = document.createElement('img')
+  img.className = 'message-image'
+  img.src = imageSrc
+  img.onclick = () => window.open(imageSrc, '_blank')
 
-        const img = document.createElement('img')
-        img.className = 'message-image'
-        img.src = imageSrc
-        img.onclick = () => window.open(imageSrc, '_blank')
+  messageDiv.appendChild(img)
 
-        messageDiv.appendChild(img)
+  if (caption) {
+    const bubble = document.createElement('div')
+    bubble.className = 'message-bubble'
+    bubble.textContent = caption
+    messageDiv.appendChild(bubble)
+  }
 
-        if (caption) {
-          const bubble = document.createElement('div')
-          bubble.className = 'message-bubble'
-          bubble.textContent = caption
-          messageDiv.appendChild(bubble)
-        }
+  const time = document.createElement('div')
+  time.className = 'message-time'
+  time.textContent = formatTime(new Date())
+  messageDiv.appendChild(time)
 
-        const time = document.createElement('div')
-        time.className = 'message-time'
-        time.textContent = formatTime(new Date())
-        messageDiv.appendChild(time)
+  messagesArea.appendChild(messageDiv)
+  scrollToBottom()
+}
 
-        messagesArea.appendChild(messageDiv)
-        scrollToBottom()
-      }
+function addSystemMessage(text) {
+  const messageDiv = document.createElement('div')
+  messageDiv.className = 'system-message'
+  messageDiv.textContent = text
+  messagesArea.appendChild(messageDiv)
+  scrollToBottom()
+}
 
-      function addSystemMessage(text) {
-        const messageDiv = document.createElement('div')
-        messageDiv.className = 'system-message'
-        messageDiv.textContent = text
-        messagesArea.appendChild(messageDiv)
-        scrollToBottom()
-      }
+function showStatus(message, type) {
+  connectionStatus.textContent = message
+  connectionStatus.className = `connection-status ${type} show`
 
-      function showStatus(message, type) {
-        connectionStatus.textContent = message
-        connectionStatus.className = `connection-status ${type} show`
+  setTimeout(() => {
+    connectionStatus.classList.remove('show')
+  }, 3000)
+}
 
-        setTimeout(() => {
-          connectionStatus.classList.remove('show')
-        }, 3000)
-      }
+function showTyping() {
+  typingIndicator.classList.add('show')
+  scrollToBottom()
+}
 
-      function showTyping() {
-        typingIndicator.classList.add('show')
-        scrollToBottom()
-      }
+function hideTyping() {
+  typingIndicator.classList.remove('show')
+}
 
-      function hideTyping() {
-        typingIndicator.classList.remove('show')
-      }
+function formatTime(timestamp) {
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 
-      function formatTime(timestamp) {
-        const date = new Date(timestamp)
-        return date.toLocaleTimeString('es-AR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }
+function scrollToBottom() {
+  messagesArea.scrollTop = messagesArea.scrollHeight
+}
 
-      function scrollToBottom() {
-        messagesArea.scrollTop = messagesArea.scrollHeight
-      }
+messageInput.addEventListener('input', function () {
+  autoResize(this)
+})
 
-      messageInput.addEventListener('input', function () {
-        autoResize(this)
-      })
+function autoResize(textarea) {
+  textarea.style.height = 'auto'
+  textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
+}
 
-      function autoResize(textarea) {
-        textarea.style.height = 'auto'
-        textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
-      }
-
-      // ========== AUTO-CONEXIÓN AL CARGAR ==========
-      window.addEventListener('DOMContentLoaded', () => {
-        const savedSession = loadSession()
-        
-        if (savedSession) {
-          username = savedSession.username
-          sessionId = savedSession.sessionId
-          isReconnecting = true
-          
-          console.log('🔄 Sesión detectada, auto-conectando:', username)
-          
-          chatContainer.classList.add('active')
-          chatButton.classList.add('hidden')
-          
-          registerForm.style.display = 'none'
-          messagesArea.classList.add('active')
-          inputArea.classList.add('active')
-          quickOptions.classList.add('active')
-          
-          restoreMessages()
-          addSystemMessage(`Reconectando como ${username}...`)
-          
-          connectToBot()
-        }
-      })
+// ========== AUTO-CONEXIÓN AL CARGAR (ACTUALIZADA) ==========
+window.addEventListener('DOMContentLoaded', () => {
+  const savedSession = loadSession()
+  
+  if (savedSession) {
+    username = savedSession.username
+    sessionId = savedSession.sessionId
+    isReconnecting = true
+    
+    console.log('🔄 Sesión detectada, preparando auto-conexión:', username)
+    
+    // No auto-abrir el chat, solo preparar la sesión
+    // El usuario deberá hacer click en el botón
+  }
+})
     </script>
   </body>
 </html>
