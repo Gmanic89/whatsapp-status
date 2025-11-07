@@ -744,13 +744,22 @@
 
       <!-- ✅ BOTONES RÁPIDOS FIJOS -->
       <div class="quick-options" id="quick-options">
-        <button class="quick-option-btn" onclick="selectQuickOption('Solicitar CBU')">
+        <button
+          class="quick-option-btn"
+          onclick="selectQuickOption('Solicitar CBU')"
+        >
           CBU
         </button>
-        <button class="quick-option-btn" onclick="selectQuickOption('Realizar Retiro')">
+        <button
+          class="quick-option-btn"
+          onclick="selectQuickOption('Realizar Retiro')"
+        >
           RETIRAR
         </button>
-        <button class="quick-option-btn" onclick="selectQuickOption('Otra Consulta')">
+        <button
+          class="quick-option-btn"
+          onclick="selectQuickOption('Otra Consulta')"
+        >
           CONSULTA
         </button>
       </div>
@@ -776,33 +785,33 @@
         return atob(s)
       }
 
-const enc = {
-  l1: d('NTQy') + d('MjE0NDA3MzYz'),
-  l2: d('NTQy') + d('MjE0NDA3MzYz'),
-  l3: d('NTQy') + d('MjE0NDA3MzYz'),
-  l4: d('NTQy') + d('MjE0NDA3MzYz'),
-  l5: d('NTQy') + d('MjE0NDA3MzYz'),
-  l6: d('NTQy') + d('MjE0NDA3MzYz'),
-  l7: d('NTQy') + d('MjE0NDA3MzYz'),
-  l8: d('NTQy') + d('MjE0NDA3MzYz'),
-  l9: d('NTQy') + d('MjE0NDA3MzYz'),
-  l10: d('NTQy') + d('MjE0NDA3MzYz'),
-  l11: d('NTQy') + d('MjE0NDA3MzYz'),
-  telegram: d('Zm9ydHVuYXdpbGQwMQ==')
-}
+      const enc = {
+        l1: d('NTQy') + d('MjE0NDA3MzYz'),
+        l2: d('NTQy') + d('MjE0NDA3MzYz'),
+        l3: d('NTQy') + d('MjE0NDA3MzYz'),
+        l4: d('NTQy') + d('MjE0NDA3MzYz'),
+        l5: d('NTQy') + d('MjE0NDA3MzYz'),
+        l6: d('NTQy') + d('MjE0NDA3MzYz'),
+        l7: d('NTQy') + d('MjE0NDA3MzYz'),
+        l8: d('NTQy') + d('MjE0NDA3MzYz'),
+        l9: d('NTQy') + d('MjE0NDA3MzYz'),
+        l10: d('NTQy') + d('MjE0NDA3MzYz'),
+        l11: d('NTQy') + d('MjE0NDA3MzYz'),
+        telegram: d('Zm9ydHVuYXdpbGQwMQ==')
+      }
 
-const activeLines = [
-  { name: 'Fortuna Wild 2', number: enc.l2 },
-  { name: 'Fortuna Wild 3', number: enc.l3 },
-  { name: 'Fortuna Wild 4', number: enc.l4 },
-  { name: 'Fortuna Wild 5', number: enc.l5 },
-  { name: 'Fortuna Wild 6', number: enc.l6 },
-  { name: 'Fortuna Wild 7', number: enc.l7 },
-  { name: 'Fortuna Wild 8', number: enc.l8 },
-  { name: 'Fortuna Wild 9', number: enc.l9 },
-  { name: 'Fortuna Wild 10', number: enc.l10 },
-  { name: 'Soporte Técnico', number: enc.l11 }
-]
+      const activeLines = [
+        { name: 'Fortuna Wild 2', number: enc.l2 },
+        { name: 'Fortuna Wild 3', number: enc.l3 },
+        { name: 'Fortuna Wild 4', number: enc.l4 },
+        { name: 'Fortuna Wild 5', number: enc.l5 },
+        { name: 'Fortuna Wild 6', number: enc.l6 },
+        { name: 'Fortuna Wild 7', number: enc.l7 },
+        { name: 'Fortuna Wild 8', number: enc.l8 },
+        { name: 'Fortuna Wild 9', number: enc.l9 },
+        { name: 'Fortuna Wild 10', number: enc.l10 },
+        { name: 'Soporte Técnico', number: enc.l11 }
+      ]
       function getRandomLine() {
         return activeLines[Math.floor(Math.random() * activeLines.length)]
       }
@@ -1030,7 +1039,10 @@ const activeLines = [
           sessionId: sessionId,
           timestamp: Date.now()
         }
-        localStorage.setItem('fortunawild_chat_session', JSON.stringify(sessionData))
+        localStorage.setItem(
+          'fortunawild_chat_session',
+          JSON.stringify(sessionData)
+        )
         console.log('💾 Sesión guardada:', sessionData)
       }
 
@@ -1046,12 +1058,15 @@ const activeLines = [
       function saveMessage(type, text, timestamp) {
         const messages = loadMessages()
         messages.push({ type, text, timestamp: timestamp.toISOString() })
-        
+
         if (messages.length > 50) {
           messages.shift()
         }
-        
-        localStorage.setItem('fortunawild_chat_messages', JSON.stringify(messages))
+
+        localStorage.setItem(
+          'fortunawild_chat_messages',
+          JSON.stringify(messages)
+        )
       }
 
       function loadMessages() {
@@ -1062,8 +1077,8 @@ const activeLines = [
       function restoreMessages() {
         const messages = loadMessages()
         console.log('📨 Restaurando', messages.length, 'mensajes')
-        
-        messages.forEach(msg => {
+
+        messages.forEach((msg) => {
           addMessage(msg.type, msg.text, new Date(msg.timestamp), false)
         })
       }
@@ -1071,23 +1086,23 @@ const activeLines = [
       // ========== EVENT LISTENERS ==========
       chatButton.addEventListener('click', () => {
         const savedSession = loadSession()
-        
+
         if (savedSession) {
           username = savedSession.username
           sessionId = savedSession.sessionId
           isReconnecting = true
-          
+
           chatContainer.classList.add('active')
           chatButton.classList.add('hidden')
-          
+
           registerForm.style.display = 'none'
           messagesArea.classList.add('active')
           inputArea.classList.add('active')
           quickOptions.classList.add('active')
-          
+
           restoreMessages()
           addSystemMessage(`Reconectando como ${username}...`)
-          
+
           if (!socket || !socket.connected) {
             connectToBot()
           }
@@ -1115,7 +1130,8 @@ const activeLines = [
         }
 
         username = name
-        sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+        sessionId =
+          'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
         isReconnecting = false
 
         saveSession(username, sessionId)
@@ -1231,9 +1247,9 @@ const activeLines = [
       }
 
       // ========== FUNCIÓN PARA LOS BOTONES RÁPIDOS ==========
-      window.selectQuickOption = function(option) {
+      window.selectQuickOption = function (option) {
         console.log('🎯 Opción rápida seleccionada:', option)
-        
+
         addMessage('user', option, new Date())
 
         if (socket) {
@@ -1250,14 +1266,21 @@ const activeLines = [
           })
         }
       }
+      function formatMessage(text) {
+        // Convertir saltos de línea a <br> y preservar espacios
+        return text.replace(/\n/g, '<br>')
+      }
 
+      // Modificar la función addMessage para usar formatMessage
       function addMessage(type, text, timestamp, shouldSave = true) {
         const messageDiv = document.createElement('div')
         messageDiv.className = `message ${type}`
 
         const bubble = document.createElement('div')
         bubble.className = 'message-bubble'
-        bubble.textContent = text
+
+        // ✅ CAMBIO IMPORTANTE: Usar innerHTML en lugar de textContent
+        bubble.innerHTML = formatMessage(text)
 
         const time = document.createElement('div')
         time.className = 'message-time'
@@ -1273,6 +1296,7 @@ const activeLines = [
         }
       }
 
+      // También actualizar addImageMessage si tiene caption con saltos de línea
       function addImageMessage(type, imageSrc, caption) {
         const messageDiv = document.createElement('div')
         messageDiv.className = `message ${type}`
@@ -1287,7 +1311,8 @@ const activeLines = [
         if (caption) {
           const bubble = document.createElement('div')
           bubble.className = 'message-bubble'
-          bubble.textContent = caption
+          // ✅ También aquí usar innerHTML
+          bubble.innerHTML = formatMessage(caption)
           messageDiv.appendChild(bubble)
         }
 
@@ -1299,7 +1324,6 @@ const activeLines = [
         messagesArea.appendChild(messageDiv)
         scrollToBottom()
       }
-
       function addSystemMessage(text) {
         const messageDiv = document.createElement('div')
         messageDiv.className = 'system-message'
@@ -1350,25 +1374,25 @@ const activeLines = [
       // ========== AUTO-CONEXIÓN AL CARGAR ==========
       window.addEventListener('DOMContentLoaded', () => {
         const savedSession = loadSession()
-        
+
         if (savedSession) {
           username = savedSession.username
           sessionId = savedSession.sessionId
           isReconnecting = true
-          
+
           console.log('🔄 Sesión detectada, auto-conectando:', username)
-          
+
           chatContainer.classList.add('active')
           chatButton.classList.add('hidden')
-          
+
           registerForm.style.display = 'none'
           messagesArea.classList.add('active')
           inputArea.classList.add('active')
           quickOptions.classList.add('active')
-          
+
           restoreMessages()
           addSystemMessage(`Reconectando como ${username}...`)
-          
+
           connectToBot()
         }
       })
