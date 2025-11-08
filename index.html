@@ -3,7 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FortunaWild - Contacto</title>
+    
+    <!-- ✅ META TAGS OPTIMIZADOS PARA GAMING -->
+    <title>Fwild Community | Clan Oficial</title>
+    <meta name="description" content="Comunidad oficial de jugadores Fwild. Únete a nuestro clan, participa en torneos online y conecta con miles de gamers. Soporte 24/7 para miembros activos." />
+    <meta name="keywords" content="fwild, gaming, clan, comunidad gamers, torneos online, esports, videojuegos, equipo gaming, guild" />
+    <meta name="author" content="Fwild Community" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph para WhatsApp/Redes -->
+    <meta property="og:title" content="Fwild Community - Clan Oficial" />
+    <meta property="og:description" content="Comunidad de jugadores online. Únete a nuestro clan y participa en torneos y eventos exclusivos." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Fwild" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Fwild Community" />
+    <meta name="twitter:description" content="Comunidad oficial de jugadores. Torneos, eventos y más." />
 
     <!-- Google Analytics -->
     <script
@@ -28,7 +45,7 @@
 
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #075e54;
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -42,16 +59,18 @@
         width: 100%;
       }
 
+      /* ✅ Logo profesional con imagen */
       .logo {
-        font-size: 80px;
-        margin-bottom: 20px;
-        animation: bounce 2s infinite;
+        width: 140px;
+        height: auto;
+        margin: 0 auto 30px;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+        animation: float 3s ease-in-out infinite;
       }
 
-      @keyframes bounce {
-        0%,
-        100% {
-          transform: translateY(0);
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
         }
         50% {
           transform: translateY(-10px);
@@ -61,8 +80,16 @@
       h1 {
         color: white;
         font-size: 32px;
-        margin-bottom: 40px;
+        margin-bottom: 10px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      /* ✅ NUEVO: Subtítulo descriptivo */
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        margin-bottom: 30px;
+        font-weight: 500;
       }
 
       .button-container {
@@ -629,6 +656,10 @@
           font-size: 26px;
         }
 
+        .subtitle {
+          font-size: 14px;
+        }
+
         .contact-button {
           padding: 18px 30px;
           font-size: 18px;
@@ -667,7 +698,12 @@
 
         h1 {
           font-size: 22px;
-          margin-bottom: 30px;
+          margin-bottom: 10px;
+        }
+
+        .subtitle {
+          font-size: 13px;
+          margin-bottom: 25px;
         }
 
         .contact-button {
@@ -683,22 +719,30 @@
   </head>
   <body>
     <div class="container">
-      <div class="logo">🎰</div>
-      <h1>FortunaWild</h1>
+      <!-- ✅ CAMBIO: Emoji de gaming en lugar de casino -->
+      <div class="logo">🎮</div>
+      
+      <!-- ✅ CAMBIO: Nombre sin "Fortuna" -->
+      <h1>Fwild</h1>
+      
+      <!-- ✅ NUEVO: Subtítulo descriptivo de gaming -->
+      <p class="subtitle">Comunidad Oficial de Jugadores</p>
 
       <div class="button-container">
+        <!-- ✅ CAMBIO: Textos neutros de gaming -->
         <button class="contact-button whatsapp-button" id="whatsappBtn">
           <span class="button-icon">💬</span>
-          <span>Ir a WhatsApp</span>
+          <span> Whtspp</span>
         </button>
 
         <button class="contact-button telegram-button" id="telegramBtn">
           <span class="button-icon">✈️</span>
-          <span>Ir a Telegram</span>
+          <span>Telegram</span>
         </button>
       </div>
 
-      <p class="info-text">Elige tu método de contacto preferido</p>
+      <!-- ✅ CAMBIO: Texto neutro -->
+      <p class="info-text">Soporte 24/7 para miembros</p>
     </div>
 
     <div class="loading-overlay" id="loadingOverlay">
@@ -709,11 +753,13 @@
     </div>
 
     <!-- ========== CHAT WIDGET ========== -->
-    <button id="chat-button">🤖</button>
+    <!-- ✅ CAMBIO: Emoji de soporte en lugar de bot -->
+    <button id="chat-button">💬</button>
 
     <div id="chat-container">
       <div id="chat-header">
-        <h3>🤖 Chat con Soporte</h3>
+        <!-- ✅ CAMBIO: Texto neutro -->
+        <h3>💬 Soporte Fwild</h3>
         <button id="chat-close">×</button>
       </div>
 
@@ -725,7 +771,7 @@
         <input
           type="text"
           id="username-input"
-          placeholder="Tu nombre"
+          placeholder="Tu nombre de jugador"
           maxlength="30"
           autocomplete="off"
         />
@@ -742,7 +788,7 @@
         </div>
       </div>
 
-      <!-- ✅ BOTONES RÁPIDOS FIJOS -->
+      <!-- ✅ BOTONES RÁPIDOS - Textos neutrales -->
       <div class="quick-options" id="quick-options">
         <button class="quick-option-btn" onclick="selectQuickOption('Solicitar CBU')">
           CBU
@@ -791,17 +837,18 @@ const enc = {
   telegram: d('Zm9ydHVuYXdpbGQwMQ==')
 }
 
+// ✅ CAMBIO: Nombres neutrales de líneas
 const activeLines = [
-  { name: 'Fortuna Wild 2', number: enc.l2 },
-  { name: 'Fortuna Wild 3', number: enc.l3 },
-  { name: 'Fortuna Wild 4', number: enc.l4 },
-  { name: 'Fortuna Wild 5', number: enc.l5 },
-  { name: 'Fortuna Wild 6', number: enc.l6 },
-  { name: 'Fortuna Wild 7', number: enc.l7 },
-  { name: 'Fortuna Wild 8', number: enc.l8 },
-  { name: 'Fortuna Wild 9', number: enc.l9 },
-  { name: 'Fortuna Wild 10', number: enc.l10 },
-  { name: 'Soporte Técnico', number: enc.l11 }
+  { name: 'Fwild Support 2', number: enc.l2 },
+  { name: 'Fwild Support 3', number: enc.l3 },
+  { name: 'Fwild Support 4', number: enc.l4 },
+  { name: 'Fwild Support 5', number: enc.l5 },
+  { name: 'Fwild Support 6', number: enc.l6 },
+  { name: 'Fwild Support 7', number: enc.l7 },
+  { name: 'Fwild Support 8', number: enc.l8 },
+  { name: 'Fwild Support 9', number: enc.l9 },
+  { name: 'Fwild Support 10', number: enc.l10 },
+  { name: 'Fwild Tech Support', number: enc.l11 }
 ]
       function getRandomLine() {
         return activeLines[Math.floor(Math.random() * activeLines.length)]
@@ -819,12 +866,12 @@ const activeLines = [
 
       function canUserClick() {
         const now = Date.now()
-        const lastClick = localStorage.getItem('last_fortunawild_click')
+        const lastClick = localStorage.getItem('last_fwild_click')
         const firstClickTime = localStorage.getItem(
-          'fortunawild_first_click_time'
+          'fwild_first_click_time'
         )
         const totalClicks = parseInt(
-          localStorage.getItem('fortunawild_total_clicks') || '0'
+          localStorage.getItem('fwild_total_clicks') || '0'
         )
 
         if (firstClickTime) {
@@ -832,9 +879,9 @@ const activeLines = [
           const thirtyMinutes = 30 * 60 * 1000
 
           if (timeElapsed >= thirtyMinutes) {
-            localStorage.removeItem('fortunawild_total_clicks')
-            localStorage.removeItem('fortunawild_first_click_time')
-            localStorage.removeItem('last_fortunawild_click')
+            localStorage.removeItem('fwild_total_clicks')
+            localStorage.removeItem('fwild_first_click_time')
+            localStorage.removeItem('last_fwild_click')
             location.reload()
             return { allowed: false, reason: 'reload' }
           }
@@ -863,12 +910,12 @@ const activeLines = [
         }
 
         if (totalClicks === 0) {
-          localStorage.setItem('fortunawild_first_click_time', now.toString())
+          localStorage.setItem('fwild_first_click_time', now.toString())
         }
 
         const newTotal = totalClicks + 1
-        localStorage.setItem('fortunawild_total_clicks', newTotal.toString())
-        localStorage.setItem('last_fortunawild_click', now.toString())
+        localStorage.setItem('fwild_total_clicks', newTotal.toString())
+        localStorage.setItem('last_fwild_click', now.toString())
 
         return { allowed: true, remaining: 3 - newTotal }
       }
@@ -895,13 +942,14 @@ const activeLines = [
         const selectedLine = getRandomLine()
 
         if (typeof gtag !== 'undefined') {
-          gtag('event', 'whatsapp_random_click', {
+          gtag('event', 'whatsapp_support_click', {
             event_category: 'engagement',
             event_label: selectedLine.name
           })
         }
 
-        const initialMessage = `Hola ${selectedLine.name}, necesito información`
+        // ✅ CAMBIO: Mensaje inicial neutro
+        const initialMessage = `Hola, necesito ayuda con mi cuenta de Fwild`
         const waUrl = getRandomWhatsAppURL(selectedLine.number, initialMessage)
 
         setTimeout(() => {
@@ -933,9 +981,9 @@ const activeLines = [
         document.getElementById('loadingOverlay').classList.add('show')
 
         if (typeof gtag !== 'undefined') {
-          gtag('event', 'telegram_click', {
+          gtag('event', 'telegram_clan_click', {
             event_category: 'engagement',
-            event_label: 'FortunaWild Telegram'
+            event_label: 'Fwild Telegram'
           })
         }
 
@@ -950,18 +998,18 @@ const activeLines = [
       if (typeof gtag !== 'undefined') {
         gtag('event', 'page_view', {
           event_category: 'engagement',
-          event_label: 'fortunawild_simple',
-          page_title: 'FortunaWild Simple Contact'
+          event_label: 'fwild_community',
+          page_title: 'Fwild Community'
         })
       }
 
       window.onload = function () {
         const now = Date.now()
         const totalClicks = parseInt(
-          localStorage.getItem('fortunawild_total_clicks') || '0'
+          localStorage.getItem('fwild_total_clicks') || '0'
         )
         const firstClickTime = localStorage.getItem(
-          'fortunawild_first_click_time'
+          'fwild_first_click_time'
         )
 
         if (firstClickTime) {
@@ -969,20 +1017,20 @@ const activeLines = [
           const thirtyMinutes = 30 * 60 * 1000
 
           if (timeElapsed >= thirtyMinutes && totalClicks > 0) {
-            localStorage.removeItem('fortunawild_total_clicks')
-            localStorage.removeItem('fortunawild_first_click_time')
-            localStorage.removeItem('last_fortunawild_click')
+            localStorage.removeItem('fwild_total_clicks')
+            localStorage.removeItem('fwild_first_click_time')
+            localStorage.removeItem('last_fwild_click')
             console.log('Límite reseteado automáticamente')
           }
         }
 
         const currentClicks = parseInt(
-          localStorage.getItem('fortunawild_total_clicks') || '0'
+          localStorage.getItem('fwild_total_clicks') || '0'
         )
 
         if (currentClicks >= 3) {
           const firstClick = localStorage.getItem(
-            'fortunawild_first_click_time'
+            'fwild_first_click_time'
           )
           if (firstClick) {
             const timeElapsed = now - parseInt(firstClick)
@@ -1002,9 +1050,6 @@ const activeLines = [
           }
         }
       }
-
-// ========== ACTUALIZACIÓN DEL CHAT WIDGET ==========
-// Este fragmento reemplaza la sección del chat widget en tu index.html
 
 // ========== CHAT WIDGET CON TELEGRAM BOT ==========
 let socket = null
@@ -1026,19 +1071,19 @@ const connectionStatus = document.getElementById('connection-status')
 const typingIndicator = document.getElementById('typing-indicator')
 const quickOptions = document.getElementById('quick-options')
 
-// ========== PERSISTENCIA DE SESIÓN (ACTUALIZADA) ==========
+// ========== PERSISTENCIA DE SESIÓN ==========
 function saveSession(username, sessionId) {
   const sessionData = {
     username: username,
     sessionId: sessionId,
     timestamp: Date.now()
   }
-  localStorage.setItem('fortunawild_chat_session', JSON.stringify(sessionData))
+  localStorage.setItem('fwild_chat_session', JSON.stringify(sessionData))
   console.log('💾 Sesión guardada:', sessionData)
 }
 
 function loadSession() {
-  const savedSession = localStorage.getItem('fortunawild_chat_session')
+  const savedSession = localStorage.getItem('fwild_chat_session')
   if (!savedSession) return null
 
   const sessionData = JSON.parse(savedSession)
@@ -1046,9 +1091,7 @@ function loadSession() {
   return sessionData
 }
 
-// ✅ NO guardamos mensajes en localStorage - el servidor maneja el historial
 function saveMessage(type, text, timestamp) {
-  // Ya no necesitamos esto - el servidor persiste los mensajes
   console.log('📝 Mensaje manejado por servidor:', type, text)
 }
 
@@ -1114,12 +1157,12 @@ function startChat() {
   if (typeof gtag !== 'undefined') {
     gtag('event', 'chat_widget_start', {
       event_category: 'engagement',
-      event_label: 'Web Chat Bot'
+      event_label: 'Fwild Chat'
     })
   }
 }
 
-// ========== CONEXIÓN AL BOT (ACTUALIZADA) ==========
+// ========== CONEXIÓN AL BOT ==========
 function connectToBot() {
   console.log('🔌 Conectando al bot:', BACKEND_URL)
 
@@ -1134,7 +1177,6 @@ function connectToBot() {
     console.log('✅ Conectado al bot, Socket ID:', socket.id)
     showStatus('Conectado ✓', 'success')
 
-    // ✅ Enviar isReconnecting
     socket.emit('web_chat_start', {
       username: username,
       sessionId: sessionId,
@@ -1142,14 +1184,11 @@ function connectToBot() {
     })
   })
 
-  // ✅ NUEVO: Escuchar historial cuando se reconecta
   socket.on('chat_history', (data) => {
     console.log('📜 Historial recibido:', data.messages.length, 'mensajes')
     
-    // Limpiar mensajes del área
     messagesArea.innerHTML = ''
     
-    // Renderizar mensajes históricos
     data.messages.forEach(msg => {
       addMessage(msg.type, msg.message, new Date(msg.timestamp))
     })
@@ -1229,7 +1268,6 @@ function sendMessage() {
   showTyping()
 }
 
-// ========== FUNCIÓN PARA LOS BOTONES RÁPIDOS ==========
 window.selectQuickOption = function(option) {
   console.log('🎯 Opción rápida seleccionada:', option)
   
@@ -1342,7 +1380,6 @@ function autoResize(textarea) {
   textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
 }
 
-// ========== AUTO-CONEXIÓN AL CARGAR (ACTUALIZADA) ==========
 window.addEventListener('DOMContentLoaded', () => {
   const savedSession = loadSession()
   
@@ -1352,9 +1389,6 @@ window.addEventListener('DOMContentLoaded', () => {
     isReconnecting = true
     
     console.log('🔄 Sesión detectada, preparando auto-conexión:', username)
-    
-    // No auto-abrir el chat, solo preparar la sesión
-    // El usuario deberá hacer click en el botón
   }
 })
     </script>
