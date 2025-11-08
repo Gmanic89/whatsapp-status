@@ -3,24 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- ✅ META TAGS OPTIMIZADOS PARA GAMING -->
     <title>Fwild Community | Clan Oficial</title>
-    <meta name="description" content="Comunidad oficial de jugadores Fwild. Únete a nuestro clan, participa en torneos online y conecta con miles de gamers. Soporte 24/7 para miembros activos." />
-    <meta name="keywords" content="fwild, gaming, clan, comunidad gamers, torneos online, esports, videojuegos, equipo gaming, guild" />
+    <meta
+      name="description"
+      content="Comunidad oficial de jugadores Fwild. Únete a nuestro clan, participa en torneos online y conecta con miles de gamers. Soporte 24/7 para miembros activos."
+    />
+    <meta
+      name="keywords"
+      content="fwild, gaming, clan, comunidad gamers, torneos online, esports, videojuegos, equipo gaming, guild"
+    />
     <meta name="author" content="Fwild Community" />
     <meta name="robots" content="index, follow" />
-    
+
     <!-- Open Graph para WhatsApp/Redes -->
     <meta property="og:title" content="Fwild Community - Clan Oficial" />
-    <meta property="og:description" content="Comunidad de jugadores online. Únete a nuestro clan y participa en torneos y eventos exclusivos." />
+    <meta
+      property="og:description"
+      content="Comunidad de jugadores online. Únete a nuestro clan y participa en torneos y eventos exclusivos."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Fwild" />
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Fwild Community" />
-    <meta name="twitter:description" content="Comunidad oficial de jugadores. Torneos, eventos y más." />
+    <meta
+      name="twitter:description"
+      content="Comunidad oficial de jugadores. Torneos, eventos y más."
+    />
 
     <!-- Google Analytics -->
     <script
@@ -45,7 +57,7 @@
 
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        background: linear-gradient(135deg, #0a1628 0%, #1a2332 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -59,32 +71,60 @@
         width: 100%;
       }
 
-      /* ✅ Logo profesional con imagen */
-      .logo {
-        width: 140px;
+      /* ✅ LOGO COMPLETO CON IMAGEN */
+    .logo-container {
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.logo-image {
+  width: 350px;
+  max-width: 90%;
+  height: auto;
+  filter: drop-shadow(0 10px 30px rgba(255, 193, 7, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+      .logo-shield {
+        width: 120px;
         height: auto;
-        margin: 0 auto 30px;
-        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+        filter: drop-shadow(0 10px 25px rgba(255, 193, 7, 0.4));
         animation: float 3s ease-in-out infinite;
       }
 
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .logo-text h1 {
+        color: #f5f5f5;
+        font-size: 48px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        margin: 0;
+      }
+
+      .logo-text .subtitle-brand {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }
+
       @keyframes float {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateY(0px);
         }
         50% {
-          transform: translateY(-10px);
+          transform: translateY(-12px);
         }
       }
 
-      h1 {
-        color: white;
-        font-size: 32px;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      /* ✅ NUEVO: Subtítulo descriptivo */
+      /* ✅ Subtítulo descriptivo */
       .subtitle {
         color: rgba(255, 255, 255, 0.9);
         font-size: 16px;
@@ -106,7 +146,7 @@
         border-radius: 15px;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -456,7 +496,6 @@
         transform: scale(1.02);
       }
 
-      /* ========== BOTONES RÁPIDOS FIJOS ========== */
       .quick-options {
         padding: 8px 12px;
         background: #fafafa;
@@ -652,8 +691,16 @@
       }
 
       @media (max-width: 768px) {
-        h1 {
-          font-size: 26px;
+        .logo-shield {
+          width: 100px;
+        }
+
+        .logo-text h1 {
+          font-size: 38px;
+        }
+
+        .logo-text .subtitle-brand {
+          font-size: 15px;
         }
 
         .subtitle {
@@ -663,10 +710,6 @@
         .contact-button {
           padding: 18px 30px;
           font-size: 18px;
-        }
-
-        .logo {
-          font-size: 60px;
         }
 
         #chat-container {
@@ -692,13 +735,16 @@
       }
 
       @media (max-width: 480px) {
-        .logo {
-          font-size: 50px;
+        .logo-shield {
+          width: 80px;
         }
 
-        h1 {
-          font-size: 22px;
-          margin-bottom: 10px;
+        .logo-text h1 {
+          font-size: 32px;
+        }
+
+        .logo-text .subtitle-brand {
+          font-size: 13px;
         }
 
         .subtitle {
@@ -719,20 +765,22 @@
   </head>
   <body>
     <div class="container">
-      <!-- ✅ CAMBIO: Emoji de gaming en lugar de casino -->
-      <div class="logo">🎮</div>
-      
-      <!-- ✅ CAMBIO: Nombre sin "Fortuna" -->
-      <h1>Fwild</h1>
-      
-      <!-- ✅ NUEVO: Subtítulo descriptivo de gaming -->
+      <!-- ✅ LOGO COMPLETO INTEGRADO -->
+
+      <div class="logo-container">
+        <img
+          src="fwild-logo.png"
+          alt="FWILD Gaming Platform"
+          class="logo-image"
+        />
+      </div>
+
       <p class="subtitle">Comunidad Oficial de Jugadores</p>
 
       <div class="button-container">
-        <!-- ✅ CAMBIO: Textos neutros de gaming -->
         <button class="contact-button whatsapp-button" id="whatsappBtn">
           <span class="button-icon">💬</span>
-          <span> Whtspp</span>
+          <span>WhatsApp</span>
         </button>
 
         <button class="contact-button telegram-button" id="telegramBtn">
@@ -741,7 +789,6 @@
         </button>
       </div>
 
-      <!-- ✅ CAMBIO: Texto neutro -->
       <p class="info-text">Soporte 24/7 para miembros</p>
     </div>
 
@@ -752,13 +799,10 @@
       </div>
     </div>
 
-    <!-- ========== CHAT WIDGET ========== -->
-    <!-- ✅ CAMBIO: Emoji de soporte en lugar de bot -->
     <button id="chat-button">💬</button>
 
     <div id="chat-container">
       <div id="chat-header">
-        <!-- ✅ CAMBIO: Texto neutro -->
         <h3>💬 Soporte Fwild</h3>
         <button id="chat-close">×</button>
       </div>
@@ -788,15 +832,23 @@
         </div>
       </div>
 
-      <!-- ✅ BOTONES RÁPIDOS - Textos neutrales -->
       <div class="quick-options" id="quick-options">
-        <button class="quick-option-btn" onclick="selectQuickOption('Solicitar CBU')">
+        <button
+          class="quick-option-btn"
+          onclick="selectQuickOption('Solicitar CBU')"
+        >
           CBU
         </button>
-        <button class="quick-option-btn" onclick="selectQuickOption('Realizar Retiro')">
+        <button
+          class="quick-option-btn"
+          onclick="selectQuickOption('Realizar Retiro')"
+        >
           RETIRAR
         </button>
-        <button class="quick-option-btn" onclick="selectQuickOption('Otra Consulta')">
+        <button
+          class="quick-option-btn"
+          onclick="selectQuickOption('Otra Consulta')"
+        >
           CONSULTA
         </button>
       </div>
@@ -811,45 +863,42 @@
       </div>
     </div>
 
-    <!-- Socket.io -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
 
     <script>
-      // ⚠️ URL de tu backend en Railway
       const BACKEND_URL = 'https://fortunabot-production.up.railway.app'
 
       function d(s) {
         return atob(s)
       }
 
-const enc = {
-  l1: d('NTQy') + d('MjE0NDA3MzYz'),
-  l2: d('NTQy') + d('MjE0NDA3MzYz'),
-  l3: d('NTQy') + d('MjE0NDA3MzYz'),
-  l4: d('NTQy') + d('MjE0NDA3MzYz'),
-  l5: d('NTQy') + d('MjE0NDA3MzYz'),
-  l6: d('NTQy') + d('MjE0NDA3MzYz'),
-  l7: d('NTQy') + d('MjE0NDA3MzYz'),
-  l8: d('NTQy') + d('MjE0NDA3MzYz'),
-  l9: d('NTQy') + d('MjE0NDA3MzYz'),
-  l10: d('NTQy') + d('MjE0NDA3MzYz'),
-  l11: d('NTQy') + d('MjE0NDA3MzYz'),
-  telegram: d('Zm9ydHVuYXdpbGQwMQ==')
-}
+      const enc = {
+        l1: d('NTQy') + d('MjE0NDA3MzYz'),
+        l2: d('NTQy') + d('MjE0NDA3MzYz'),
+        l3: d('NTQy') + d('MjE0NDA3MzYz'),
+        l4: d('NTQy') + d('MjE0NDA3MzYz'),
+        l5: d('NTQy') + d('MjE0NDA3MzYz'),
+        l6: d('NTQy') + d('MjE0NDA3MzYz'),
+        l7: d('NTQy') + d('MjE0NDA3MzYz'),
+        l8: d('NTQy') + d('MjE0NDA3MzYz'),
+        l9: d('NTQy') + d('MjE0NDA3MzYz'),
+        l10: d('NTQy') + d('MjE0NDA3MzYz'),
+        l11: d('NTQy') + d('MjE0NDA3MzYz'),
+        telegram: d('Zm9ydHVuYXdpbGQwMQ==')
+      }
 
-// ✅ CAMBIO: Nombres neutrales de líneas
-const activeLines = [
-  { name: 'Fwild Support 2', number: enc.l2 },
-  { name: 'Fwild Support 3', number: enc.l3 },
-  { name: 'Fwild Support 4', number: enc.l4 },
-  { name: 'Fwild Support 5', number: enc.l5 },
-  { name: 'Fwild Support 6', number: enc.l6 },
-  { name: 'Fwild Support 7', number: enc.l7 },
-  { name: 'Fwild Support 8', number: enc.l8 },
-  { name: 'Fwild Support 9', number: enc.l9 },
-  { name: 'Fwild Support 10', number: enc.l10 },
-  { name: 'Fwild Tech Support', number: enc.l11 }
-]
+      const activeLines = [
+        { name: 'Fwild Support 2', number: enc.l2 },
+        { name: 'Fwild Support 3', number: enc.l3 },
+        { name: 'Fwild Support 4', number: enc.l4 },
+        { name: 'Fwild Support 5', number: enc.l5 },
+        { name: 'Fwild Support 6', number: enc.l6 },
+        { name: 'Fwild Support 7', number: enc.l7 },
+        { name: 'Fwild Support 8', number: enc.l8 },
+        { name: 'Fwild Support 9', number: enc.l9 },
+        { name: 'Fwild Support 10', number: enc.l10 },
+        { name: 'Fwild Tech Support', number: enc.l11 }
+      ]
       function getRandomLine() {
         return activeLines[Math.floor(Math.random() * activeLines.length)]
       }
@@ -867,9 +916,7 @@ const activeLines = [
       function canUserClick() {
         const now = Date.now()
         const lastClick = localStorage.getItem('last_fwild_click')
-        const firstClickTime = localStorage.getItem(
-          'fwild_first_click_time'
-        )
+        const firstClickTime = localStorage.getItem('fwild_first_click_time')
         const totalClicks = parseInt(
           localStorage.getItem('fwild_total_clicks') || '0'
         )
@@ -948,7 +995,6 @@ const activeLines = [
           })
         }
 
-        // ✅ CAMBIO: Mensaje inicial neutro
         const initialMessage = `Hola, necesito ayuda con mi cuenta de Fwild`
         const waUrl = getRandomWhatsAppURL(selectedLine.number, initialMessage)
 
@@ -1008,9 +1054,7 @@ const activeLines = [
         const totalClicks = parseInt(
           localStorage.getItem('fwild_total_clicks') || '0'
         )
-        const firstClickTime = localStorage.getItem(
-          'fwild_first_click_time'
-        )
+        const firstClickTime = localStorage.getItem('fwild_first_click_time')
 
         if (firstClickTime) {
           const timeElapsed = now - parseInt(firstClickTime)
@@ -1029,9 +1073,7 @@ const activeLines = [
         )
 
         if (currentClicks >= 3) {
-          const firstClick = localStorage.getItem(
-            'fwild_first_click_time'
-          )
+          const firstClick = localStorage.getItem('fwild_first_click_time')
           if (firstClick) {
             const timeElapsed = now - parseInt(firstClick)
             const thirtyMinutes = 30 * 60 * 1000
@@ -1051,346 +1093,350 @@ const activeLines = [
         }
       }
 
-// ========== CHAT WIDGET CON TELEGRAM BOT ==========
-let socket = null
-let username = null
-let sessionId = null
-let isReconnecting = false
+      let socket = null
+      let username = null
+      let sessionId = null
+      let isReconnecting = false
 
-const chatButton = document.getElementById('chat-button')
-const chatContainer = document.getElementById('chat-container')
-const chatClose = document.getElementById('chat-close')
-const registerForm = document.getElementById('register-form')
-const usernameInput = document.getElementById('username-input')
-const registerButton = document.getElementById('register-button')
-const messagesArea = document.getElementById('messages-area')
-const inputArea = document.getElementById('input-area')
-const messageInput = document.getElementById('message-input')
-const sendButton = document.getElementById('send-button')
-const connectionStatus = document.getElementById('connection-status')
-const typingIndicator = document.getElementById('typing-indicator')
-const quickOptions = document.getElementById('quick-options')
+      const chatButton = document.getElementById('chat-button')
+      const chatContainer = document.getElementById('chat-container')
+      const chatClose = document.getElementById('chat-close')
+      const registerForm = document.getElementById('register-form')
+      const usernameInput = document.getElementById('username-input')
+      const registerButton = document.getElementById('register-button')
+      const messagesArea = document.getElementById('messages-area')
+      const inputArea = document.getElementById('input-area')
+      const messageInput = document.getElementById('message-input')
+      const sendButton = document.getElementById('send-button')
+      const connectionStatus = document.getElementById('connection-status')
+      const typingIndicator = document.getElementById('typing-indicator')
+      const quickOptions = document.getElementById('quick-options')
 
-// ========== PERSISTENCIA DE SESIÓN ==========
-function saveSession(username, sessionId) {
-  const sessionData = {
-    username: username,
-    sessionId: sessionId,
-    timestamp: Date.now()
-  }
-  localStorage.setItem('fwild_chat_session', JSON.stringify(sessionData))
-  console.log('💾 Sesión guardada:', sessionData)
-}
+      function saveSession(username, sessionId) {
+        const sessionData = {
+          username: username,
+          sessionId: sessionId,
+          timestamp: Date.now()
+        }
+        localStorage.setItem('fwild_chat_session', JSON.stringify(sessionData))
+        console.log('💾 Sesión guardada:', sessionData)
+      }
 
-function loadSession() {
-  const savedSession = localStorage.getItem('fwild_chat_session')
-  if (!savedSession) return null
+      function loadSession() {
+        const savedSession = localStorage.getItem('fwild_chat_session')
+        if (!savedSession) return null
 
-  const sessionData = JSON.parse(savedSession)
-  console.log('📂 Sesión cargada:', sessionData)
-  return sessionData
-}
+        const sessionData = JSON.parse(savedSession)
+        console.log('📂 Sesión cargada:', sessionData)
+        return sessionData
+      }
 
-function saveMessage(type, text, timestamp) {
-  console.log('📝 Mensaje manejado por servidor:', type, text)
-}
+      function saveMessage(type, text, timestamp) {
+        console.log('📝 Mensaje manejado por servidor:', type, text)
+      }
 
-// ========== EVENT LISTENERS ==========
-chatButton.addEventListener('click', () => {
-  const savedSession = loadSession()
-  
-  if (savedSession) {
-    username = savedSession.username
-    sessionId = savedSession.sessionId
-    isReconnecting = true
-    
-    chatContainer.classList.add('active')
-    chatButton.classList.add('hidden')
-    
-    registerForm.style.display = 'none'
-    messagesArea.classList.add('active')
-    inputArea.classList.add('active')
-    quickOptions.classList.add('active')
-    
-    addSystemMessage(`Reconectando como ${username}...`)
-    
-    if (!socket || !socket.connected) {
-      connectToBot()
-    }
-  } else {
-    chatContainer.classList.add('active')
-    chatButton.classList.add('hidden')
-  }
-})
+      chatButton.addEventListener('click', () => {
+        const savedSession = loadSession()
 
-chatClose.addEventListener('click', () => {
-  chatContainer.classList.remove('active')
-  chatButton.classList.remove('hidden')
-})
+        if (savedSession) {
+          username = savedSession.username
+          sessionId = savedSession.sessionId
+          isReconnecting = true
 
-registerButton.addEventListener('click', startChat)
-usernameInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') startChat()
-})
+          chatContainer.classList.add('active')
+          chatButton.classList.add('hidden')
 
-function startChat() {
-  const name = usernameInput.value.trim()
-  if (name.length < 2) {
-    alert('Por favor, ingresá un nombre válido (mínimo 2 caracteres)')
-    return
-  }
+          registerForm.style.display = 'none'
+          messagesArea.classList.add('active')
+          inputArea.classList.add('active')
+          quickOptions.classList.add('active')
 
-  username = name
-  sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-  isReconnecting = false
+          addSystemMessage(`Reconectando como ${username}...`)
 
-  saveSession(username, sessionId)
+          if (!socket || !socket.connected) {
+            connectToBot()
+          }
+        } else {
+          chatContainer.classList.add('active')
+          chatButton.classList.add('hidden')
+        }
+      })
 
-  registerForm.style.display = 'none'
-  messagesArea.classList.add('active')
-  inputArea.classList.add('active')
-  quickOptions.classList.add('active')
+      chatClose.addEventListener('click', () => {
+        chatContainer.classList.remove('active')
+        chatButton.classList.remove('hidden')
+      })
 
-  addSystemMessage(`Conectando...`)
-  connectToBot()
+      registerButton.addEventListener('click', startChat)
+      usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') startChat()
+      })
 
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'chat_widget_start', {
-      event_category: 'engagement',
-      event_label: 'Fwild Chat'
-    })
-  }
-}
+      function startChat() {
+        const name = usernameInput.value.trim()
+        if (name.length < 2) {
+          alert('Por favor, ingresá un nombre válido (mínimo 2 caracteres)')
+          return
+        }
 
-// ========== CONEXIÓN AL BOT ==========
-function connectToBot() {
-  console.log('🔌 Conectando al bot:', BACKEND_URL)
+        username = name
+        sessionId =
+          'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+        isReconnecting = false
 
-  socket = io(BACKEND_URL + '/client', {
-    transports: ['websocket', 'polling'],
-    reconnection: true,
-    reconnectionDelay: 1000,
-    reconnectionAttempts: 5
-  })
+        saveSession(username, sessionId)
 
-  socket.on('connect', () => {
-    console.log('✅ Conectado al bot, Socket ID:', socket.id)
-    showStatus('Conectado ✓', 'success')
+        registerForm.style.display = 'none'
+        messagesArea.classList.add('active')
+        inputArea.classList.add('active')
+        quickOptions.classList.add('active')
 
-    socket.emit('web_chat_start', {
-      username: username,
-      sessionId: sessionId,
-      isReconnecting: isReconnecting
-    })
-  })
+        addSystemMessage(`Conectando...`)
+        connectToBot()
 
-  socket.on('chat_history', (data) => {
-    console.log('📜 Historial recibido:', data.messages.length, 'mensajes')
-    
-    messagesArea.innerHTML = ''
-    
-    data.messages.forEach(msg => {
-      addMessage(msg.type, msg.message, new Date(msg.timestamp))
-    })
-    
-    scrollToBottom()
-    showStatus('Historial cargado ✓', 'success')
-  })
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'chat_widget_start', {
+            event_category: 'engagement',
+            event_label: 'Fwild Chat'
+          })
+        }
+      }
 
-  socket.on('disconnect', () => {
-    console.log('❌ Desconectado del bot')
-    showStatus('Desconectado. Reconectando...', 'warning')
-  })
+      function connectToBot() {
+        console.log('🔌 Conectando al bot:', BACKEND_URL)
 
-  socket.on('connect_error', (error) => {
-    console.error('❌ Error de conexión:', error)
-    showStatus('Error de conexión. Verifica tu internet.', 'error')
-  })
+        socket = io(BACKEND_URL + '/client', {
+          transports: ['websocket', 'polling'],
+          reconnection: true,
+          reconnectionDelay: 1000,
+          reconnectionAttempts: 5
+        })
 
-  socket.on('bot_message', (data) => {
-    console.log('💬 Mensaje del bot recibido:', data)
-    hideTyping()
+        socket.on('connect', () => {
+          console.log('✅ Conectado al bot, Socket ID:', socket.id)
+          showStatus('Conectado ✓', 'success')
 
-    if (data.imageData) {
-      addImageMessage('bot', data.imageData, data.message || '')
-    } else {
-      addMessage('bot', data.message, new Date())
-    }
+          socket.emit('web_chat_start', {
+            username: username,
+            sessionId: sessionId,
+            isReconnecting: isReconnecting
+          })
+        })
 
-    if (data.showMenu) {
-      console.log('📋 Mostrando botones rápidos')
-      quickOptions.classList.add('active')
-    }
-  })
+        socket.on('chat_history', (data) => {
+          console.log(
+            '📜 Historial recibido:',
+            data.messages.length,
+            'mensajes'
+          )
 
-  socket.on('admin_message', (data) => {
-    console.log('💬 Mensaje del admin recibido:', data)
-    hideTyping()
-    addMessage('bot', data.message, data.timestamp || new Date())
-  })
+          messagesArea.innerHTML = ''
 
-  socket.on('admin_image', (data) => {
-    console.log('📷 Imagen del admin recibida')
-    hideTyping()
-    addImageMessage('bot', data.imageData, data.caption || '')
-  })
+          data.messages.forEach((msg) => {
+            addMessage(msg.type, msg.message, new Date(msg.timestamp))
+          })
 
-  socket.on('message_sent', () => {
-    console.log('✅ Mensaje enviado correctamente')
-  })
+          scrollToBottom()
+          showStatus('Historial cargado ✓', 'success')
+        })
 
-  socket.on('error', (data) => {
-    console.error('❌ Error:', data)
-    showStatus(data.message || 'Ocurrió un error', 'error')
-  })
-}
+        socket.on('disconnect', () => {
+          console.log('❌ Desconectado del bot')
+          showStatus('Desconectado. Reconectando...', 'warning')
+        })
 
-sendButton.addEventListener('click', sendMessage)
-messageInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault()
-    sendMessage()
-  }
-})
+        socket.on('connect_error', (error) => {
+          console.error('❌ Error de conexión:', error)
+          showStatus('Error de conexión. Verifica tu internet.', 'error')
+        })
 
-function sendMessage() {
-  const message = messageInput.value.trim()
-  if (!message || !socket) return
+        socket.on('bot_message', (data) => {
+          console.log('💬 Mensaje del bot recibido:', data)
+          hideTyping()
 
-  addMessage('user', message, new Date())
+          if (data.imageData) {
+            addImageMessage('bot', data.imageData, data.message || '')
+          } else {
+            addMessage('bot', data.message, new Date())
+          }
 
-  socket.emit('message', {
-    message: message
-  })
+          if (data.showMenu) {
+            console.log('📋 Mostrando botones rápidos')
+            quickOptions.classList.add('active')
+          }
+        })
 
-  messageInput.value = ''
-  autoResize(messageInput)
-  showTyping()
-}
+        socket.on('admin_message', (data) => {
+          console.log('💬 Mensaje del admin recibido:', data)
+          hideTyping()
+          addMessage('bot', data.message, data.timestamp || new Date())
+        })
 
-window.selectQuickOption = function(option) {
-  console.log('🎯 Opción rápida seleccionada:', option)
-  
-  addMessage('user', option, new Date())
+        socket.on('admin_image', (data) => {
+          console.log('📷 Imagen del admin recibida')
+          hideTyping()
+          addImageMessage('bot', data.imageData, data.caption || '')
+        })
 
-  if (socket) {
-    socket.emit('message', {
-      message: option
-    })
-    showTyping()
-  }
+        socket.on('message_sent', () => {
+          console.log('✅ Mensaje enviado correctamente')
+        })
 
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'chat_quick_option', {
-      event_category: 'engagement',
-      event_label: option
-    })
-  }
-}
+        socket.on('error', (data) => {
+          console.error('❌ Error:', data)
+          showStatus(data.message || 'Ocurrió un error', 'error')
+        })
+      }
 
-function addMessage(type, text, timestamp) {
-  const messageDiv = document.createElement('div')
-  messageDiv.className = `message ${type}`
+      sendButton.addEventListener('click', sendMessage)
+      messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault()
+          sendMessage()
+        }
+      })
 
-  const bubble = document.createElement('div')
-  bubble.className = 'message-bubble'
-  bubble.textContent = text
+      function sendMessage() {
+        const message = messageInput.value.trim()
+        if (!message || !socket) return
 
-  const time = document.createElement('div')
-  time.className = 'message-time'
-  time.textContent = formatTime(timestamp)
+        addMessage('user', message, new Date())
 
-  messageDiv.appendChild(bubble)
-  messageDiv.appendChild(time)
-  messagesArea.appendChild(messageDiv)
-  scrollToBottom()
-}
+        socket.emit('message', {
+          message: message
+        })
 
-function addImageMessage(type, imageSrc, caption) {
-  const messageDiv = document.createElement('div')
-  messageDiv.className = `message ${type}`
+        messageInput.value = ''
+        autoResize(messageInput)
+        showTyping()
+      }
 
-  const img = document.createElement('img')
-  img.className = 'message-image'
-  img.src = imageSrc
-  img.onclick = () => window.open(imageSrc, '_blank')
+      window.selectQuickOption = function (option) {
+        console.log('🎯 Opción rápida seleccionada:', option)
 
-  messageDiv.appendChild(img)
+        addMessage('user', option, new Date())
 
-  if (caption) {
-    const bubble = document.createElement('div')
-    bubble.className = 'message-bubble'
-    bubble.textContent = caption
-    messageDiv.appendChild(bubble)
-  }
+        if (socket) {
+          socket.emit('message', {
+            message: option
+          })
+          showTyping()
+        }
 
-  const time = document.createElement('div')
-  time.className = 'message-time'
-  time.textContent = formatTime(new Date())
-  messageDiv.appendChild(time)
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'chat_quick_option', {
+            event_category: 'engagement',
+            event_label: option
+          })
+        }
+      }
 
-  messagesArea.appendChild(messageDiv)
-  scrollToBottom()
-}
+      function addMessage(type, text, timestamp) {
+        const messageDiv = document.createElement('div')
+        messageDiv.className = `message ${type}`
 
-function addSystemMessage(text) {
-  const messageDiv = document.createElement('div')
-  messageDiv.className = 'system-message'
-  messageDiv.textContent = text
-  messagesArea.appendChild(messageDiv)
-  scrollToBottom()
-}
+        const bubble = document.createElement('div')
+        bubble.className = 'message-bubble'
+        bubble.textContent = text
 
-function showStatus(message, type) {
-  connectionStatus.textContent = message
-  connectionStatus.className = `connection-status ${type} show`
+        const time = document.createElement('div')
+        time.className = 'message-time'
+        time.textContent = formatTime(timestamp)
 
-  setTimeout(() => {
-    connectionStatus.classList.remove('show')
-  }, 3000)
-}
+        messageDiv.appendChild(bubble)
+        messageDiv.appendChild(time)
+        messagesArea.appendChild(messageDiv)
+        scrollToBottom()
+      }
 
-function showTyping() {
-  typingIndicator.classList.add('show')
-  scrollToBottom()
-}
+      function addImageMessage(type, imageSrc, caption) {
+        const messageDiv = document.createElement('div')
+        messageDiv.className = `message ${type}`
 
-function hideTyping() {
-  typingIndicator.classList.remove('show')
-}
+        const img = document.createElement('img')
+        img.className = 'message-image'
+        img.src = imageSrc
+        img.onclick = () => window.open(imageSrc, '_blank')
 
-function formatTime(timestamp) {
-  const date = new Date(timestamp)
-  return date.toLocaleTimeString('es-AR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+        messageDiv.appendChild(img)
 
-function scrollToBottom() {
-  messagesArea.scrollTop = messagesArea.scrollHeight
-}
+        if (caption) {
+          const bubble = document.createElement('div')
+          bubble.className = 'message-bubble'
+          bubble.textContent = caption
+          messageDiv.appendChild(bubble)
+        }
 
-messageInput.addEventListener('input', function () {
-  autoResize(this)
-})
+        const time = document.createElement('div')
+        time.className = 'message-time'
+        time.textContent = formatTime(new Date())
+        messageDiv.appendChild(time)
 
-function autoResize(textarea) {
-  textarea.style.height = 'auto'
-  textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
-}
+        messagesArea.appendChild(messageDiv)
+        scrollToBottom()
+      }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const savedSession = loadSession()
-  
-  if (savedSession) {
-    username = savedSession.username
-    sessionId = savedSession.sessionId
-    isReconnecting = true
-    
-    console.log('🔄 Sesión detectada, preparando auto-conexión:', username)
-  }
-})
+      function addSystemMessage(text) {
+        const messageDiv = document.createElement('div')
+        messageDiv.className = 'system-message'
+        messageDiv.textContent = text
+        messagesArea.appendChild(messageDiv)
+        scrollToBottom()
+      }
+
+      function showStatus(message, type) {
+        connectionStatus.textContent = message
+        connectionStatus.className = `connection-status ${type} show`
+
+        setTimeout(() => {
+          connectionStatus.classList.remove('show')
+        }, 3000)
+      }
+
+      function showTyping() {
+        typingIndicator.classList.add('show')
+        scrollToBottom()
+      }
+
+      function hideTyping() {
+        typingIndicator.classList.remove('show')
+      }
+
+      function formatTime(timestamp) {
+        const date = new Date(timestamp)
+        return date.toLocaleTimeString('es-AR', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }
+
+      function scrollToBottom() {
+        messagesArea.scrollTop = messagesArea.scrollHeight
+      }
+
+      messageInput.addEventListener('input', function () {
+        autoResize(this)
+      })
+
+      function autoResize(textarea) {
+        textarea.style.height = 'auto'
+        textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px'
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const savedSession = loadSession()
+
+        if (savedSession) {
+          username = savedSession.username
+          sessionId = savedSession.sessionId
+          isReconnecting = true
+
+          console.log(
+            '🔄 Sesión detectada, preparando auto-conexión:',
+            username
+          )
+        }
+      })
     </script>
   </body>
 </html>
