@@ -102,7 +102,7 @@ document.getElementById('whatsappBtn').onclick = function () {
     });
   }
 
-  var initialMessage = 'Hola! Quiero consultar sobre productos de Fwild 🎮';
+  var initialMessage = 'Hola! Quiero informacion 🎮';
   var waUrl = getRandomWhatsAppURL(enc.main, initialMessage);
 
   setTimeout(function () {
