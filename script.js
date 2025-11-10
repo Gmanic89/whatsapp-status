@@ -604,7 +604,16 @@ function addMessage(type, text, timestamp) {
 
   var bubble = document.createElement('div');
   bubble.className = 'message-bubble';
-  bubble.textContent = text;
+  
+  // ✅ Método 1: CSS white-space
+  bubble.style.whiteSpace = 'pre-line';
+  
+  // ✅ Método 2: Convertir \n a <br> para mayor compatibilidad
+  if (text.includes('\n')) {
+    bubble.innerHTML = text.replace(/\n/g, '<br>');
+  } else {
+    bubble.textContent = text;
+  }
 
   var time = document.createElement('div');
   time.className = 'message-time';
