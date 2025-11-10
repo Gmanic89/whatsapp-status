@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <!-- ✅ META TAGS OPTIMIZADOS PARA GAMING -->
     <title>Fwild Community | Comunidad Oficial de Gaming</title>
@@ -50,8 +50,203 @@
 
     <!-- ✅ ARCHIVOS EXTERNOS -->
     <link rel="stylesheet" href="styles.css" />
+    
+    <style>
+      /* ========== ESTILOS RESPONSIVOS PARA CHAT ========== */
+      
+      /* DESKTOP: Chat embebido en el centro */
+      @media (min-width: 769px) {
+        body {
+          display: flex;
+          min-height: 100vh;
+          margin: 0;
+          padding: 0;
+        }
+        
+        .main-content {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 40px 20px;
+        }
+        
+        .container {
+          max-width: 500px;
+        }
+        
+        .legal-footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 1;
+        }
+        
+        /* Chat embebido en desktop */
+        #chat-container {
+          position: fixed !important;
+          top: 50% !important;
+          right: 60px !important;
+          transform: translateY(-50%) !important;
+          width: 420px !important;
+          height: 650px !important;
+          max-height: 90vh !important;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+          border-radius: 16px !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          display: flex !important;
+          flex-direction: column !important;
+          z-index: 1000 !important;
+        }
+        
+        #chat-button {
+          display: none !important;
+        }
+        
+        #chat-close {
+          display: none !important;
+        }
+        
+        #chat-header {
+          border-radius: 16px 16px 0 0 !important;
+        }
+      }
+      
+      /* MOBILE: Chat flotante minimizable */
+      @media (max-width: 768px) {
+        html {
+          height: 100%;
+        }
+        
+        body {
+          min-height: 100%;
+          position: relative;
+        }
+        
+        .main-content {
+          padding-bottom: 80px;
+        }
+        
+        /* Chat flotante en mobile */
+        #chat-container {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          max-height: 70vh;
+          border-radius: 20px 20px 0 0;
+          box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.3);
+          transform: translateY(0);
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 9999;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        #chat-container.minimized {
+          transform: translateY(calc(100% - 60px));
+        }
+        
+        #chat-container.minimized #messages-area,
+        #chat-container.minimized #input-area,
+        #chat-container.minimized #quick-options,
+        #chat-container.minimized .typing-indicator,
+        #chat-container.minimized .connection-status {
+          display: none;
+        }
+        
+        #chat-header {
+          cursor: pointer;
+          user-select: none;
+          border-radius: 20px 20px 0 0;
+          position: relative;
+        }
+        
+        #chat-header::before {
+          content: '';
+          position: absolute;
+          top: 8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 40px;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 2px;
+        }
+        
+        #chat-close {
+          transform: rotate(0deg);
+          transition: transform 0.3s;
+        }
+        
+        #chat-container.minimized #chat-close {
+          transform: rotate(45deg);
+        }
+        
+        /* Botón flotante solo visible cuando está minimizado */
+        #chat-button {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border: none;
+          color: white;
+          font-size: 28px;
+          cursor: pointer;
+          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+          z-index: 9998;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s;
+        }
+        
+        #chat-button.show {
+          display: flex;
+        }
+        
+        /* Ajustes para teclado móvil */
+        #chat-container.keyboard-open {
+          max-height: 100vh;
+          height: 100vh;
+        }
+        
+        #chat-container.keyboard-open #messages-area {
+          flex: 1;
+          min-height: 0;
+        }
+        
+        #register-form {
+          padding: 60px 20px 30px !important;
+        }
+      }
+      
+      /* Ajustes generales para ambos */
+      #messages-area {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      #input-area {
+        flex-shrink: 0;
+      }
+      
+      /* Prevenir zoom en inputs en iOS */
+      input, textarea {
+        font-size: 16px !important;
+      }
+    </style>
   </head>
   <body>
+    
     <div class="main-content">
       <div class="container">
         <div class="logo-container">
@@ -159,7 +354,7 @@
       </div>
     </div>
 
-    <!-- Chat Button -->
+    <!-- Chat Button (solo móvil) -->
     <button id="chat-button">💬</button>
 
     <!-- Chat Container -->
@@ -195,8 +390,7 @@
       </div>
 
       <!-- ✅ OPCIONES RÁPIDAS MEJORADAS -->
-
-<div class="quick-options" id="quick-options">
+      <div class="quick-options" id="quick-options">
         <button
           class="quick-option-btn"
           onclick="selectQuickOption('Solicitar CBU')"
