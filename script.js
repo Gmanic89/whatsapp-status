@@ -506,7 +506,11 @@ function connectToBot() {
 
     // Agregar todos los mensajes del historial
     data.messages.forEach(function (msg) {
-      addMessage(msg.type, msg.message, new Date(msg.timestamp));
+      if (msg.imageData) {
+        addImageMessage(msg.type, msg.imageData, msg.message || '');
+      } else {
+        addMessage(msg.type, msg.message, new Date(msg.timestamp));
+      }
     });
 
     // Asegurar que las áreas estén visibles
@@ -664,7 +668,7 @@ function addImageMessage(type, imageSrc, caption) {
 
   messageDiv.appendChild(img);
 
-  if (caption) {
+  if (caption && caption !== '[Imagen]') {
     var bubble = document.createElement('div');
     bubble.className = 'message-bubble';
     bubble.textContent = caption;
@@ -729,6 +733,115 @@ function autoResize(textarea) {
   textarea.style.height = 'auto';
   textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
 }
+
+// ========================================
+// 📷 ENVÍO DE IMÁGENES
+// ========================================
+
+// Crear elemento de input para imágenes (oculto)
+var imageInput = document.createElement('input');
+imageInput.type = 'file';
+imageInput.accept = 'image/*';
+imageInput.style.display = 'none';
+document.body.appendChild(imageInput);
+
+// Manejar selección de imagen
+imageInput.addEventListener('change', async function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+
+  // Validar tipo
+  if (!file.type.startsWith('image/')) {
+    alert('❌ Solo se permiten imágenes');
+    return;
+  }
+
+  // Validar tamaño (5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('❌ La imagen es muy grande (máximo 5MB)');
+    return;
+  }
+
+  await sendImage(file);
+  imageInput.value = ''; // Reset input
+});
+
+// Función para abrir selector de imágenes
+window.selectImage = function() {
+  if (!socket || !socket.connected) {
+    showStatus('No estás conectado', 'error');
+    return;
+  }
+  imageInput.click();
+};
+
+// Enviar imagen al servidor
+async function sendImage(file) {
+  if (!socket || !socket.connected) {
+    showStatus('No estás conectado', 'error');
+    return;
+  }
+
+  var session = activeSessions.get(socket.id);
+  if (!session) {
+    session = { username: username };
+  }
+
+  try {
+    // Mostrar preview local inmediatamente
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      addImageMessage('user', e.target.result, '');
+    };
+    reader.readAsDataURL(file);
+
+    // Preparar FormData
+    var formData = new FormData();
+    formData.append('image', file);
+    formData.append('username', session.username);
+
+    // Mostrar indicador de carga
+    showStatus('Enviando imagen...', 'warning');
+
+    // Enviar al servidor
+    var response = await fetch(BACKEND_URL + '/api/upload-image', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al enviar imagen');
+    }
+
+    var data = await response.json();
+    
+    showStatus('Imagen enviada ✓', 'success');
+    console.log('✅ Imagen enviada correctamente');
+
+  } catch (error) {
+    console.error('❌ Error al enviar imagen:', error);
+    showStatus('Error al enviar imagen', 'error');
+  }
+}
+
+// Soporte para pegar imágenes (Ctrl+V)
+messageInput.addEventListener('paste', async function(e) {
+  var items = e.clipboardData.items;
+  
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      e.preventDefault();
+      
+      var file = items[i].getAsFile();
+      if (file) {
+        await sendImage(file);
+      }
+      break;
+    }
+  }
+});
+
+console.log('📷 Sistema de envío de imágenes inicializado');
 
 // ========== AUTO-INICIALIZAR ==========
 window.addEventListener('DOMContentLoaded', function () {

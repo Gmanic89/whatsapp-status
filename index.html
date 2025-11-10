@@ -243,6 +243,45 @@
       input, textarea {
         font-size: 16px !important;
       }
+
+      /* ========== ESTILOS PARA BOTÓN DE IMAGEN ========== */
+      .image-btn {
+        width: 40px;
+        height: 40px;
+        background: #f5f5f5;
+        border: none;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .image-btn:hover {
+        background: #e0e0e0;
+        transform: scale(1.1);
+      }
+
+      .image-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* Ajustar input-area para incluir el botón de imagen */
+      #input-area {
+        background: white;
+        padding: 15px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+
+      #message-input {
+        flex: 1;
+      }
     </style>
   </head>
   <body>
@@ -411,7 +450,11 @@
         </button>
       </div>
 
+      <!-- ✅ INPUT AREA CON BOTÓN DE IMAGEN -->
       <div id="input-area">
+        <button class="image-btn" onclick="selectImage()" title="Enviar imagen">
+          📷
+        </button>
         <textarea
           id="message-input"
           placeholder="Escribe un mensaje..."
