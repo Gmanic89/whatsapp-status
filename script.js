@@ -197,13 +197,14 @@ window.onload = function () {
 };
 
 // ========================================
-// CHAT WIDGET
+// CHAT WIDGET CON VALIDACIÓN DE NOMBRES ÚNICOS
 // ========================================
 
 var socket = null;
 var username = null;
 var sessionId = null;
 var isReconnecting = false;
+var isCheckingUsername = false; // ✅ NUEVO: Para evitar múltiples validaciones
 
 // Referencias a elementos del DOM
 var chatButton = document.getElementById('chat-button');
@@ -238,6 +239,116 @@ function loadSession() {
   console.log('📂 Sesión cargada:', sessionData);
   return sessionData;
 }
+
+// ========== ✅ NUEVA FUNCIÓN: VALIDAR NOMBRE DE USUARIO ==========
+function validateUsername(name, callback) {
+  if (!socket || !socket.connected) {
+    // Si no hay socket aún, crear uno temporal solo para validar
+    var tempSocket = io(BACKEND_URL + '/client', {
+      transports: ['websocket', 'polling'],
+      reconnection: false
+    });
+
+    tempSocket.on('connect', function () {
+      console.log('🔌 Socket temporal conectado para validación');
+      tempSocket.emit('check_username', { username: name });
+    });
+
+    tempSocket.on('username_validation', function (data) {
+      console.log('✅ Validación recibida:', data);
+      tempSocket.disconnect();
+      callback(data);
+    });
+
+    tempSocket.on('connect_error', function (error) {
+      console.error('❌ Error de conexión en validación:', error);
+      tempSocket.disconnect();
+      callback({ 
+        available: false, 
+        message: 'Error de conexión. Intenta nuevamente.' 
+      });
+    });
+  } else {
+    // Si ya hay socket, usar el existente
+    socket.emit('check_username', { username: name });
+    
+    socket.once('username_validation', function (data) {
+      callback(data);
+    });
+  }
+}
+
+// ========== ✅ NUEVA FUNCIÓN: MOSTRAR SUGERENCIAS ==========
+function showUsernameSuggestions(username, suggestions) {
+  var formContent = registerForm.querySelector('p');
+  var suggestionHTML = `
+    <div style="margin: 15px 0; padding: 12px; background: rgba(255,193,7,0.1); border-radius: 8px; border-left: 3px solid #ffc107;">
+      <p style="margin: 0 0 8px 0; font-weight: bold; color: #ffc107;">
+        ⚠️ El nombre "${username}" ya está en uso
+      </p>
+      <p style="margin: 0 0 8px 0; font-size: 13px; color: #ccc;">
+        Te sugerimos estos nombres disponibles:
+      </p>
+      <div id="suggestions-container">
+        ${suggestions.map((s, i) => `
+          <button 
+            class="suggestion-btn" 
+            onclick="selectSuggestion('${s}')"
+            style="
+              display: inline-block;
+              margin: 4px;
+              padding: 8px 16px;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border: none;
+              border-radius: 20px;
+              color: white;
+              font-size: 14px;
+              cursor: pointer;
+              transition: all 0.3s;
+            "
+            onmouseover="this.style.transform='scale(1.05)'"
+            onmouseout="this.style.transform='scale(1)'"
+          >
+            ${s}
+          </button>
+        `).join('')}
+      </div>
+      <p style="margin: 8px 0 0 0; font-size: 12px; color: #888;">
+        O ingresá un nombre diferente
+      </p>
+    </div>
+  `;
+
+  // Verificar si ya existe el contenedor de sugerencias
+  var existingSuggestions = registerForm.querySelector('#suggestions-container');
+  if (existingSuggestions) {
+    existingSuggestions.parentElement.remove();
+  }
+
+  // Insertar después del párrafo
+  formContent.insertAdjacentHTML('afterend', suggestionHTML);
+
+  // Limpiar el input
+  usernameInput.value = '';
+  usernameInput.focus();
+}
+
+// ========== ✅ NUEVA FUNCIÓN: SELECCIONAR SUGERENCIA ==========
+window.selectSuggestion = function (suggestedName) {
+  console.log('📝 Sugerencia seleccionada:', suggestedName);
+  
+  // Limpiar sugerencias
+  var suggestionsDiv = document.querySelector('#suggestions-container');
+  if (suggestionsDiv) {
+    suggestionsDiv.parentElement.remove();
+  }
+
+  // Poner el nombre sugerido en el input
+  usernameInput.value = suggestedName;
+  
+  // Auto-iniciar chat con el nombre sugerido
+  startChat();
+};
 
 // ========== EVENT LISTENERS CHAT ==========
 chatButton.addEventListener('click', function () {
@@ -277,34 +388,70 @@ usernameInput.addEventListener('keypress', function (e) {
   if (e.key === 'Enter') startChat();
 });
 
-// ========== INICIAR CHAT ==========
+// ========== ✅ INICIAR CHAT CON VALIDACIÓN ==========
 function startChat() {
   var name = usernameInput.value.trim();
+  
   if (name.length < 2) {
-    alert('Por favor, ingresá un nombre válido (mínimo 2 caracteres)');
+    showStatus('Por favor, ingresá un nombre válido (mínimo 2 caracteres)', 'error');
     return;
   }
 
-  username = name;
-  sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-  isReconnecting = false;
-
-  saveSession(username, sessionId);
-
-  registerForm.style.display = 'none';
-  messagesArea.classList.add('active');
-  inputArea.classList.add('active');
-  quickOptions.classList.add('active');
-
-  addSystemMessage('Conectando...');
-  connectToBot();
-
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'chat_widget_start', {
-      event_category: 'engagement',
-      event_label: 'Fwild Chat'
-    });
+  // Evitar múltiples validaciones simultáneas
+  if (isCheckingUsername) {
+    console.log('⏳ Ya hay una validación en curso...');
+    return;
   }
+
+  isCheckingUsername = true;
+  registerButton.textContent = 'Verificando...';
+  registerButton.disabled = true;
+  usernameInput.disabled = true;
+
+  console.log('🔍 Validando nombre:', name);
+
+  // ✅ Validar disponibilidad del nombre
+  validateUsername(name, function (result) {
+    isCheckingUsername = false;
+    registerButton.textContent = 'Iniciar Chat';
+    registerButton.disabled = false;
+    usernameInput.disabled = false;
+
+    if (result.available) {
+      console.log('✅ Nombre disponible:', name);
+      
+      // Nombre disponible, continuar con el registro
+      username = name;
+      sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      isReconnecting = false;
+
+      saveSession(username, sessionId);
+
+      registerForm.style.display = 'none';
+      messagesArea.classList.add('active');
+      inputArea.classList.add('active');
+      quickOptions.classList.add('active');
+
+      addSystemMessage('Conectando...');
+      connectToBot();
+
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'chat_widget_start', {
+          event_category: 'engagement',
+          event_label: 'Fwild Chat'
+        });
+      }
+    } else {
+      console.log('❌ Nombre no disponible:', name);
+      
+      // Nombre ya existe, mostrar sugerencias
+      if (result.suggestions && result.suggestions.length > 0) {
+        showUsernameSuggestions(name, result.suggestions);
+      } else {
+        showStatus(result.message || 'Este nombre ya está en uso', 'error');
+      }
+    }
+  });
 }
 
 // ========== CONECTAR AL BOT ==========
@@ -386,7 +533,22 @@ function connectToBot() {
 
   socket.on('error', function (data) {
     console.error('❌ Error:', data);
-    showStatus(data.message || 'Ocurrió un error', 'error');
+    
+    // ✅ Si el error es por nombre duplicado, manejar especialmente
+    if (data.code === 'USERNAME_TAKEN') {
+      // Volver al formulario de registro
+      messagesArea.classList.remove('active');
+      inputArea.classList.remove('active');
+      quickOptions.classList.remove('active');
+      registerForm.style.display = 'block';
+      
+      showStatus('Este nombre ya fue tomado. Por favor, elige otro.', 'error');
+      
+      // Limpiar sesión guardada
+      localStorage.removeItem('fwild_chat_session');
+    } else {
+      showStatus(data.message || 'Ocurrió un error', 'error');
+    }
   });
 }
 
