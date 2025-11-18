@@ -267,6 +267,7 @@
 
       .image-btn:active {
         transform: scale(0.95);
+        background: #d0d0d0;
       }
 
       /* Ajustar input-area para incluir el botón de imagen */
@@ -452,9 +453,32 @@
 
       <!-- ✅ INPUT AREA CON BOTÓN DE IMAGEN -->
       <div id="input-area">
-        <button class="image-btn" onclick="selectImage()" title="Enviar imagen">
+        <!-- Input oculto para seleccionar imágenes -->
+        <input 
+          type="file" 
+          id="image-input-hidden" 
+          accept="image/*" 
+          capture="environment"
+          style="display: none;"
+        />
+        
+        <!-- Botón visible para abrir selector -->
+        <button class="image-btn" onclick="selectImage()" title="Enviar imagen" type="button">
           📷
         </button>
+        
+        <!-- Botón de emergencia (solo visible si hay archivo seleccionado sin procesar) -->
+        <button 
+          class="image-btn emergency-send" 
+          id="emergency-send-btn"
+          onclick="forceProcessImage()" 
+          title="Forzar envío de imagen"
+          type="button"
+          style="display: none; background: #4CAF50; color: white;"
+        >
+          ✓
+        </button>
+        
         <textarea
           id="message-input"
           placeholder="Escribe un mensaje..."
@@ -466,6 +490,16 @@
 
     <!-- ✅ SCRIPTS EXTERNOS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    
+    <!-- 🐛 CONSOLA MÓVIL DE DEBUG -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      eruda.init();
+      console.log('%c🐛 DEBUG ACTIVADO', 'color: #0f0; font-size: 20px; font-weight: bold;');
+      console.log('%c📱 Toca el botón verde (◉) abajo a la derecha', 'color: #ff0; font-size: 14px;');
+      console.log('%cPrueba enviar una imagen y mira los logs aquí', 'color: #0ff;');
+    </script>
+    
     <script src="script.js"></script>
   </body>
 </html>

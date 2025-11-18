@@ -231,7 +231,6 @@ window.addEventListener('resize', function() {
   if (isMobile) {
     var currentHeight = window.innerHeight;
     
-    // Si la altura se redujo más de 100px, el teclado está abierto
     if (originalHeight - currentHeight > 100) {
       chatContainer.classList.add('keyboard-open');
       console.log('📱 Teclado móvil abierto');
@@ -384,7 +383,7 @@ window.selectSuggestion = function (suggestedName) {
 // Header click para minimizar en mobile
 chatHeader.addEventListener('click', function(e) {
   if (isMobile && !registerForm.style.display && registerForm.style.display !== 'none') {
-    return; // No minimizar si está en registro
+    return;
   }
   
   if (isMobile && e.target !== chatClose) {
@@ -501,10 +500,8 @@ function connectToBot() {
   socket.on('chat_history', function (data) {
     console.log('📜 Historial recibido:', data.messages.length, 'mensajes');
 
-    // Limpiar área de mensajes
     messagesArea.innerHTML = '';
 
-    // Agregar todos los mensajes del historial
     data.messages.forEach(function (msg) {
       if (msg.imageData) {
         addImageMessage(msg.type, msg.imageData, msg.message || '');
@@ -513,7 +510,6 @@ function connectToBot() {
       }
     });
 
-    // Asegurar que las áreas estén visibles
     registerForm.style.display = 'none';
     messagesArea.classList.add('active');
     inputArea.classList.add('active');
@@ -668,7 +664,7 @@ function addImageMessage(type, imageSrc, caption) {
 
   messageDiv.appendChild(img);
 
-  if (caption && caption !== '[Imagen]') {
+  if (caption && caption !== '[Imagen]' && caption !== '📤 Enviando...') {
     var bubble = document.createElement('div');
     bubble.className = 'message-bubble';
     bubble.textContent = caption;
@@ -735,28 +731,58 @@ function autoResize(textarea) {
 }
 
 // ========================================
-// 📷 ENVÍO DE IMÁGENES - VERSIÓN CORREGIDA
+// 📷 ENVÍO DE IMÁGENES - FIX PARA iOS/Safari
 // ========================================
 
-// Crear elemento de input para imágenes (oculto)
-var imageInput = document.createElement('input');
-imageInput.type = 'file';
-imageInput.accept = 'image/*';
-imageInput.capture = 'environment'; // Permite usar la cámara en móvil
-imageInput.style.display = 'none';
-document.body.appendChild(imageInput);
+console.log('🔧 Inicializando sistema de imágenes...');
 
-console.log('📷 Input de imágenes creado');
+// ✅ NO crear input oculto, usar el del HTML directamente
+var imageInput = document.getElementById('image-input-hidden');
 
-// Manejar selección de imagen
-imageInput.addEventListener('change', async function(e) {
-  var file = e.target.files[0];
-  if (!file) return;
+// Si no existe en el HTML, crearlo
+if (!imageInput) {
+  console.log('⚠️ Creando input de imagen...');
+  imageInput = document.createElement('input');
+  imageInput.type = 'file';
+  imageInput.id = 'image-input-hidden';
+  imageInput.accept = 'image/*';
+  imageInput.capture = 'environment';
+  imageInput.style.display = 'none';
+  document.body.appendChild(imageInput);
+}
 
-  console.log('📷 Imagen seleccionada:', file.name, file.size, 'bytes');
+console.log('✅ Input de imagen listo:', imageInput);
+
+// Variable para detectar si ya se procesó un archivo
+var lastProcessedFile = null;
+var isProcessingFile = false;
+
+// ✅ FUNCIÓN PARA PROCESAR ARCHIVO (reutilizable)
+function processImageFile(file) {
+  // Prevenir procesamiento duplicado
+  if (isProcessingFile) {
+    console.log('⏳ Ya hay un archivo procesándose, ignorando...');
+    return;
+  }
+  
+  // Prevenir procesar el mismo archivo dos veces
+  if (lastProcessedFile && 
+      lastProcessedFile.name === file.name && 
+      lastProcessedFile.size === file.size &&
+      lastProcessedFile.lastModified === file.lastModified) {
+    console.log('⏭️ Archivo ya procesado, ignorando duplicado');
+    return;
+  }
+  
+  console.log('📷 Archivo detectado:');
+  console.log('  - Nombre:', file.name);
+  console.log('  - Tamaño:', file.size, 'bytes');
+  console.log('  - Tipo:', file.type);
+  console.log('  - Última modificación:', new Date(file.lastModified));
 
   // Validar tipo
   if (!file.type.startsWith('image/')) {
+    console.error('❌ No es una imagen');
     showStatus('❌ Solo se permiten imágenes', 'error');
     return;
   }
@@ -765,165 +791,351 @@ imageInput.addEventListener('change', async function(e) {
   var maxSize = 5 * 1024 * 1024;
   if (file.size > maxSize) {
     var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    console.error('❌ Imagen muy grande:', sizeMB, 'MB');
     showStatus('❌ Imagen muy grande (' + sizeMB + 'MB). Máximo 5MB', 'error');
     return;
   }
 
-  console.log('✅ Validación pasada, enviando imagen...');
-  await sendImage(file);
-  imageInput.value = ''; // Reset input
+  console.log('✅ Validación pasada, procesando imagen...');
+  
+  // Marcar como procesando
+  isProcessingFile = true;
+  lastProcessedFile = file;
+  
+  // Procesar imagen
+  handleImageFile(file);
+  
+  // Desmarcar después de 2 segundos
+  setTimeout(function() {
+    isProcessingFile = false;
+  }, 2000);
+}
+
+// ✅ EVENTO CHANGE
+imageInput.addEventListener('change', function(e) {
+  console.log('🎉 CHANGE EVENT TRIGGERED!');
+  console.log('Files:', e.target.files);
+  console.log('Files length:', e.target.files.length);
+  
+  var file = e.target.files[0];
+  
+  if (!file) {
+    console.log('❌ No hay archivo seleccionado');
+    return;
+  }
+  
+  processImageFile(file);
+  
+  // Reset input después de un breve delay
+  setTimeout(function() {
+    imageInput.value = '';
+    console.log('🔄 Input reseteado');
+  }, 500);
 });
 
-// Función para abrir selector de imágenes
+// ✅ EVENTO ADICIONAL: INPUT (fallback para Chrome Android)
+imageInput.addEventListener('input', function(e) {
+  console.log('📥 INPUT EVENT TRIGGERED! (fallback)');
+  
+  if (e.target.files && e.target.files.length > 0) {
+    var file = e.target.files[0];
+    console.log('Archivo detectado vía INPUT event');
+    processImageFile(file);
+  }
+});
+
+// ✅ POLLING COMO ÚLTIMO RECURSO (para Fototeca de Chrome)
+var pollingInterval = null;
+var lastFileCount = 0;
+
+function startFilePolling() {
+  console.log('🔄 Iniciando polling de archivos...');
+  lastFileCount = imageInput.files ? imageInput.files.length : 0;
+  
+  pollingInterval = setInterval(function() {
+    if (imageInput.files && imageInput.files.length > 0) {
+      var currentCount = imageInput.files.length;
+      
+      if (currentCount !== lastFileCount) {
+        console.log('📊 Cambio detectado en files! Anterior:', lastFileCount, 'Nuevo:', currentCount);
+        lastFileCount = currentCount;
+        
+        var file = imageInput.files[0];
+        if (file) {
+          console.log('✅ Archivo detectado vía POLLING!');
+          processImageFile(file);
+          stopFilePolling();
+          
+          // Reset input
+          setTimeout(function() {
+            imageInput.value = '';
+          }, 500);
+        }
+      }
+    }
+  }, 300); // Revisar cada 300ms
+}
+
+function stopFilePolling() {
+  if (pollingInterval) {
+    console.log('⏹️ Deteniendo polling');
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+  }
+}
+
+// Detener polling después de 10 segundos (timeout)
+function startPollingWithTimeout() {
+  startFilePolling();
+  
+  setTimeout(function() {
+    if (pollingInterval) {
+      console.log('⏱️ Timeout de polling alcanzado');
+      stopFilePolling();
+    }
+  }, 10000); // 10 segundos máximo
+}
+
+// ✅ DETECTAR CUANDO EL USUARIO REGRESA A LA APP
+var wasSelectingFile = false;
+
+window.addEventListener('blur', function() {
+  if (document.activeElement === imageInput) {
+    console.log('👋 Usuario salió a seleccionar archivo');
+    wasSelectingFile = true;
+  }
+});
+
+window.addEventListener('focus', function() {
+  if (wasSelectingFile) {
+    console.log('👀 Usuario regresó a la app');
+    wasSelectingFile = false;
+    
+    // Esperar un poco y revisar si hay archivo
+    setTimeout(function() {
+      if (imageInput.files && imageInput.files.length > 0) {
+        console.log('✅ Archivo detectado al regresar (focus event)!');
+        var file = imageInput.files[0];
+        processImageFile(file);
+        
+        // Reset
+        setTimeout(function() {
+          imageInput.value = '';
+        }, 500);
+      } else {
+        console.log('ℹ️ Usuario canceló la selección');
+      }
+    }, 300);
+  }
+});
+
+// ✅ Función para abrir selector
 window.selectImage = function() {
-  console.log('📷 Botón de imagen clickeado');
+  console.log('📷 selectImage() llamada');
   
   if (!socket || !socket.connected) {
+    console.error('❌ Socket no conectado');
     showStatus('No estás conectado. Espera...', 'error');
     return;
   }
   
   if (!username) {
+    console.error('❌ Sin username');
     showStatus('Debes iniciar sesión primero', 'error');
     return;
   }
   
-  console.log('✅ Abriendo selector de imágenes...');
+  console.log('✅ Abriendo selector de archivos...');
+  console.log('Input element:', imageInput);
+  
+  // Limpiar input antes de abrir
+  imageInput.value = '';
+  
+  // Trigger click
   imageInput.click();
+  
+  console.log('✅ Click ejecutado en input');
+  
+  // ⚡ INICIAR POLLING después del click (para Chrome Android Fototeca)
+  setTimeout(function() {
+    startPollingWithTimeout();
+  }, 500);
 };
 
-// Enviar imagen al servidor
-async function sendImage(file) {
+// ✅ Nueva función para manejar el archivo
+function handleImageFile(file) {
+  console.log('🔄 handleImageFile() iniciado');
+  
+  var reader = new FileReader();
+  
+  reader.onloadstart = function() {
+    console.log('📖 Iniciando lectura del archivo...');
+    showStatus('Cargando imagen...', 'warning');
+  };
+  
+  reader.onprogress = function(e) {
+    if (e.lengthComputable) {
+      var percentLoaded = Math.round((e.loaded / e.total) * 100);
+      console.log('📊 Progreso:', percentLoaded + '%');
+    }
+  };
+  
+  reader.onload = function(e) {
+    console.log('✅ Archivo leído correctamente');
+    console.log('Data URL length:', e.target.result.length);
+    
+    // Mostrar preview
+    addImageMessage('user', e.target.result, '📤 Enviando...');
+    scrollToBottom();
+    
+    console.log('✅ Preview mostrado, iniciando envío...');
+    
+    // Enviar al servidor
+    sendImageToServer(file);
+  };
+  
+  reader.onerror = function(error) {
+    console.error('❌ Error al leer archivo:', error);
+    showStatus('Error al leer la imagen', 'error');
+    addSystemMessage('❌ No se pudo leer la imagen');
+  };
+  
+  console.log('📖 Iniciando FileReader.readAsDataURL()...');
+  reader.readAsDataURL(file);
+}
+
+// ✅ Función para enviar imagen al servidor
+async function sendImageToServer(file) {
+  console.log('🚀 sendImageToServer() iniciado');
+  
   if (!socket || !socket.connected) {
+    console.error('❌ Socket desconectado');
     showStatus('No estás conectado', 'error');
+    addSystemMessage('❌ Error: No hay conexión');
     return;
   }
 
-  // Validar que tengamos usuario
   if (!username) {
+    console.error('❌ Sin username');
     showStatus('No estás registrado', 'error');
+    addSystemMessage('❌ Error: Sin sesión');
     return;
   }
 
   try {
-    // Mostrar preview local ANTES de enviar
-    var reader = new FileReader();
+    console.log('📦 Preparando FormData...');
     
-    // Esperar a que se cargue la imagen
-    await new Promise(function(resolve, reject) {
-      reader.onload = function(e) {
-        addImageMessage('user', e.target.result, '📤 Enviando...');
-        scrollToBottom();
-        resolve();
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
-    // Preparar FormData
     var formData = new FormData();
     formData.append('image', file);
-    formData.append('username', username); // Usar username global
-    formData.append('sessionId', sessionId); // Incluir sessionId también
+    formData.append('username', username);
+    formData.append('sessionId', sessionId);
+    
+    console.log('FormData creado:');
+    console.log('  - image:', file.name);
+    console.log('  - username:', username);
+    console.log('  - sessionId:', sessionId);
 
-    // Mostrar indicador de carga
     showStatus('Enviando imagen...', 'warning');
+    console.log('🌐 Enviando petición a:', BACKEND_URL + '/api/upload-image');
 
-    // Enviar al servidor
     var response = await fetch(BACKEND_URL + '/api/upload-image', {
       method: 'POST',
       body: formData
     });
 
+    console.log('📡 Respuesta recibida:', response.status, response.statusText);
+
     if (!response.ok) {
-      var errorData = await response.json().catch(function() {
-        return { error: 'Error desconocido' };
-      });
-      throw new Error(errorData.error || 'Error al enviar imagen');
+      var errorData;
+      try {
+        errorData = await response.json();
+        console.error('❌ Error del servidor:', errorData);
+      } catch (e) {
+        console.error('❌ No se pudo parsear error:', e);
+        errorData = { error: 'Error desconocido del servidor' };
+      }
+      throw new Error(errorData.error || 'Error al enviar imagen (HTTP ' + response.status + ')');
     }
 
     var data = await response.json();
+    console.log('✅ Respuesta exitosa:', data);
     
     showStatus('Imagen enviada ✓', 'success');
-    showTyping(); // Mostrar que el bot está "escribiendo"
-    console.log('✅ Imagen enviada correctamente:', data);
+    showTyping();
+    
+    console.log('🎉 Imagen enviada exitosamente');
 
   } catch (error) {
-    console.error('❌ Error al enviar imagen:', error);
-    showStatus('Error: ' + error.message, 'error');
+    console.error('❌ Error en sendImageToServer:', error);
+    console.error('Stack trace:', error.stack);
     
-    // Agregar mensaje de error visible
-    addSystemMessage('❌ No se pudo enviar la imagen. Intenta nuevamente.');
+    showStatus('Error: ' + error.message, 'error');
+    addSystemMessage('❌ No se pudo enviar la imagen: ' + error.message);
   }
 }
 
-// Soporte para pegar imágenes (Ctrl+V)
-messageInput.addEventListener('paste', async function(e) {
+// Soporte para pegar imágenes (Ctrl+V / Cmd+V)
+messageInput.addEventListener('paste', function(e) {
+  console.log('📋 Paste event detectado');
+  
   var items = e.clipboardData.items;
+  console.log('Clipboard items:', items.length);
   
   for (var i = 0; i < items.length; i++) {
+    console.log('Item', i, ':', items[i].type);
+    
     if (items[i].type.startsWith('image/')) {
+      console.log('✅ Imagen detectada en clipboard');
       e.preventDefault();
       
       var file = items[i].getAsFile();
       if (file) {
-        await sendImage(file);
+        console.log('📷 Procesando imagen pegada:', file.name);
+        handleImageFile(file);
       }
       break;
     }
   }
 });
 
-console.log('📷 Sistema de envío de imágenes inicializado');
+console.log('✅ Sistema de envío de imágenes inicializado completamente');
 
 // ========== AUTO-INICIALIZAR ==========
 window.addEventListener('DOMContentLoaded', function () {
-  // Detectar si es mobile
   isMobile = window.innerWidth <= 768;
   console.log('📱 Dispositivo:', isMobile ? 'Móvil' : 'Desktop');
   
   var savedSession = loadSession();
   
   if (savedSession) {
-    // ✅ HAY SESIÓN GUARDADA - RECONECTAR AUTOMÁTICAMENTE
     username = savedSession.username;
     sessionId = savedSession.sessionId;
     isReconnecting = true;
     
     console.log('🔄 Sesión encontrada, reconectando como:', username);
     
-    // Ocultar formulario de registro
     registerForm.style.display = 'none';
-    
-    // Mostrar área de chat
     messagesArea.classList.add('active');
     inputArea.classList.add('active');
     quickOptions.classList.add('active');
     
-    // Mensaje de sistema
     addSystemMessage('Reconectando como ' + username + '...');
-    
-    // Conectar al bot
     connectToBot();
     
     console.log('✅ Reconexión iniciada para:', username);
   } else {
-    // ✅ NO HAY SESIÓN - MOSTRAR FORMULARIO DE REGISTRO
     console.log('🆕 Primera visita, mostrando formulario de registro');
     
-    // Asegurarse de que el formulario esté visible
     registerForm.style.display = 'block';
     messagesArea.classList.remove('active');
     inputArea.classList.remove('active');
     quickOptions.classList.remove('active');
     
-    // En mobile, auto-focus en el input
     if (isMobile) {
       setTimeout(function() {
         usernameInput.focus();
       }, 500);
     } else {
-      // En desktop también hacer focus
       setTimeout(function() {
         usernameInput.focus();
       }, 300);
