@@ -735,43 +735,60 @@ function autoResize(textarea) {
 }
 
 // ========================================
-// 📷 ENVÍO DE IMÁGENES
+// 📷 ENVÍO DE IMÁGENES - VERSIÓN CORREGIDA
 // ========================================
 
 // Crear elemento de input para imágenes (oculto)
 var imageInput = document.createElement('input');
 imageInput.type = 'file';
 imageInput.accept = 'image/*';
+imageInput.capture = 'environment'; // Permite usar la cámara en móvil
 imageInput.style.display = 'none';
 document.body.appendChild(imageInput);
+
+console.log('📷 Input de imágenes creado');
 
 // Manejar selección de imagen
 imageInput.addEventListener('change', async function(e) {
   var file = e.target.files[0];
   if (!file) return;
 
+  console.log('📷 Imagen seleccionada:', file.name, file.size, 'bytes');
+
   // Validar tipo
   if (!file.type.startsWith('image/')) {
-    alert('❌ Solo se permiten imágenes');
+    showStatus('❌ Solo se permiten imágenes', 'error');
     return;
   }
 
   // Validar tamaño (5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    alert('❌ La imagen es muy grande (máximo 5MB)');
+  var maxSize = 5 * 1024 * 1024;
+  if (file.size > maxSize) {
+    var sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    showStatus('❌ Imagen muy grande (' + sizeMB + 'MB). Máximo 5MB', 'error');
     return;
   }
 
+  console.log('✅ Validación pasada, enviando imagen...');
   await sendImage(file);
   imageInput.value = ''; // Reset input
 });
 
 // Función para abrir selector de imágenes
 window.selectImage = function() {
+  console.log('📷 Botón de imagen clickeado');
+  
   if (!socket || !socket.connected) {
-    showStatus('No estás conectado', 'error');
+    showStatus('No estás conectado. Espera...', 'error');
     return;
   }
+  
+  if (!username) {
+    showStatus('Debes iniciar sesión primero', 'error');
+    return;
+  }
+  
+  console.log('✅ Abriendo selector de imágenes...');
   imageInput.click();
 };
 
@@ -782,23 +799,32 @@ async function sendImage(file) {
     return;
   }
 
-  var session = activeSessions.get(socket.id);
-  if (!session) {
-    session = { username: username };
+  // Validar que tengamos usuario
+  if (!username) {
+    showStatus('No estás registrado', 'error');
+    return;
   }
 
   try {
-    // Mostrar preview local inmediatamente
+    // Mostrar preview local ANTES de enviar
     var reader = new FileReader();
-    reader.onload = function(e) {
-      addImageMessage('user', e.target.result, '');
-    };
-    reader.readAsDataURL(file);
+    
+    // Esperar a que se cargue la imagen
+    await new Promise(function(resolve, reject) {
+      reader.onload = function(e) {
+        addImageMessage('user', e.target.result, '📤 Enviando...');
+        scrollToBottom();
+        resolve();
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
     // Preparar FormData
     var formData = new FormData();
     formData.append('image', file);
-    formData.append('username', session.username);
+    formData.append('username', username); // Usar username global
+    formData.append('sessionId', sessionId); // Incluir sessionId también
 
     // Mostrar indicador de carga
     showStatus('Enviando imagen...', 'warning');
@@ -810,17 +836,24 @@ async function sendImage(file) {
     });
 
     if (!response.ok) {
-      throw new Error('Error al enviar imagen');
+      var errorData = await response.json().catch(function() {
+        return { error: 'Error desconocido' };
+      });
+      throw new Error(errorData.error || 'Error al enviar imagen');
     }
 
     var data = await response.json();
     
     showStatus('Imagen enviada ✓', 'success');
-    console.log('✅ Imagen enviada correctamente');
+    showTyping(); // Mostrar que el bot está "escribiendo"
+    console.log('✅ Imagen enviada correctamente:', data);
 
   } catch (error) {
     console.error('❌ Error al enviar imagen:', error);
-    showStatus('Error al enviar imagen', 'error');
+    showStatus('Error: ' + error.message, 'error');
+    
+    // Agregar mensaje de error visible
+    addSystemMessage('❌ No se pudo enviar la imagen. Intenta nuevamente.');
   }
 }
 
