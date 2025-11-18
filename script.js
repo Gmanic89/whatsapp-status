@@ -746,7 +746,7 @@ if (!imageInput) {
   imageInput.type = 'file';
   imageInput.id = 'image-input-hidden';
   imageInput.accept = 'image/*';
-  imageInput.capture = 'environment';
+  // ❌ NO usar capture="environment" para permitir seleccionar de galería
   imageInput.style.display = 'none';
   document.body.appendChild(imageInput);
 }
@@ -898,6 +898,12 @@ function startPollingWithTimeout() {
 
 // ✅ DETECTAR CUANDO EL USUARIO REGRESA A LA APP
 var wasSelectingFile = false;
+var emergencySendBtn = null;
+
+// Inicializar botón de emergencia cuando el DOM esté listo
+setTimeout(function() {
+  emergencySendBtn = document.getElementById('emergency-send-btn');
+}, 1000);
 
 window.addEventListener('blur', function() {
   if (document.activeElement === imageInput) {
@@ -928,6 +934,44 @@ window.addEventListener('focus', function() {
     }, 300);
   }
 });
+
+// ✅ MOSTRAR BOTÓN DE EMERGENCIA si hay archivo pero no se procesó
+setInterval(function() {
+  if (imageInput && imageInput.files && imageInput.files.length > 0 && !isProcessingFile) {
+    console.log('⚠️ Hay archivo seleccionado pero no se procesó. Mostrando botón de emergencia.');
+    if (emergencySendBtn) {
+      emergencySendBtn.style.display = 'flex';
+    }
+  } else {
+    if (emergencySendBtn && emergencySendBtn.style.display !== 'none') {
+      emergencySendBtn.style.display = 'none';
+    }
+  }
+}, 1000);
+
+// ✅ FUNCIÓN DE EMERGENCIA para forzar el envío
+window.forceProcessImage = function() {
+  console.log('🚨 Forzando procesamiento de imagen...');
+  
+  if (imageInput && imageInput.files && imageInput.files.length > 0) {
+    var file = imageInput.files[0];
+    console.log('Procesando archivo forzadamente:', file.name);
+    processImageFile(file);
+    
+    // Ocultar botón
+    if (emergencySendBtn) {
+      emergencySendBtn.style.display = 'none';
+    }
+    
+    // Reset input
+    setTimeout(function() {
+      imageInput.value = '';
+    }, 500);
+  } else {
+    console.log('❌ No hay archivo para procesar');
+    showStatus('No hay imagen seleccionada', 'error');
+  }
+};
 
 // ✅ Función para abrir selector
 window.selectImage = function() {
