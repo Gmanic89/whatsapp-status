@@ -3,10 +3,82 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Fwild — Comunidad Oficial</title>
-    <meta name="description" content="Comunidad oficial de jugadores Fwild. Servicio exclusivo para mayores de 21 años." />
-    <meta name="robots" content="index, follow" />
 
+    <!-- ── SEO / IDENTIDAD ── -->
+    <title>Fwild Community — Comunidad Oficial de Gaming | Buenos Aires</title>
+    <meta name="description" content="Fwild es una comunidad privada de jugadores online con sede en Buenos Aires. Acceso exclusivo para mayores de 21 años. Soporte directo vía WhatsApp y Telegram." />
+    <meta name="keywords" content="fwild, gaming community, comunidad gaming argentina, jugadores online, clan gaming, buenos aires" />
+    <meta name="author" content="FortunatoWild SAS" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://fortunawild.net/" />
+
+    <!-- ── OPEN GRAPH COMPLETO ── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="Fwild Community" />
+    <meta property="og:title"       content="Fwild Community — Comunidad Oficial de Gaming" />
+    <meta property="og:description" content="Comunidad privada de jugadores online. Buenos Aires. Acceso exclusivo +21 años." />
+    <meta property="og:url"         content="https://fortunawild.net/" />
+    <meta property="og:image"       content="https://fortunawild.net/og-image.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"   content="Fwild Community — Logo oficial" />
+    <meta property="og:locale"      content="es_AR" />
+
+    <!-- ── TWITTER CARD ── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Fwild Community" />
+    <meta name="twitter:description" content="Comunidad privada de jugadores online. Buenos Aires. +21 años." />
+    <meta name="twitter:image"       content="https://fortunawild.net/og-image.png" />
+
+    <!-- ── SCHEMA.ORG — Organization + WebSite ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://fortunawild.net/#organization",
+          "name": "FortunatoWild SAS",
+          "alternateName": "Fwild Community",
+          "url": "https://fortunawild.net",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://fortunawild.net/fwild-logo.png",
+            "width": 400,
+            "height": 400
+          },
+          "description": "Comunidad privada de jugadores online con sede en Buenos Aires, Argentina.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "San Fernando",
+            "addressRegion": "Buenos Aires",
+            "addressCountry": "AR"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "fortunatowildson@gmail.com",
+            "availableLanguage": "Spanish",
+            "hoursAvailable": "Mo-Su 00:00-23:59"
+          },
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://fortunawild.net/#website",
+          "url": "https://fortunawild.net",
+          "name": "Fwild Community",
+          "description": "Comunidad privada de jugadores online. Buenos Aires.",
+          "publisher": {
+            "@id": "https://fortunawild.net/#organization"
+          },
+          "inLanguage": "es-AR"
+        }
+      ]
+    }
+    </script>
+
+    <!-- ── GOOGLE ANALYTICS ── -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJWDV50N7N"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -696,7 +768,7 @@
           <h1 class="hero-title">FWILD</h1>
           <div class="hero-rule"></div>
           <p class="hero-subtitle">Comunidad Oficial de Jugadores</p>
-          <p class="hero-tagline">Soporte 24/7 &nbsp;·&nbsp; Miembros selectos &nbsp;·&nbsp; Buenos Aires</p>
+          <p class="hero-tagline">Comunidad privada &nbsp;·&nbsp; Miembros selectos &nbsp;·&nbsp; Buenos Aires</p>
 
           <div class="age-badge">
             <span>⬡</span>
@@ -778,9 +850,9 @@
       </div>
 
       <div class="quick-options" id="quick-options">
-        <button class="quick-option-btn" onclick="selectQuickOption('Solicitar CBU')">CBU</button>
-        <button class="quick-option-btn" onclick="selectQuickOption('Realizar Retiro')">Retiro</button>
-        <button class="quick-option-btn" onclick="selectQuickOption('Otra Consulta')">Consulta</button>
+        <button class="quick-option-btn" onclick="selectQuickOption('Solicitar CBU')">Cuenta</button>
+        <button class="quick-option-btn" onclick="selectQuickOption('Realizar Retiro')">Puntos</button>
+        <button class="quick-option-btn" onclick="selectQuickOption('Otra Consulta')">Soporte</button>
       </div>
 
       <div id="input-area">
