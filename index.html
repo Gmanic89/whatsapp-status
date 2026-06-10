@@ -886,6 +886,19 @@
         });
       }
 
+      /* LOADING OVERLAY — se oculta solo si script.js no lo hace */
+      (function() {
+        const overlay = document.getElementById('loadingOverlay');
+        function hideOverlay() {
+          overlay.classList.add('fade-out');
+          setTimeout(() => { overlay.style.display = 'none'; }, 600);
+        }
+        // Fallback: cierra después de 1.5s pase lo que pase
+        setTimeout(hideOverlay, 1500);
+        // También escucha el evento que script.js puede disparar
+        window.addEventListener('appReady', hideOverlay);
+      })();
+
       /* Badge de mensaje después de 4s */
       setTimeout(() => {
         if (!chatContainer.classList.contains('open')) {
